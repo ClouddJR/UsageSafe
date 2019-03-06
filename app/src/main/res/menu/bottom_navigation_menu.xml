@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/statsButton"
+        android:icon="@drawable/ic_today"
+        android:title="Today" />
+
+    <item
+        android:id="@+id/limitsButton"
+        android:icon="@drawable/ic_apps"
+        android:title="App limits" />
+
+    <item
+        android:id="@+id/historyButton"
+        android:icon="@drawable/ic_history"
+        android:title="History" />
+
+    <item
+        android:id="@+id/contactsButton"
+        android:icon="@drawable/ic_contacts"
+        android:title="Contacts" />
+
+
+</menu>
