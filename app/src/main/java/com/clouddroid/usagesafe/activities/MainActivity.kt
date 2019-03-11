@@ -8,41 +8,56 @@ import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.clouddroid.usagesafe.R
-import com.clouddroid.usagesafe.fragments.*
-import com.clouddroid.usagesafe.utils.ExtensionUtils.replaceWithTransaction
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var selectedFragment: BaseFragment
+    lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         checkForUsagePermissions()
+        initNavController()
         initBottomNav()
+    }
+
+    private fun initNavController() {
+        navController = Navigation.findNavController(this, R.id.fragmentPlaceHolder)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.todaysStatsFragment -> bottomNav.menu.findItem(R.id.todaysStatsItem).isChecked = true
+                R.id.appLimitsFragment -> bottomNav.menu.findItem(R.id.appLimitsItem).isChecked = true
+                R.id.historyStatsFragment -> bottomNav.menu.findItem(R.id.historyItem).isChecked = true
+                R.id.contactsListFragment -> bottomNav.menu.findItem(R.id.contactsListItem).isChecked = true
+            }
+        }
     }
 
     private fun initBottomNav() {
         bottomNav.setOnNavigationItemSelectedListener {
-            val fragment =
-                when (it.itemId) {
-                    R.id.todaysStatsItem -> TodaysStatsFragment()
-                    R.id.appLimitsItem -> AppLimitsFragment()
-                    R.id.historyItem -> HistoryStatsFragment()
-                    R.id.contactsListItem -> ContactsListFragment()
-                    else -> TodaysStatsFragment()
-                }
-
-            selectedFragment = fragment
-
-            supportFragmentManager.replaceWithTransaction(R.id.fragmentContainer, fragment)
+            when (it.itemId) {
+                R.id.todaysStatsItem -> navigateTo(R.id.todaysStatsFragment)
+                R.id.appLimitsItem -> navigateTo(R.id.appLimitsFragment)
+                R.id.historyItem -> navigateTo(R.id.historyStatsFragment)
+                R.id.contactsListItem -> navigateTo(R.id.contactsListFragment)
+                else -> navigateTo(R.id.todaysStatsFragment)
+            }
             true
         }
+    }
 
-        bottomNav.selectedItemId = R.id.todaysStatsItem
+    private fun navigateTo(resourceId: Int) {
+
+        if (!navController.popBackStack(resourceId, false) && navController.currentDestination?.id != resourceId) {
+            navController.navigate(resourceId)
+        }
+
     }
 
     private fun checkForUsagePermissions() {
