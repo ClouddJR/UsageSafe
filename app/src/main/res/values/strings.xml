@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">UsageSafe</string>
+
+    <string name="total_screen_time_text">%d hr, %d min</string>
+    <string name="most_used_screen_time">Screen time: %1$s</string>
+    <string name="most_used_opened_times">Opened: %d times </string>
 </resources>
