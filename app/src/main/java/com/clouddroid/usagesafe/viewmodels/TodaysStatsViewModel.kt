@@ -1,5 +1,6 @@
 package com.clouddroid.usagesafe.viewmodels
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -11,11 +12,13 @@ import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
 import com.clouddroid.usagesafe.models.AppUsageInfo
 import com.clouddroid.usagesafe.repositories.UsageStatsRepository
-import com.clouddroid.usagesafe.utils.PackageInfoUtils.getAppIcon
+import com.clouddroid.usagesafe.utils.PackageInfoUtils.getResizedAppIcon
 import com.clouddroid.usagesafe.utils.TextUtils.getTotalScreenTimeText
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
-import java.util.concurrent.TimeUnit
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository: UsageStatsRepository) : ViewModel() {
@@ -23,10 +26,18 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
     private val appUsageMap = MutableLiveData<Map<String, AppUsageInfo>>()
     val unlockCount = MutableLiveData<Int>()
 
+    @SuppressLint("CheckResult")
     fun init() {
-        val usagePair = usageStatsRepository.getAppsUsageFromToday()
-        appUsageMap.value = usagePair.first
-        unlockCount.value = usagePair.second
+        Observable.just(usageStatsRepository.getAppsUsageFromToday())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                val usagePair = it
+                appUsageMap.value = usagePair.first
+                unlockCount.value = usagePair.second
+            }, {
+                it.printStackTrace()
+            })
 
     }
 
@@ -38,8 +49,11 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
             .toMap()
     }
 
-    fun getTotalScreenTime(appUsageMap: Map<String, AppUsageInfo>): String {
-        return getTotalScreenTimeText(appUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }.toLong())
+    fun getTotalScreenTime(appUsageMap: Map<String, AppUsageInfo>, context: Context?): String {
+        return getTotalScreenTimeText(
+            appUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }.toLong()
+            , context
+        )
     }
 
     fun getMostUsedAppsList(appUsageMap: Map<String, AppUsageInfo>): List<AppUsageInfo> {
@@ -68,30 +82,42 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
 
     private fun getPieEntriesFromAppsUsage(
         firstAppsUsageMap: Map<String, AppUsageInfo>,
-        restAppsUsageMap: Map<String, AppUsageInfo>,
+        otherAppsUsageMap: Map<String, AppUsageInfo>,
         context: Context?
     ): List<PieEntry> {
 
         val entries = mutableListOf<PieEntry>()
-
+        var firstAppsTotalTimeSum = 0
         firstAppsUsageMap.forEach { (packageName, usageInfo) ->
+            firstAppsTotalTimeSum += usageInfo.totalTimeInForeground.toInt()
             entries.add(
                 PieEntry(
-                    TimeUnit.MILLISECONDS.toMinutes(usageInfo.totalTimeInForeground).toFloat(),
+                    usageInfo.totalTimeInForeground.toFloat(),
                     "",
-                    getAppIcon(packageName, context)
+                    getResizedAppIcon(packageName, context)
                 )
             )
         }
 
-        entries.add(
-            PieEntry(
-                TimeUnit.MILLISECONDS.toMinutes(
-                    restAppsUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }.toLong()
-                ).toFloat(),
-                "Other"
+        val totalOtherTime = otherAppsUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }
+
+        if (totalOtherTime > 0 && (totalOtherTime.div(firstAppsTotalTimeSum.toDouble()) * 100) > 10) {
+            entries.add(
+                PieEntry(
+                    totalOtherTime.toFloat(),
+                    "Other"
+                )
             )
-        )
+        }
+
+        if (totalOtherTime > 0 && (totalOtherTime.div(firstAppsTotalTimeSum.toDouble()) * 100) <= 10) {
+            entries.add(
+                PieEntry(
+                    totalOtherTime.toFloat(),
+                    ""
+                )
+            )
+        }
 
         return entries
     }
