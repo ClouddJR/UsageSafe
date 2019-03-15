@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.adapters.MostUsedAdapter
 import com.clouddroid.usagesafe.models.AppUsageInfo
 import com.clouddroid.usagesafe.viewmodels.TodaysStatsViewModel
@@ -22,7 +23,7 @@ class TodaysStatsFragment : BaseFragment() {
 
     private lateinit var viewModel: TodaysStatsViewModel
 
-    override fun getLayoutId() = com.clouddroid.usagesafe.R.layout.fragment_todays_stats
+    override fun getLayoutId() = R.layout.fragment_todays_stats
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,7 +43,7 @@ class TodaysStatsFragment : BaseFragment() {
     private fun observeDataChanges() {
         viewModel.getAppUsageMap().observe(this, Observer {
             drawChart(it)
-            setChartCenterText(viewModel.getTotalScreenTime(it))
+            setChartCenterText(viewModel.getTotalScreenTime(it, context))
             setUpMostUsedRV(viewModel.getMostUsedAppsList(it))
         })
 
@@ -73,7 +74,6 @@ class TodaysStatsFragment : BaseFragment() {
         fillAndCustomizeChart(pieDataSet)
     }
 
-
     private fun prepareDataSet(entries: List<PieEntry>): PieDataSet {
         val pieDataSet = PieDataSet(entries, "App usage")
         pieDataSet.sliceSpace = 3f
@@ -86,6 +86,7 @@ class TodaysStatsFragment : BaseFragment() {
         pieDataSet.valueLinePart1Length = 0.15f
         pieDataSet.valueLinePart2Length = 0f
         pieDataSet.valueLineColor = Color.TRANSPARENT
+        pieDataSet.isHighlightEnabled = false
         pieDataSet.setAutomaticallyDisableSliceSpacing(true)
         return pieDataSet
     }
@@ -99,6 +100,7 @@ class TodaysStatsFragment : BaseFragment() {
         pieChart.legend.isEnabled = false
         pieChart.extraBottomOffset = 20f
         pieChart.extraTopOffset = 20f
+        pieChart.isHighlightPerTapEnabled = false
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.setEntryLabelTextSize(14f)
         pieChart.setCenterTextSize(16f)
