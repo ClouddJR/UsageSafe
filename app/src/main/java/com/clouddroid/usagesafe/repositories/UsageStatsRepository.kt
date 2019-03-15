@@ -2,11 +2,20 @@ package com.clouddroid.usagesafe.repositories
 
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
+import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import com.clouddroid.usagesafe.models.AppDetails
 import com.clouddroid.usagesafe.models.AppUsageInfo
+import com.clouddroid.usagesafe.utils.PackageInfoUtils.getAppName
+import com.clouddroid.usagesafe.utils.PackageInfoUtils.getRawAppIcon
 import java.util.*
 import javax.inject.Inject
 
-class UsageStatsRepository @Inject constructor(private val usageStatsManager: UsageStatsManager) {
+class UsageStatsRepository @Inject constructor(
+    private val usageStatsManager: UsageStatsManager,
+    private val packageManager: PackageManager
+) {
 
 
     fun getAppsUsageFromToday(): Pair<Map<String, AppUsageInfo>, Int> {
@@ -34,7 +43,7 @@ class UsageStatsRepository @Inject constructor(private val usageStatsManager: Us
             val first = allEventsList[i]
             val second = allEventsList[i + 1]
 
-            unlockCount += possiblePhoneUnlock(first, second)
+            unlockCount += getPossiblePhoneUnlock(first, second)
             increaseLaunchCount(first, second, appUsageMap)
             increaseTotalTimeInForeground(first, second, appUsageMap)
         }
@@ -57,7 +66,7 @@ class UsageStatsRepository @Inject constructor(private val usageStatsManager: Us
         }
     }
 
-    private fun possiblePhoneUnlock(first: UsageEvents.Event, second: UsageEvents.Event): Int {
+    private fun getPossiblePhoneUnlock(first: UsageEvents.Event, second: UsageEvents.Event): Int {
         return if (first.packageName == second.packageName
             && first.className == second.className
             && first.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
@@ -103,6 +112,26 @@ class UsageStatsRepository @Inject constructor(private val usageStatsManager: Us
             appUsageMap[second.packageName]!!.totalTimeInForeground += (second.timeStamp - first.timeStamp)
         }
     }
+
+    fun getListOfAllApps(context: Context): List<AppDetails> {
+        val appsList = mutableListOf<AppDetails>()
+
+        packageManager.getInstalledApplications(PackageManager.GET_META_DATA).forEach { appInfo ->
+            if (appInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
+                appsList.add(
+                    AppDetails(
+                        packageName = appInfo.packageName,
+                        name = getAppName(appInfo.packageName, context).toString(),
+                        icon = getRawAppIcon(appInfo.packageName, context)
+                    )
+                )
+            }
+        }
+
+        return appsList.sortedBy { app -> app.name }
+    }
+
+
 }
 
 
