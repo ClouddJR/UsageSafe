@@ -2,6 +2,7 @@ package com.clouddroid.usagesafe.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.clouddroid.usagesafe.viewmodels.AppLimitsViewModel
 import com.clouddroid.usagesafe.viewmodels.TodaysStatsViewModel
 import com.clouddroid.usagesafe.viewmodels.ViewModelFactory
 import com.clouddroid.usagesafe.viewmodels.ViewModelKey
@@ -19,4 +20,9 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(TodaysStatsViewModel::class)
     fun provideTodaysStatsViewModel(viewModel: TodaysStatsViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(AppLimitsViewModel::class)
+    fun provideAppLimitsViewModel(viewModel: AppLimitsViewModel): ViewModel = viewModel
 }
