@@ -8,56 +8,108 @@ import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.fragment.app.FragmentManager
 import com.clouddroid.usagesafe.R
+import com.clouddroid.usagesafe.fragments.AppLimitsFragment
+import com.clouddroid.usagesafe.fragments.ContactsListFragment
+import com.clouddroid.usagesafe.fragments.HistoryStatsFragment
+import com.clouddroid.usagesafe.fragments.TodaysStatsFragment
+import com.clouddroid.usagesafe.utils.ExtensionUtils.addAndCommit
+import com.clouddroid.usagesafe.utils.ExtensionUtils.doesNotContain
+import com.clouddroid.usagesafe.utils.ExtensionUtils.showAndHideOthers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var navController: NavController
+    private val todaysStatsFragment = TodaysStatsFragment()
+    private val appLimitsFragment = AppLimitsFragment()
+    private val historyStatsFragment = HistoryStatsFragment()
+    private val contactsListFragment = ContactsListFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         checkForUsagePermissions()
-        initNavController()
         initBottomNav()
+        initFragmentsBackStack()
+
     }
 
-    private fun initNavController() {
-        navController = Navigation.findNavController(this, R.id.fragmentPlaceHolder)
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.todaysStatsFragment -> bottomNav.menu.findItem(R.id.todaysStatsItem).isChecked = true
-                R.id.appLimitsFragment -> bottomNav.menu.findItem(R.id.appLimitsItem).isChecked = true
-                R.id.historyStatsFragment -> bottomNav.menu.findItem(R.id.historyItem).isChecked = true
-                R.id.contactsListFragment -> bottomNav.menu.findItem(R.id.contactsListItem).isChecked = true
-            }
-        }
+    private fun initFragmentsBackStack() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentPlaceHolder, todaysStatsFragment)
+            .add(R.id.fragmentPlaceHolder, appLimitsFragment)
+            .add(R.id.fragmentPlaceHolder, historyStatsFragment)
+            .add(R.id.fragmentPlaceHolder, contactsListFragment)
+            .hide(appLimitsFragment)
+            .hide(historyStatsFragment)
+            .hide(contactsListFragment)
+            .commit()
+        bottomNav.menu.findItem(R.id.todaysStatsFragment).isChecked = true
     }
 
     private fun initBottomNav() {
         bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.todaysStatsItem -> navigateTo(R.id.todaysStatsFragment)
-                R.id.appLimitsItem -> navigateTo(R.id.appLimitsFragment)
-                R.id.historyItem -> navigateTo(R.id.historyStatsFragment)
-                R.id.contactsListItem -> navigateTo(R.id.contactsListFragment)
-                else -> navigateTo(R.id.todaysStatsFragment)
+                R.id.todaysStatsFragment -> navigateTo(FragmentDestination.TODAYS_STATS)
+                R.id.appLimitsFragment -> navigateTo(FragmentDestination.APP_LIMITS)
+                R.id.historyStatsFragment -> navigateTo(FragmentDestination.HISTORY)
+                R.id.contactsListFragment -> navigateTo(FragmentDestination.CONTACTS_LIST)
+                else -> navigateTo(FragmentDestination.TODAYS_STATS)
             }
             true
         }
     }
 
-    private fun navigateTo(resourceId: Int) {
+    private fun navigateTo(destination: FragmentDestination) {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        val transaction = supportFragmentManager.beginTransaction()
 
-        if (!navController.popBackStack(resourceId, false) && navController.currentDestination?.id != resourceId) {
-            navController.navigate(resourceId)
+        //addFragmentIfNotInBackStack(destination)
+
+        when (destination) {
+            FragmentDestination.TODAYS_STATS -> transaction.showAndHideOthers(
+                todaysStatsFragment,
+                supportFragmentManager.fragments
+            )
+            FragmentDestination.APP_LIMITS -> transaction.showAndHideOthers(
+                appLimitsFragment,
+                supportFragmentManager.fragments
+            )
+            FragmentDestination.HISTORY -> transaction.showAndHideOthers(
+                historyStatsFragment,
+                supportFragmentManager.fragments
+            )
+            FragmentDestination.CONTACTS_LIST -> transaction.showAndHideOthers(
+                contactsListFragment,
+                supportFragmentManager.fragments
+            )
         }
 
+        transaction.commit()
+    }
+
+    private fun addFragmentIfNotInBackStack(destination: FragmentDestination) {
+        when (destination) {
+            FragmentDestination.APP_LIMITS -> {
+                if (supportFragmentManager.doesNotContain(appLimitsFragment)) {
+                    supportFragmentManager.addAndCommit(appLimitsFragment)
+                }
+            }
+            FragmentDestination.HISTORY -> {
+                if (supportFragmentManager.doesNotContain(historyStatsFragment)) {
+                    supportFragmentManager.addAndCommit(historyStatsFragment)
+                }
+            }
+            FragmentDestination.CONTACTS_LIST -> {
+                if (supportFragmentManager.doesNotContain(contactsListFragment)) {
+                    supportFragmentManager.addAndCommit(contactsListFragment)
+                }
+            }
+            else -> {
+            }
+        }
     }
 
     private fun checkForUsagePermissions() {
@@ -75,5 +127,12 @@ class MainActivity : AppCompatActivity() {
         if (!granted) {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
+    }
+
+    enum class FragmentDestination {
+        TODAYS_STATS,
+        APP_LIMITS,
+        HISTORY,
+        CONTACTS_LIST
     }
 }
