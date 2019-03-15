@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/todaysStatsItem"
+        android:id="@+id/todaysStatsFragment"
         android:icon="@drawable/ic_today"
         android:title="Today" />
 
     <item
-        android:id="@+id/appLimitsItem"
+        android:id="@+id/appLimitsFragment"
         android:icon="@drawable/ic_apps"
         android:title="App limits" />
 
     <item
-        android:id="@+id/historyItem"
+        android:id="@+id/historyStatsFragment"
         android:icon="@drawable/ic_history"
         android:title="History" />
 
     <item
-        android:id="@+id/contactsListItem"
+        android:id="@+id/contactsListFragment"
         android:icon="@drawable/ic_contacts"
         android:title="Contacts" />
 
