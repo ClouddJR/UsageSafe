@@ -3,6 +3,7 @@ package com.clouddroid.usagesafe.di
 import android.app.Application
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import dagger.Module
 import dagger.Provides
@@ -19,5 +20,9 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun provideUsageStatsManager(): UsageStatsManager =
         ContextCompat.getSystemService(application, UsageStatsManager::class.java)!!
+
+    @Provides
+    @Singleton
+    fun providePackageManager(): PackageManager = application.packageManager
 
 }
