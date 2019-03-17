@@ -28,7 +28,7 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
 
     @SuppressLint("CheckResult")
     fun init() {
-        Observable.just(usageStatsRepository.getAppsUsageFromToday())
+        Observable.fromCallable { usageStatsRepository.getAppsUsageFromToday() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
