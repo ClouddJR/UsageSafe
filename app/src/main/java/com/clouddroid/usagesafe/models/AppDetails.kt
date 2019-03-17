@@ -5,5 +5,6 @@ import android.graphics.drawable.Drawable
 data class AppDetails(
     var name: String = "",
     var packageName: String = "",
-    var icon: Drawable?
+    var icon: Drawable?,
+    var isSystemApp: Boolean
 )
