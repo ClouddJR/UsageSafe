@@ -1,13 +1,18 @@
 package com.clouddroid.usagesafe.fragments
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.NumberPicker
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.adapters.AppLimitsAdapter
 import com.clouddroid.usagesafe.viewmodels.AppLimitsViewModel
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_app_limits.*
 
 class AppLimitsFragment : BaseFragment() {
@@ -25,22 +30,49 @@ class AppLimitsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRV()
-        observeDataChanges()
-    }
+        observeInitialDataLoad()
 
-    private fun initRV() {
-        adapter = AppLimitsAdapter(mutableListOf(), context!!)
-        appsListRV.adapter = adapter
+        systemAppsCB.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.getListOfApps(context!!, isChecked)
+        }
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[AppLimitsViewModel::class.java]
-        viewModel.init(context!!)
+        viewModel.getListOfApps(context!!, false)
     }
 
-    private fun observeDataChanges() {
+    private fun initRV() {
+        adapter = AppLimitsAdapter(mutableListOf(), context!!) { packageName ->
+            showDialog(packageName)
+        }
+        appsListRV.adapter = adapter
+    }
+
+    private fun showDialog(packageName: String) {
+        val dialog = AlertDialog.Builder(context!!, R.style.AlertDialog)
+            .setView(R.layout.dialog_app_limit)
+            .show()
+
+        val hourNumberPicker = dialog.findViewById<NumberPicker>(R.id.hourNumberPicker)
+        hourNumberPicker?.minValue = 0
+        hourNumberPicker?.maxValue = 23
+
+        val minuteNumberPicker = dialog.findViewById<NumberPicker>(R.id.minuteNumberPicker)
+        minuteNumberPicker?.minValue = 0
+        minuteNumberPicker?.maxValue = 59
+
+        dialog.findViewById<MaterialButton>(R.id.setLimitBT)?.setOnClickListener {
+            viewModel.saveAppLimit(packageName, hourNumberPicker?.value, minuteNumberPicker?.value)
+            dialog.dismiss()
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
+    private fun observeInitialDataLoad() {
         viewModel.appsList.observe(this, Observer {
-            adapter.setItems(it)
+            adapter.swapItems(it)
         })
     }
 }
