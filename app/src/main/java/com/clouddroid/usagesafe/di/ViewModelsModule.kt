@@ -2,10 +2,7 @@ package com.clouddroid.usagesafe.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.clouddroid.usagesafe.viewmodels.AppLimitsViewModel
-import com.clouddroid.usagesafe.viewmodels.TodaysStatsViewModel
-import com.clouddroid.usagesafe.viewmodels.ViewModelFactory
-import com.clouddroid.usagesafe.viewmodels.ViewModelKey
+import com.clouddroid.usagesafe.viewmodels.*
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -25,4 +22,9 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(AppLimitsViewModel::class)
     fun provideAppLimitsViewModel(viewModel: AppLimitsViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(MainActivityViewModel::class)
+    fun provideMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel = viewModel
 }
