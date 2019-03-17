@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -81,6 +82,7 @@ class TodaysStatsFragment : BaseFragment() {
         pieDataSet.isHighlightEnabled = false
         pieDataSet.iconsOffset = MPPointF(0f, 32f)
         pieDataSet.valueTextSize = 0f
+        pieDataSet.valueTypeface = ResourcesCompat.getFont(context!!, R.font.opensans_regular)
         pieDataSet.xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
         pieDataSet.valueLinePart1OffsetPercentage = 0.5f
         pieDataSet.valueLinePart1Length = 0.15f
@@ -101,6 +103,7 @@ class TodaysStatsFragment : BaseFragment() {
         pieChart.extraBottomOffset = 20f
         pieChart.extraTopOffset = 20f
         pieChart.isHighlightPerTapEnabled = false
+        pieChart.setCenterTextTypeface(ResourcesCompat.getFont(context!!, R.font.opensans_regular))
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.setEntryLabelTextSize(14f)
         pieChart.setCenterTextSize(16f)
