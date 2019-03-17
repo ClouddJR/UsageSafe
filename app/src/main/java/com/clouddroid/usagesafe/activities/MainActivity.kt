@@ -7,8 +7,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.fragments.AppLimitsFragment
 import com.clouddroid.usagesafe.fragments.ContactsListFragment
@@ -17,9 +17,12 @@ import com.clouddroid.usagesafe.fragments.TodaysStatsFragment
 import com.clouddroid.usagesafe.utils.ExtensionUtils.addAndCommit
 import com.clouddroid.usagesafe.utils.ExtensionUtils.doesNotContain
 import com.clouddroid.usagesafe.utils.ExtensionUtils.showAndHideOthers
+import com.clouddroid.usagesafe.viewmodels.MainActivityViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+
+    private lateinit var viewModel: MainActivityViewModel
 
     private val todaysStatsFragment = TodaysStatsFragment()
     private val appLimitsFragment = AppLimitsFragment()
@@ -30,10 +33,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        initViewModel()
         checkForUsagePermissions()
         initBottomNav()
         initFragmentsBackStack()
+    }
 
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[MainActivityViewModel::class.java]
+        viewModel.init()
     }
 
     private fun initFragmentsBackStack() {
