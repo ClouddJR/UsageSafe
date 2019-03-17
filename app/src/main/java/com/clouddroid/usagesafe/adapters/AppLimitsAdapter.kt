@@ -4,21 +4,40 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.models.AppDetails
+import com.clouddroid.usagesafe.utils.AppLimitsAdapterDiffUtil
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_app_limit.view.*
 
-class AppLimitsAdapter(private val appsList: MutableList<AppDetails>, val context: Context) :
+
+class AppLimitsAdapter(
+    private val appsList: MutableList<AppDetails>,
+    val context: Context,
+    private val onLimitButtonClick: (packageName: String) -> Unit
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val headerType = 0
     private val itemType = 1
 
-    fun setItems(appsList: List<AppDetails>) {
-        this.appsList.addAll(appsList)
-        notifyDataSetChanged()
+    fun swapItems(appsList: List<AppDetails>) {
+        var disposable = Observable.fromCallable {
+            DiffUtil.calculateDiff(AppLimitsAdapterDiffUtil(this@AppLimitsAdapter.appsList, appsList))
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                this.appsList.clear()
+                this.appsList.addAll(appsList)
+
+                it.dispatchUpdatesTo(this)
+            }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -58,8 +77,10 @@ class AppLimitsAdapter(private val appsList: MutableList<AppDetails>, val contex
             Glide.with(context).load(appDetails.icon).into(itemView.appIconIV)
             itemView.appTitleTV.text = appDetails.name
 
+            itemView.setLimitBT.setOnClickListener {
+                onLimitButtonClick.invoke(appDetails.packageName)
+            }
         }
-
     }
 
     inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
