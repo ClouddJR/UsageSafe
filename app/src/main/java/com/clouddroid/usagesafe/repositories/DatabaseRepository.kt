@@ -2,6 +2,7 @@ package com.clouddroid.usagesafe.repositories
 
 import android.content.Context
 import com.clouddroid.usagesafe.models.AppLimit
+import com.clouddroid.usagesafe.models.Contact
 import com.clouddroid.usagesafe.models.LogEvent
 import com.clouddroid.usagesafe.models.ScreenLimit
 import io.realm.Realm
@@ -28,13 +29,19 @@ class DatabaseRepository {
 
     fun addAppLimit(appLimit: AppLimit) {
         realm.executeTransactionAsync {
-            it.copyToRealmOrUpdate(appLimit)
+            it.insertOrUpdate(appLimit)
         }
     }
 
     fun saveScreenLimit(screenLimit: ScreenLimit) {
         realm.executeTransactionAsync {
             it.insertOrUpdate(screenLimit)
+        }
+    }
+
+    fun addContact(contact: Contact) {
+        realm.executeTransactionAsync {
+            it.insertOrUpdate(contact)
         }
     }
 
@@ -52,5 +59,9 @@ class DatabaseRepository {
             list.addAll(it.where(LogEvent::class.java).between("timestamp", beginMillis, endMillis).findAll())
         }
         return list
+    }
+
+    fun getListOfContacts(): List<Contact> {
+        return realm.where(Contact::class.java).findAll()
     }
 }

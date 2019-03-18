@@ -27,4 +27,9 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     fun provideMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ContactsViewModel::class)
+    fun provideContactsViewModel(viewModel: ContactsViewModel): ViewModel = viewModel
 }
