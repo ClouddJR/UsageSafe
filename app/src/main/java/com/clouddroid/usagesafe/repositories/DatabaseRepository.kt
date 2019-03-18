@@ -3,6 +3,7 @@ package com.clouddroid.usagesafe.repositories
 import android.content.Context
 import com.clouddroid.usagesafe.models.AppLimit
 import com.clouddroid.usagesafe.models.LogEvent
+import com.clouddroid.usagesafe.models.ScreenLimit
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -28,6 +29,12 @@ class DatabaseRepository {
     fun addAppLimit(appLimit: AppLimit) {
         realm.executeTransactionAsync {
             it.copyToRealmOrUpdate(appLimit)
+        }
+    }
+
+    fun saveScreenLimit(screenLimit: ScreenLimit) {
+        realm.executeTransactionAsync {
+            it.insertOrUpdate(screenLimit)
         }
     }
 

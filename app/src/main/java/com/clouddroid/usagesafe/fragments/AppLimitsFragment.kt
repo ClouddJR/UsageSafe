@@ -43,13 +43,15 @@ class AppLimitsFragment : BaseFragment() {
     }
 
     private fun initRV() {
-        adapter = AppLimitsAdapter(mutableListOf(), context!!) { packageName ->
-            showDialog(packageName)
-        }
+        adapter = AppLimitsAdapter(
+            mutableListOf(), context!!,
+            { packageName -> showAppLimitDialog(packageName) }, //onAppLimitButtonClick
+            { showScreenLimitDialog() }) // onScreenTimeLimitButtonClick
+
         appsListRV.adapter = adapter
     }
 
-    private fun showDialog(packageName: String) {
+    private fun showAppLimitDialog(packageName: String) {
         val dialog = AlertDialog.Builder(context!!, R.style.AlertDialog)
             .setView(R.layout.dialog_app_limit)
             .show()
@@ -64,6 +66,27 @@ class AppLimitsFragment : BaseFragment() {
 
         dialog.findViewById<MaterialButton>(R.id.setLimitBT)?.setOnClickListener {
             viewModel.saveAppLimit(packageName, hourNumberPicker?.value, minuteNumberPicker?.value)
+            dialog.dismiss()
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
+    private fun showScreenLimitDialog() {
+        val dialog = AlertDialog.Builder(context!!, R.style.AlertDialog)
+            .setView(R.layout.dialog_screen_limit)
+            .show()
+
+        val hourNumberPicker = dialog.findViewById<NumberPicker>(R.id.hourNumberPicker)
+        hourNumberPicker?.minValue = 0
+        hourNumberPicker?.maxValue = 23
+
+        val minuteNumberPicker = dialog.findViewById<NumberPicker>(R.id.minuteNumberPicker)
+        minuteNumberPicker?.minValue = 0
+        minuteNumberPicker?.maxValue = 59
+
+        dialog.findViewById<MaterialButton>(R.id.setLimitBT)?.setOnClickListener {
+            viewModel.saveScreenLimit(hourNumberPicker?.value, minuteNumberPicker?.value)
             dialog.dismiss()
         }
 

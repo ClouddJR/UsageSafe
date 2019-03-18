@@ -14,12 +14,14 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_app_limit.view.*
+import kotlinx.android.synthetic.main.item_apps_limit_header.view.*
 
 
 class AppLimitsAdapter(
     private val appsList: MutableList<AppDetails>,
     val context: Context,
-    private val onLimitButtonClick: (packageName: String) -> Unit
+    private val onAppLimitButtonClick: (packageName: String) -> Unit,
+    private val onScreenLimitButtonClick: () -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -78,7 +80,7 @@ class AppLimitsAdapter(
             itemView.appTitleTV.text = appDetails.name
 
             itemView.setLimitBT.setOnClickListener {
-                onLimitButtonClick.invoke(appDetails.packageName)
+                onAppLimitButtonClick.invoke(appDetails.packageName)
             }
         }
     }
@@ -86,7 +88,9 @@ class AppLimitsAdapter(
     inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind() {
-
+            itemView.ovScreenTimeTitleTV.setOnClickListener {
+                onScreenLimitButtonClick.invoke()
+            }
         }
 
     }

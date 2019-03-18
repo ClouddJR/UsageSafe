@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.models.AppDetails
 import com.clouddroid.usagesafe.models.AppLimit
+import com.clouddroid.usagesafe.models.ScreenLimit
 import com.clouddroid.usagesafe.repositories.DatabaseRepository
 import com.clouddroid.usagesafe.repositories.UsageStatsRepository
 import io.reactivex.Observable
@@ -40,6 +41,15 @@ class AppLimitsViewModel @Inject constructor(
         appLimit.currentLimit = limitMillis
 
         databaseRepository.addAppLimit(appLimit)
+    }
+
+    fun saveScreenLimit(hours: Int?, minutes: Int?) {
+        val limitMillis = getLimitFromHoursAndMinutes(hours, minutes)
+
+        val screenLimit = ScreenLimit()
+        screenLimit.limitMillis = limitMillis
+
+        databaseRepository.saveScreenLimit(screenLimit)
     }
 
     private fun getLimitFromHoursAndMinutes(hours: Int?, minutes: Int?): Long {
