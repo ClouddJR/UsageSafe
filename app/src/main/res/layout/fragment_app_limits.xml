@@ -6,10 +6,10 @@
     android:layout_height="match_parent">
 
     <CheckBox
-        android:layout_margin="8dp"
         android:id="@+id/systemAppsCB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:text="Include system apps"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,6 +21,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
+        android:orientation="vertical"
         android:overScrollMode="never"
         android:padding="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
