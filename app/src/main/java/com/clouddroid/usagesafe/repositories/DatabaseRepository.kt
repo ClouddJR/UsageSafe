@@ -7,6 +7,7 @@ import com.clouddroid.usagesafe.models.LogEvent
 import com.clouddroid.usagesafe.models.ScreenLimit
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import java.util.*
 
 class DatabaseRepository {
 
@@ -54,14 +55,24 @@ class DatabaseRepository {
     }
 
     fun getLogEventsFromRange(beginMillis: Long, endMillis: Long): List<LogEvent> {
-        val list = mutableListOf<LogEvent>()
-        realm.executeTransactionAsync {
-            list.addAll(it.where(LogEvent::class.java).between("timestamp", beginMillis, endMillis).findAll())
-        }
-        return list
+        val realm = Realm.getInstance(config)
+        val logsList = realm.copyFromRealm(
+            realm.where(LogEvent::class.java).between("timestamp", beginMillis, endMillis).findAll()
+        )
+        realm.close()
+        return logsList
     }
 
     fun getListOfContacts(): List<Contact> {
         return realm.where(Contact::class.java).findAll()
+    }
+
+    fun getFirstLogEvent(): Calendar {
+        return Calendar.getInstance().apply {
+            timeInMillis = (realm.where(LogEvent::class.java)
+                .equalTo(
+                    "timestamp", realm.where(LogEvent::class.java).min("timestamp")?.toLong() ?: 0
+                ).findFirst()?.timestamp) ?: timeInMillis
+        }
     }
 }
