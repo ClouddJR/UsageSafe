@@ -7,6 +7,8 @@ import com.clouddroid.usagesafe.models.DayBegin
 import com.clouddroid.usagesafe.models.LogEvent
 import com.clouddroid.usagesafe.models.WeekBegin
 import com.clouddroid.usagesafe.repositories.DatabaseRepository
+import com.clouddroid.usagesafe.utils.ExtensionUtils.isBefore
+import com.clouddroid.usagesafe.utils.ExtensionUtils.isTheSameDay
 import com.clouddroid.usagesafe.utils.PreferencesUtils.get
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,7 +23,7 @@ class HistoryStatsViewModel @Inject constructor(
     sharedPrefs: SharedPreferences
 ) : ViewModel() {
 
-    //stores currently selected week -first and last day respectively
+    //stores currently selected week- first and last day respectively
     private val currentWeek = MutableLiveData<Pair<Calendar, Calendar>>()
 
     //beginning of the week according to user preferences
@@ -207,19 +209,6 @@ class HistoryStatsViewModel @Inject constructor(
         if (!lastDayOfPreviousWeek.isBefore(dayOfFirstSavedLog)) {
             setCurrentWeek(lastDayOfPreviousWeek)
         }
-    }
-
-    private fun Calendar.isBefore(other: Calendar): Boolean {
-        return (this.clone() as Calendar).apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-        }.before(other)
-    }
-
-    private fun Calendar.isTheSameDay(other: Calendar): Boolean {
-        return this.get(Calendar.YEAR) == other.get(Calendar.YEAR)
-                && this.get(Calendar.MONTH) == other.get(Calendar.MONTH)
-                && this.get(Calendar.DAY_OF_MONTH) == other.get(Calendar.DAY_OF_MONTH)
     }
 
     fun getTodayCalendar(): Calendar {

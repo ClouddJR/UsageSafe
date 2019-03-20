@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.fragments.BaseFragment
+import java.util.*
 
 object ExtensionUtils {
 
@@ -28,5 +29,24 @@ object ExtensionUtils {
     }
 
 //****************Fragment Manager**********************************************************************
+
+
+
+//****************Calendar******************************************************************************
+
+    fun Calendar.isBefore(other: Calendar): Boolean {
+        return (this.clone() as Calendar).apply {
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+        }.before(other)
+    }
+
+    fun Calendar.isTheSameDay(other: Calendar): Boolean {
+        return this.get(Calendar.YEAR) == other.get(Calendar.YEAR)
+                && this.get(Calendar.MONTH) == other.get(Calendar.MONTH)
+                && this.get(Calendar.DAY_OF_MONTH) == other.get(Calendar.DAY_OF_MONTH)
+    }
+
+//****************Calendar******************************************************************************
 
 }
