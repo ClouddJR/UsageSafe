@@ -32,4 +32,14 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(ContactsViewModel::class)
     fun provideContactsViewModel(viewModel: ContactsViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(HistoryStatsViewModel::class)
+    fun provideHistoryStatsViewModel(viewModel: HistoryStatsViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ScreenTimeViewModel::class)
+    fun provideScreenTimeViewModel(viewModel: ScreenTimeViewModel): ViewModel = viewModel
 }
