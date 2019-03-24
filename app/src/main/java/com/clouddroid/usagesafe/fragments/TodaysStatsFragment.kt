@@ -108,6 +108,5 @@ class TodaysStatsFragment : BaseFragment() {
         pieChart.setEntryLabelTextSize(14f)
         pieChart.setCenterTextSize(16f)
         pieChart.animateXY(500, 500)
-        pieChart.invalidate()
     }
 }
