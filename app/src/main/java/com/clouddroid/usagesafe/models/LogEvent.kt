@@ -7,7 +7,7 @@ open class LogEvent : RealmObject() {
 
     @PrimaryKey
     var timestamp: Long = 0
-    var packageName: String? = ""
+    var packageName: String = ""
     var className: String? = ""
     var eventType = 0
 
