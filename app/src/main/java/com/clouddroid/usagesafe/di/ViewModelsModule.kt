@@ -42,4 +42,15 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(ScreenTimeViewModel::class)
     fun provideScreenTimeViewModel(viewModel: ScreenTimeViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnlocksViewModel::class)
+    fun provideUnlocksViewModel(viewModel: UnlocksViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(AppLaunchesViewModel::class)
+    fun provideAppLaunchesViewModel(viewModel: AppLaunchesViewModel): ViewModel = viewModel
+
 }
