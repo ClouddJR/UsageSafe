@@ -7,9 +7,8 @@ import com.clouddroid.usagesafe.models.DayBegin
 import com.clouddroid.usagesafe.models.LogEvent
 import com.clouddroid.usagesafe.models.WeekBegin
 import com.clouddroid.usagesafe.repositories.DatabaseRepository
-import com.clouddroid.usagesafe.utils.ExtensionUtils.isBefore
-import com.clouddroid.usagesafe.utils.ExtensionUtils.isTheSameDay
 import com.clouddroid.usagesafe.utils.PreferencesUtils.get
+import com.clouddroid.usagesafe.utils.WeekViewLogic
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -26,29 +25,23 @@ class HistoryStatsViewModel @Inject constructor(
     //stores currently selected week- first and last day respectively
     private val currentWeek = MutableLiveData<Pair<Calendar, Calendar>>()
 
+    //formatted text to be displayed on the bottom view
+    val currentWeekText = MutableLiveData<String>()
+
     //beginning of the week according to user preferences
     private val weekBegin: String = sharedPrefs["week_begin"] ?: WeekBegin.SIX_DAYS_AGO
     private val hourDayBegin: Int = sharedPrefs["day_begin"] ?: DayBegin._12AM
 
-    private val dayOfFirstSavedLog = databaseRepository.getFirstLogEvent()
-
-    //formatted text to be displayed on the bottom view
-    val currentWeekText = MutableLiveData<String>()
+    private val weekViewLogic = WeekViewLogic(weekBegin, Calendar.getInstance())
 
     val weeklyData = MutableLiveData<Map<Long, MutableList<LogEvent>>>()
 
-    fun setCurrentWeek(lastDayOfWeek: Calendar) {
-        val firstDayOfWeek = getFirstDayOfWeek(lastDayOfWeek).apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-        }
-        lastDayOfWeek.apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-        }
-        currentWeek.value = Pair(firstDayOfWeek, lastDayOfWeek)
-        setCurrentWeekText(firstDayOfWeek, lastDayOfWeek)
-        getLogsFromDB(firstDayOfWeek.timeInMillis, lastDayOfWeek.timeInMillis)
+    private val dayOfFirstSavedLog = databaseRepository.getFirstLogEvent()
+
+    fun updateCurrentWeek() {
+        currentWeek.value = Pair(weekViewLogic.currentWeek.first, weekViewLogic.currentWeek.second)
+        setCurrentWeekText(weekViewLogic.currentWeek.first, weekViewLogic.currentWeek.second)
+        getLogsFromDB(weekViewLogic.currentWeek.first.timeInMillis, weekViewLogic.currentWeek.second.timeInMillis)
     }
 
     private fun setCurrentWeekText(firstDayOfWeek: Calendar, lastDayOfWeek: Calendar) {
@@ -80,141 +73,50 @@ class HistoryStatsViewModel @Inject constructor(
                 if (logsMap[calendar.timeInMillis] == null) logsMap[calendar.timeInMillis] = mutableListOf()
                 logsMap[calendar.timeInMillis]!!.add(logEvent)
             }
+
+            //filling days not included in db with zero
+            val firstDayCalendar = Calendar.getInstance().apply {
+                timeInMillis = start
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+
+            val lastDayCalendar = Calendar.getInstance().apply {
+                timeInMillis = end
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+
+            while (firstDayCalendar.before(lastDayCalendar)) {
+                if (logsMap[firstDayCalendar.timeInMillis] == null) {
+                    logsMap[firstDayCalendar.timeInMillis] = mutableListOf()
+                }
+
+                firstDayCalendar.add(Calendar.DAY_OF_MONTH, 1)
+            }
+
+            if (logsMap[firstDayCalendar.timeInMillis] == null) {
+                logsMap[firstDayCalendar.timeInMillis] = mutableListOf()
+            }
+
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                weeklyData.value = logsMap
+                weeklyData.value = logsMap.toSortedMap(Comparator<Long> { o1, o2 -> o1.compareTo(o2) })
             }
-    }
-
-    private fun getFirstDayOfWeek(lastDayOfWeek: Calendar): Calendar {
-        return when (weekBegin) {
-
-            WeekBegin.MONDAY -> {
-                (lastDayOfWeek.clone() as Calendar).apply {
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                        add(Calendar.DAY_OF_MONTH, -1)
-                    }
-                }
-            }
-
-            WeekBegin.SUNDAY -> {
-                (lastDayOfWeek.clone() as Calendar).apply {
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-                        add(Calendar.DAY_OF_MONTH, -1)
-                    }
-                }
-            }
-
-            WeekBegin.SIX_DAYS_AGO -> {
-                (lastDayOfWeek.clone() as Calendar).apply {
-                    add(Calendar.DAY_OF_MONTH, -6)
-                }
-            }
-            else -> {
-                (lastDayOfWeek.clone() as Calendar).apply {
-                    add(Calendar.DAY_OF_MONTH, -6)
-                }
-            }
-        }
     }
 
     fun rightArrowClicked() {
-        val currentEndOfWeek = currentWeek.value?.second?.clone() as Calendar
-
-        val todayCalendar = Calendar.getInstance()
-        val lastDayOfNextWeek = when (weekBegin) {
-
-            WeekBegin.MONDAY -> {
-                currentEndOfWeek.apply {
-
-                    //looking for next Monday
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY && before(todayCalendar)) {
-                        add(Calendar.DAY_OF_MONTH, 1)
-                    }
-
-                    //calculating the end of this week
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY && before(todayCalendar)) {
-                        add(Calendar.DAY_OF_MONTH, 1)
-                    }
-
-                }
-            }
-
-            WeekBegin.SUNDAY -> {
-                currentEndOfWeek.apply {
-
-                    //looking for next Sunday
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY && before(todayCalendar)) {
-                        add(Calendar.DAY_OF_MONTH, 1)
-                    }
-
-                    //calculating the end of this week
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && before(todayCalendar)) {
-                        add(Calendar.DAY_OF_MONTH, 1)
-                    }
-                }
-            }
-
-            WeekBegin.SIX_DAYS_AGO -> {
-                currentEndOfWeek.apply {
-                    if (before(todayCalendar)) add(Calendar.DAY_OF_MONTH, 7)
-                }
-            }
-
-            else -> {
-                currentEndOfWeek.apply {
-                    if (before(todayCalendar)) add(Calendar.DAY_OF_MONTH, 7)
-                }
-            }
-        }
-
-        if (!lastDayOfNextWeek.isTheSameDay(currentWeek.value?.second ?: Calendar.getInstance()))
-            setCurrentWeek(lastDayOfNextWeek)
+        weekViewLogic.setNextWeekAsActive()
+        updateCurrentWeek()
     }
 
     fun leftArrowClicked() {
-
-        val currentBeginOfWeek = currentWeek.value?.first?.clone() as Calendar
-
-        val lastDayOfPreviousWeek: Calendar = when (weekBegin) {
-
-            //look for previous Sunday
-            WeekBegin.MONDAY -> {
-                currentBeginOfWeek.apply {
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-                        add(Calendar.DAY_OF_MONTH, -1)
-                    }
-                }
-            }
-
-            //look for previous Saturday
-            WeekBegin.SUNDAY -> {
-                currentBeginOfWeek.apply {
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
-                        add(Calendar.DAY_OF_MONTH, -1)
-                    }
-                }
-            }
-
-            WeekBegin.SIX_DAYS_AGO -> {
-                currentBeginOfWeek.apply { add(Calendar.DAY_OF_MONTH, -1) }
-            }
-
-            else -> {
-                currentBeginOfWeek.apply { add(Calendar.DAY_OF_MONTH, -1) }
-            }
-        }
-
-        if (!lastDayOfPreviousWeek.isBefore(dayOfFirstSavedLog)) {
-            setCurrentWeek(lastDayOfPreviousWeek)
-        }
-    }
-
-    fun getTodayCalendar(): Calendar {
-        return Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-        }
+        weekViewLogic.setPreviousWeekAsActive(dayOfFirstSavedLog)
+        updateCurrentWeek()
     }
 }
