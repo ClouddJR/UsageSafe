@@ -30,15 +30,16 @@ class HistoryStatsFragment : BaseFragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[HistoryStatsViewModel::class.java]
-        viewModel.setCurrentWeek(viewModel.getTodayCalendar())
+        viewModel.updateCurrentWeek()
     }
 
     private fun setUpViewPager() {
         val viewPagerAdapter = ViewPagerAdapter(childFragmentManager)
+        viewPager.offscreenPageLimit = 2
 
         viewPagerAdapter.addFragment(ScreenTimeFragment(), "Screen time")
         viewPagerAdapter.addFragment(UnlocksFragment(), "Unlocks")
-        viewPagerAdapter.addFragment(AppsUsageFragment(), "Apps usage")
+        viewPagerAdapter.addFragment(AppLaunchesFragment(), "App launches")
 
         viewPager.adapter = viewPagerAdapter
 
