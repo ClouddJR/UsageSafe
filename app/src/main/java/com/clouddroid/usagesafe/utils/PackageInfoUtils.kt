@@ -1,11 +1,12 @@
 package com.clouddroid.usagesafe.utils
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
-import com.clouddroid.usagesafe.R
+
 
 object PackageInfoUtils {
 
@@ -15,7 +16,7 @@ object PackageInfoUtils {
             val bitmap = drawable?.toBitmap(80, 80)
             bitmap?.toDrawable(context.resources)
         } catch (e: PackageManager.NameNotFoundException) {
-            val defaultDrawable = context?.getDrawable(R.mipmap.ic_launcher_round)
+            val defaultDrawable = context?.getDrawable(com.clouddroid.usagesafe.R.mipmap.ic_launcher_round)
             val bitmap = defaultDrawable?.toBitmap(80, 80)
             bitmap?.toDrawable(context.resources)
         }
@@ -25,7 +26,7 @@ object PackageInfoUtils {
         return try {
             return context?.packageManager?.getApplicationIcon(packageName)
         } catch (e: PackageManager.NameNotFoundException) {
-            context?.getDrawable(R.mipmap.ic_launcher_round)
+            context?.getDrawable(com.clouddroid.usagesafe.R.mipmap.ic_launcher_round)
         }
     }
 
@@ -37,5 +38,16 @@ object PackageInfoUtils {
         } catch (e: PackageManager.NameNotFoundException) {
             packageName
         }
+    }
+
+    fun getDefaultLauncherPackageName(packageManager: PackageManager): String {
+        val intent = Intent("android.intent.action.MAIN").apply {
+            addCategory("android.intent.category.HOME")
+        }
+
+        return packageManager.resolveActivity(
+            intent,
+            PackageManager.MATCH_DEFAULT_ONLY
+        )?.activityInfo?.packageName ?: ""
     }
 }
