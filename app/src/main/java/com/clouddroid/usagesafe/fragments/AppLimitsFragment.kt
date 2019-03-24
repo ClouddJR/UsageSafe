@@ -30,7 +30,7 @@ class AppLimitsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRV()
-        observeInitialDataLoad()
+        observeData()
 
         systemAppsCB.setOnCheckedChangeListener { _, isChecked ->
             viewModel.getListOfApps(context!!, isChecked)
@@ -93,7 +93,7 @@ class AppLimitsFragment : BaseFragment() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
-    private fun observeInitialDataLoad() {
+    private fun observeData() {
         viewModel.appsList.observe(this, Observer {
             adapter.swapItems(it)
         })
