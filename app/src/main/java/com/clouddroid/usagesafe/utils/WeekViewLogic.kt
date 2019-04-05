@@ -3,15 +3,22 @@ package com.clouddroid.usagesafe.utils
 import com.clouddroid.usagesafe.models.WeekBegin
 import com.clouddroid.usagesafe.utils.ExtensionUtils.isBefore
 import com.clouddroid.usagesafe.utils.ExtensionUtils.isTheSameDay
-
 import java.util.*
 
-class WeekViewLogic(private val weekBegin: String, todayCalendar: Calendar) {
+class WeekViewLogic(
+    private val todayCalendar: Calendar,
+    private val weekBegin: String,
+    private val dayOfFirstSavedLog: Calendar
+) {
 
     lateinit var currentWeek: Pair<Calendar, Calendar>
 
+    var isCurrentWeekTheEarliest = false
+    var isCurrentWeekTheLatest = false
+
     init {
         setCurrentWeek(todayCalendar)
+        checkConstraints(currentWeek.first, currentWeek.second)
     }
 
     private fun setCurrentWeek(lastDayOfWeek: Calendar) {
@@ -55,11 +62,17 @@ class WeekViewLogic(private val weekBegin: String, todayCalendar: Calendar) {
         }
     }
 
-    fun setNextWeekAsActive() {
+    fun setNextWeekAsCurrent() {
         val currentEndOfWeek = currentWeek.second.clone() as Calendar
 
-        val todayCalendar = Calendar.getInstance()
-        val lastDayOfNextWeek = when (weekBegin) {
+        val lastDayOfNextWeek = getLastDayOfNextWeek(currentEndOfWeek)
+        setCurrentWeek(lastDayOfNextWeek)
+
+        checkConstraints(currentWeek.first, currentWeek.second)
+    }
+
+    private fun getLastDayOfNextWeek(currentEndOfWeek: Calendar): Calendar {
+        return when (weekBegin) {
 
             WeekBegin.MONDAY -> {
                 currentEndOfWeek.apply {
@@ -104,15 +117,19 @@ class WeekViewLogic(private val weekBegin: String, todayCalendar: Calendar) {
                 }
             }
         }
-
-        if (!lastDayOfNextWeek.isTheSameDay(currentWeek.second))
-            setCurrentWeek(lastDayOfNextWeek)
     }
 
-    fun setPreviousWeekAsActive(dayOfFirstSavedLog: Calendar) {
+    fun setPreviousWeekAsCurrent() {
         val currentBeginOfWeek = currentWeek.first.clone() as Calendar
 
-        val lastDayOfPreviousWeek: Calendar = when (weekBegin) {
+        val lastDayOfPreviousWeek = getPreviousWeek(currentBeginOfWeek)
+        setCurrentWeek(lastDayOfPreviousWeek)
+
+        checkConstraints(currentWeek.first, currentWeek.second)
+    }
+
+    private fun getPreviousWeek(currentBeginOfWeek: Calendar): Calendar {
+        return when (weekBegin) {
 
             //look for previous Sunday
             WeekBegin.MONDAY -> {
@@ -140,9 +157,16 @@ class WeekViewLogic(private val weekBegin: String, todayCalendar: Calendar) {
                 currentBeginOfWeek.apply { add(Calendar.DAY_OF_MONTH, -1) }
             }
         }
+    }
 
-        if (!lastDayOfPreviousWeek.isBefore(dayOfFirstSavedLog)) {
-            setCurrentWeek(lastDayOfPreviousWeek)
-        }
+    private fun checkConstraints(currentBeginOfWeek: Calendar, currentEndOfWeek: Calendar) {
+
+        //checking if this is the earliest possible week
+        val lastDayOfPreviousWeek = getPreviousWeek(currentBeginOfWeek.clone() as Calendar)
+        isCurrentWeekTheEarliest = lastDayOfPreviousWeek.isBefore(dayOfFirstSavedLog)
+
+        //checking if this is the latest possible week
+        val lastDayOfNextWeek = getLastDayOfNextWeek(currentEndOfWeek.clone() as Calendar)
+        isCurrentWeekTheLatest = lastDayOfNextWeek.isTheSameDay(currentEndOfWeek)
     }
 }
