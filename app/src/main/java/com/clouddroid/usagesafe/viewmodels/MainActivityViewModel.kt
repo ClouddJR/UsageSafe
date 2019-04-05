@@ -1,7 +1,6 @@
 package com.clouddroid.usagesafe.viewmodels
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.models.DayBegin
 import com.clouddroid.usagesafe.repositories.DatabaseRepository
@@ -83,6 +82,5 @@ class MainActivityViewModel @Inject constructor(
         if (::disposable.isInitialized && !disposable.isDisposed) {
             disposable.dispose()
         }
-        Log.d("elooo", "onCleared")
     }
 }
