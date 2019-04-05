@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.models.AppUsageInfo
 import com.clouddroid.usagesafe.models.LogEvent
 import com.clouddroid.usagesafe.repositories.UsageStatsRepository
-import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import java.text.SimpleDateFormat
@@ -18,7 +17,7 @@ class AppLaunchesViewModel @Inject constructor(
 
     val mostOpenedApp = MutableLiveData<AppUsageInfo>()
     val totalLaunchCount = MutableLiveData<Int>()
-    val barChartData = MutableLiveData<BarData>()
+    val barChartData = MutableLiveData<Pair<BarDataSet, List<String>>>()
 
     fun calculateWeeklyLaunches(logsMap: Map<Long, MutableList<LogEvent>>) {
         val daysNames = mutableListOf<String>()
@@ -37,20 +36,22 @@ class AppLaunchesViewModel @Inject constructor(
 
             dailyAppUsageMap.toList().forEach {
                 if (weeklyAppUsage[it.first] == null) weeklyAppUsage[it.first] = AppUsageInfo()
-                weeklyAppUsage[it.first]!!.packageName = it.first
-                weeklyAppUsage[it.first]!!.totalTimeInForeground += it.second.totalTimeInForeground
-                weeklyAppUsage[it.first]!!.launchCount += it.second.launchCount
+                weeklyAppUsage[it.first]?.apply {
+                    packageName = it.first
+                    totalTimeInForeground += it.second.totalTimeInForeground
+                    launchCount += it.second.launchCount
+                }
             }
 
             dailyAppUsageMap.toList().sumBy { it.second.launchCount }.apply {
                 totalLaunchCount += this
-                yVals.add(BarEntry(index.toFloat(), this.toFloat()))
+                yVals.add(BarEntry(index.toFloat(), this.toFloat(), day))
             }
 
             index++
         }
 
-        barChartData.value = BarData(BarDataSet(yVals, "Number of app launches"))
+        barChartData.value = Pair(BarDataSet(yVals, ""), daysNames)
         this.totalLaunchCount.value = totalLaunchCount
         this.mostOpenedApp.value = weeklyAppUsage.toList().maxBy { it.second.launchCount }!!.second
     }

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.models.AppUsageInfo
 import com.clouddroid.usagesafe.models.LogEvent
 import com.clouddroid.usagesafe.repositories.UsageStatsRepository
-import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import java.text.SimpleDateFormat
@@ -18,7 +17,7 @@ class ScreenTimeViewModel @Inject constructor(
 
     val mostUsedApp = MutableLiveData<AppUsageInfo>()
     val totalTimeSum = MutableLiveData<Long>()
-    val barChartData = MutableLiveData<BarData>()
+    val barChartData = MutableLiveData<Pair<BarDataSet, List<String>>>()
 
     fun calculateWeeklyUsage(logsMap: Map<Long, MutableList<LogEvent>>) {
         val daysNames = mutableListOf<String>()
@@ -37,21 +36,25 @@ class ScreenTimeViewModel @Inject constructor(
 
             dailyAppUsageMap.toList().forEach {
                 if (weeklyAppUsage[it.first] == null) weeklyAppUsage[it.first] = AppUsageInfo()
-                weeklyAppUsage[it.first]!!.packageName = it.first
-                weeklyAppUsage[it.first]!!.totalTimeInForeground += it.second.totalTimeInForeground
-                weeklyAppUsage[it.first]!!.launchCount += it.second.launchCount
+                weeklyAppUsage[it.first]?.apply {
+                    packageName = it.first
+                    totalTimeInForeground += it.second.totalTimeInForeground
+                    launchCount += it.second.launchCount
+                }
             }
 
             dailyAppUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }.apply {
                 totalTimeSum += this
-                yVals.add(BarEntry(index.toFloat(), this.toFloat() / 1000 / 60))
+                yVals.add(BarEntry(index.toFloat(), this.toFloat(), day))
             }
 
             index++
         }
 
-        barChartData.value = BarData(BarDataSet(yVals, "Screen time"))
-        this.mostUsedApp.value = weeklyAppUsage.toList().maxBy { it.second.totalTimeInForeground }!!.second
+        barChartData.value = Pair(BarDataSet(yVals, ""), daysNames)
+        if (weeklyAppUsage.toList().isNotEmpty()) {
+            this.mostUsedApp.value = weeklyAppUsage.toList().maxBy { it.second.totalTimeInForeground }!!.second
+        }
         this.totalTimeSum.value = totalTimeSum
     }
 

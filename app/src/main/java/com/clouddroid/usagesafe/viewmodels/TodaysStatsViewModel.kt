@@ -25,16 +25,25 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
 
     private val appUsageMap = MutableLiveData<Map<String, AppUsageInfo>>()
     val unlockCount = MutableLiveData<Int>()
+    val launchCount = MutableLiveData<Int>()
+
+    val otherAppsList = mutableListOf<AppUsageInfo>()
 
     @SuppressLint("CheckResult")
     fun init() {
-        Observable.fromCallable { usageStatsRepository.getAppsUsageFromToday() }
+        Observable.fromCallable { usageStatsRepository.getAppsUsageMapFromToday() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 val usagePair = it
                 appUsageMap.value = usagePair.first
                 unlockCount.value = usagePair.second
+                launchCount.value = getTotalAppLaunches(it.first)
+
+                otherAppsList.addAll(usagePair.first.toList().sortedByDescending
+                { (_, value) -> value.totalTimeInForeground }
+                    .drop(5).toMap().values.toMutableList())
+
             }, {
                 it.printStackTrace()
             })
@@ -49,15 +58,23 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
             .toMap()
     }
 
-    fun getTotalScreenTime(appUsageMap: Map<String, AppUsageInfo>, context: Context?): String {
+    fun getTotalScreenTime(appUsageMap: Map<String, AppUsageInfo>): Int {
+        return appUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }
+    }
+
+    fun getTotalScreenTimeText(appUsageMap: Map<String, AppUsageInfo>, context: Context?): String {
         return getTotalScreenTimeText(
             appUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }.toLong()
             , context
         )
     }
 
-    fun getMostUsedAppsList(appUsageMap: Map<String, AppUsageInfo>): List<AppUsageInfo> {
-        return appUsageMap.toList().take(5).toMap().values.toList()
+    private fun getTotalAppLaunches(appUsageMap: Map<String, AppUsageInfo>): Int {
+        return appUsageMap.toList().sumBy { it.second.launchCount }
+    }
+
+    fun getMostUsedAppsList(appUsageMap: Map<String, AppUsageInfo>): MutableList<AppUsageInfo> {
+        return appUsageMap.toList().take(5).toMap().values.toMutableList()
     }
 
     fun prepareEntriesForPieChart(appUsageMap: Map<String, AppUsageInfo>, context: Context?): List<PieEntry> {
@@ -67,9 +84,13 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
     }
 
     private fun getFirstNonZeroAppsUsage(appUsageMap: Map<String, AppUsageInfo>): Map<String, AppUsageInfo> {
+        val totalScreenTime = getTotalScreenTime(appUsageMap)
+
         val firstAppsUsageMap = mutableMapOf<String, AppUsageInfo>()
         appUsageMap.toList().forEachIndexed { index, pair ->
-            if (index < 5 && pair.second.totalTimeInForeground > 0) {
+            if (index < 5 && pair.second.totalTimeInForeground > 0
+                && (pair.second.totalTimeInForeground / totalScreenTime.toDouble()) > 0.05
+            ) {
                 firstAppsUsageMap[pair.first] = pair.second
             }
         }
@@ -94,7 +115,8 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
                 PieEntry(
                     usageInfo.totalTimeInForeground.toFloat(),
                     "",
-                    getResizedAppIcon(packageName, context)
+                    getResizedAppIcon(packageName, context),
+                    usageInfo.packageName
                 )
             )
         }
@@ -105,7 +127,8 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
             entries.add(
                 PieEntry(
                     totalOtherTime.toFloat(),
-                    "Other"
+                    "Other",
+                    ""
                 )
             )
         }
@@ -114,6 +137,7 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
             entries.add(
                 PieEntry(
                     totalOtherTime.toFloat(),
+                    "",
                     ""
                 )
             )

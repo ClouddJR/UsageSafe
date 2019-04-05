@@ -53,4 +53,14 @@ class ViewModelsModule {
     @ViewModelKey(AppLaunchesViewModel::class)
     fun provideAppLaunchesViewModel(viewModel: AppLaunchesViewModel): ViewModel = viewModel
 
+    @Provides
+    @IntoMap
+    @ViewModelKey(AppDetailsViewModel::class)
+    fun provideAppDetailsViewModel(viewModel: AppDetailsViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(DayDetailsViewModel::class)
+    fun provideDayDetailsViewModel(viewModel: DayDetailsViewModel): ViewModel = viewModel
+
 }

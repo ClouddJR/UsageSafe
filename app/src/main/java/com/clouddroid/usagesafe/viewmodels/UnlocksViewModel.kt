@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.models.LogEvent
 import com.clouddroid.usagesafe.repositories.UsageStatsRepository
-import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import java.text.SimpleDateFormat
@@ -16,7 +15,7 @@ class UnlocksViewModel @Inject constructor(
 ) : ViewModel() {
 
     val totalUnlocks = MutableLiveData<Int>()
-    val barChartData = MutableLiveData<BarData>()
+    val barChartData = MutableLiveData<Pair<BarDataSet, List<String>>>()
 
     fun calculateWeeklyUnlocks(logsMap: Map<Long, MutableList<LogEvent>>) {
         val daysNames = mutableListOf<String>()
@@ -31,12 +30,12 @@ class UnlocksViewModel @Inject constructor(
             val dailyUnlocksNumber = usageStatsRepository.getNumberOfUnlocksFrom(data)
 
             totalUnlocks += dailyUnlocksNumber
-            yVals.add(BarEntry(index.toFloat(), dailyUnlocksNumber.toFloat()))
+            yVals.add(BarEntry(index.toFloat(), dailyUnlocksNumber.toFloat(), day))
 
             index++
         }
 
-        barChartData.value = BarData(BarDataSet(yVals, "Number of unlocks"))
+        barChartData.value = Pair(BarDataSet(yVals, ""), daysNames)
         this.totalUnlocks.value = totalUnlocks
     }
 
