@@ -32,7 +32,6 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
         initViewModel()
         checkForUsagePermissions()
         initBottomNav()
@@ -68,11 +67,23 @@ class MainActivity : BaseActivity() {
             }
             true
         }
+
+        bottomNav.setOnNavigationItemReselectedListener {
+            when (it.itemId) {
+                R.id.todaysStatsFragment -> todaysStatsFragment.scrollToTop()
+                R.id.appLimitsFragment -> appLimitsFragment.scrollToTop()
+                R.id.historyStatsFragment -> historyStatsFragment.scrollToTop()
+                R.id.contactsListFragment -> contactsListFragment.scrollToTop()
+                else -> {
+                }
+            }
+        }
     }
 
     private fun navigateTo(destination: FragmentDestination) {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         val transaction = supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.animator.slide_up, 0, 0, R.animator.slide_down)
 
         //addFragmentIfNotInBackStack(destination)
 
@@ -89,6 +100,21 @@ class MainActivity : BaseActivity() {
                 historyStatsFragment,
                 supportFragmentManager.fragments
             )
+
+            FragmentDestination.SCREEN_TIME -> transaction.showAndHideOthers(
+                historyStatsFragment,
+                supportFragmentManager.fragments
+            )
+
+            FragmentDestination.UNLOCKS -> transaction.showAndHideOthers(
+                historyStatsFragment,
+                supportFragmentManager.fragments
+            )
+
+            FragmentDestination.APP_LAUNCHES -> transaction.showAndHideOthers(
+                historyStatsFragment,
+                supportFragmentManager.fragments
+            )
             FragmentDestination.CONTACTS_LIST -> transaction.showAndHideOthers(
                 contactsListFragment,
                 supportFragmentManager.fragments
@@ -96,6 +122,23 @@ class MainActivity : BaseActivity() {
         }
 
         transaction.commit()
+    }
+
+    //function to be called from fragments
+    fun switchToFragment(destination: FragmentDestination) {
+        navigateTo(destination)
+        when (destination) {
+            FragmentDestination.APP_LAUNCHES -> {
+                bottomNav.selectedItemId = R.id.historyStatsFragment
+                historyStatsFragment.slideTo(destination)
+            }
+            FragmentDestination.UNLOCKS -> {
+                bottomNav.selectedItemId = R.id.historyStatsFragment
+                historyStatsFragment.slideTo(destination)
+            }
+            else -> {
+            }
+        }
     }
 
     private fun addFragmentIfNotInBackStack(destination: FragmentDestination) {
@@ -141,6 +184,9 @@ class MainActivity : BaseActivity() {
         TODAYS_STATS,
         APP_LIMITS,
         HISTORY,
-        CONTACTS_LIST
+        CONTACTS_LIST,
+        SCREEN_TIME,
+        UNLOCKS,
+        APP_LAUNCHES
     }
 }
