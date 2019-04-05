@@ -1,16 +1,30 @@
 package com.clouddroid.usagesafe.fragments
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
+import com.clouddroid.usagesafe.activities.AppDetailsActivity
+import com.clouddroid.usagesafe.activities.DayDetailsActivity
+import com.clouddroid.usagesafe.utils.LoadingState
 import com.clouddroid.usagesafe.utils.PackageInfoUtils
+import com.clouddroid.usagesafe.viewmodels.AppDetailsViewModel
 import com.clouddroid.usagesafe.viewmodels.AppLaunchesViewModel
+import com.clouddroid.usagesafe.viewmodels.DayDetailsViewModel
 import com.clouddroid.usagesafe.viewmodels.HistoryStatsViewModel
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.fragment_app_launches.*
 
 class AppLaunchesFragment : BaseFragment() {
@@ -25,14 +39,29 @@ class AppLaunchesFragment : BaseFragment() {
         initViewModels()
     }
 
-    private fun initViewModels() {
-        historyStatsViewModel = ViewModelProviders.of(activity!!, viewModelFactory)[HistoryStatsViewModel::class.java]
-        appLaunchesViewModel = ViewModelProviders.of(activity!!, viewModelFactory)[AppLaunchesViewModel::class.java]
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
+
+        mostOpenedAppIcon.setOnClickListener(onMostOpenedAppClick)
+        mostOpenedTV.setOnClickListener(onMostOpenedAppClick)
+        mostOpenedNumberTV.setOnClickListener(onMostOpenedAppClick)
+    }
+
+    fun scrollToTop() {
+        nestedScroll.smoothScrollTo(0, 0)
+    }
+
+    private val onMostOpenedAppClick = View.OnClickListener {
+        val intent = Intent(context, AppDetailsActivity::class.java)
+        intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, appLaunchesViewModel.mostOpenedApp.value?.packageName)
+        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.MODE_APP_LAUNCHES)
+        startActivity(intent)
+    }
+
+    private fun initViewModels() {
+        historyStatsViewModel = ViewModelProviders.of(activity!!, viewModelFactory)[HistoryStatsViewModel::class.java]
+        appLaunchesViewModel = ViewModelProviders.of(activity!!, viewModelFactory)[AppLaunchesViewModel::class.java]
     }
 
     private fun observeData() {
@@ -40,20 +69,23 @@ class AppLaunchesFragment : BaseFragment() {
             appLaunchesViewModel.calculateWeeklyLaunches(it)
         })
 
+        historyStatsViewModel.loadingState.observe(this, Observer {
+            when (it) {
+                LoadingState.FINISHED -> {
+                    barChart.visibility = View.VISIBLE
+                    loadingView.smoothToHide()
+                }
+                LoadingState.LOADING -> {
+                    barChart.visibility = View.INVISIBLE
+                    loadingView.smoothToShow()
+                }
+                else -> {
+                }
+            }
+        })
+
         appLaunchesViewModel.barChartData.observe(this, Observer {
-            barChart.data = it
-            barChart.description.isEnabled = false
-            barChart.animateXY(500, 400)
-            barChart.setPinchZoom(false)
-            barChart.isDoubleTapToZoomEnabled = false
-            barChart.xAxis.setDrawGridLines(false)
-            barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-            barChart.axisLeft.setDrawGridLines(false)
-            barChart.axisLeft.setDrawAxisLine(false)
-            barChart.axisLeft.setDrawLabels(false)
-            barChart.axisRight.setDrawAxisLine(false)
-            barChart.axisRight.setDrawGridLines(false)
-            barChart.axisRight.setDrawLabels(false)
+            drawChart(it.first, it.second)
         })
 
         appLaunchesViewModel.totalLaunchCount.observe(this, Observer {
@@ -70,6 +102,55 @@ class AppLaunchesFragment : BaseFragment() {
             mostOpenedTV.text = PackageInfoUtils.getAppName(it.packageName, context)
             mostOpenedNumberTV.text = "${it.launchCount} times"
         })
+    }
+
+    private fun drawChart(barDataSet: BarDataSet, daysNames: List<String>) {
+        barDataSet.valueTypeface = ResourcesCompat.getFont(context!!, R.font.opensans_regular)
+        barDataSet.valueTextColor = Color.WHITE
+        barDataSet.color = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
+
+        barChart.data = BarData(barDataSet)
+        barChart.data.setValueFormatter { value, _, _, _ ->
+            value.toInt().toString()
+        }
+        barChart.data.setValueTextSize(9f)
+
+        barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onNothingSelected() {
+
+            }
+
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                val intent = Intent(context, DayDetailsActivity::class.java)
+                intent.putExtra(DayDetailsActivity.DATE_MILLIS_KEY, (e as BarEntry).data as Long)
+                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.MODE.APP_LAUNCHES)
+                startActivity(intent)
+            }
+        })
+
+        barChart.setPinchZoom(false)
+        barChart.setScaleEnabled(false)
+        barChart.isDragEnabled = false
+        barChart.description.isEnabled = false
+        barChart.isDoubleTapToZoomEnabled = false
+        barChart.legend.isEnabled = false
+        barChart.extraBottomOffset = 8f
+
+        barChart.xAxis.setDrawGridLines(false)
+        barChart.xAxis.textSize = 13f
+        barChart.xAxis.textColor = Color.WHITE
+        barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        barChart.xAxis.setValueFormatter { value, _ ->
+            daysNames[value.toInt()]
+        }
+
+        barChart.axisLeft.setDrawGridLines(false)
+        barChart.axisLeft.setDrawAxisLine(false)
+        barChart.axisLeft.setDrawLabels(false)
+        barChart.axisRight.setDrawAxisLine(false)
+        barChart.axisRight.setDrawGridLines(false)
+        barChart.axisRight.setDrawLabels(false)
+        barChart.animateXY(500, 400)
     }
 
 }

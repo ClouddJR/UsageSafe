@@ -34,6 +34,10 @@ class ContactsListFragment : BaseFragment() {
         observeDataChanges()
     }
 
+    fun scrollToTop() {
+        nestedScroll.smoothScrollTo(0, 0)
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[ContactsViewModel::class.java]
         viewModel.init()

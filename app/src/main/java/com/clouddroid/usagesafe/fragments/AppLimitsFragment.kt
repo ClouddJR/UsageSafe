@@ -37,6 +37,11 @@ class AppLimitsFragment : BaseFragment() {
         }
     }
 
+    fun scrollToTop() {
+        nestedScroll.smoothScrollTo(0, 0)
+        appsListRV.smoothScrollToPosition(0)
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[AppLimitsViewModel::class.java]
         viewModel.getListOfApps(context!!, false)

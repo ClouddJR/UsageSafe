@@ -1,17 +1,31 @@
 package com.clouddroid.usagesafe.fragments
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
+import com.clouddroid.usagesafe.activities.AppDetailsActivity
+import com.clouddroid.usagesafe.activities.DayDetailsActivity
+import com.clouddroid.usagesafe.utils.LoadingState
 import com.clouddroid.usagesafe.utils.PackageInfoUtils
 import com.clouddroid.usagesafe.utils.TextUtils
+import com.clouddroid.usagesafe.viewmodels.AppDetailsViewModel
+import com.clouddroid.usagesafe.viewmodels.DayDetailsViewModel
 import com.clouddroid.usagesafe.viewmodels.HistoryStatsViewModel
 import com.clouddroid.usagesafe.viewmodels.ScreenTimeViewModel
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.android.synthetic.main.fragment_screen_time.*
 
 class ScreenTimeFragment : BaseFragment() {
@@ -29,6 +43,21 @@ class ScreenTimeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
+
+        mostUsedAppIcon.setOnClickListener(onMostUsedAppClick)
+        mostUsedTV.setOnClickListener(onMostUsedAppClick)
+        mostUsedTimeTV.setOnClickListener(onMostUsedAppClick)
+    }
+
+    fun scrollToTop() {
+        nestedScroll.smoothScrollTo(0, 0)
+    }
+
+    private val onMostUsedAppClick = View.OnClickListener {
+        val intent = Intent(context, AppDetailsActivity::class.java)
+        intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, screenTimeViewModel.mostUsedApp.value?.packageName)
+        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.MODE_SCREEN_TIME)
+        startActivity(intent)
     }
 
     private fun initViewModels() {
@@ -41,20 +70,23 @@ class ScreenTimeFragment : BaseFragment() {
             screenTimeViewModel.calculateWeeklyUsage(it)
         })
 
+        historyStatsViewModel.loadingState.observe(this, Observer {
+            when (it) {
+                LoadingState.FINISHED -> {
+                    barChart.visibility = View.VISIBLE
+                    loadingView.smoothToHide()
+                }
+                LoadingState.LOADING -> {
+                    barChart.visibility = View.INVISIBLE
+                    loadingView.smoothToShow()
+                }
+                else -> {
+                }
+            }
+        })
+
         screenTimeViewModel.barChartData.observe(this, Observer {
-            barChart.data = it
-            barChart.description.isEnabled = false
-            barChart.setPinchZoom(false)
-            barChart.isDoubleTapToZoomEnabled = false
-            barChart.animateXY(500, 400)
-            barChart.xAxis.setDrawGridLines(false)
-            barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-            barChart.axisLeft.setDrawGridLines(false)
-            barChart.axisLeft.setDrawAxisLine(false)
-            barChart.axisLeft.setDrawLabels(false)
-            barChart.axisRight.setDrawAxisLine(false)
-            barChart.axisRight.setDrawGridLines(false)
-            barChart.axisRight.setDrawLabels(false)
+            drawChart(it.first, it.second)
         })
 
         screenTimeViewModel.mostUsedApp.observe(this, Observer {
@@ -71,5 +103,54 @@ class ScreenTimeFragment : BaseFragment() {
 
             weeklyUsageSummaryTV.text = "${TextUtils.getTotalScreenTimeText(it, context)} of usage this week"
         })
+    }
+
+    private fun drawChart(barDataSet: BarDataSet, daysNames: List<String>) {
+        barDataSet.valueTypeface = ResourcesCompat.getFont(context!!, R.font.opensans_regular)
+        barDataSet.valueTextColor = Color.WHITE
+        barDataSet.color = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
+
+        barChart.data = BarData(barDataSet)
+        barChart.data.setValueFormatter { value, _, _, _ ->
+            TextUtils.getTotalScreenTimeText(value.toLong(), context)
+        }
+        barChart.data.setValueTextSize(9f)
+
+        barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onNothingSelected() {
+
+            }
+
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                val intent = Intent(context, DayDetailsActivity::class.java)
+                intent.putExtra(DayDetailsActivity.DATE_MILLIS_KEY, (e as BarEntry).data as Long)
+                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.MODE.SCREEN_TIME)
+                startActivity(intent)
+            }
+        })
+
+        barChart.setPinchZoom(false)
+        barChart.setScaleEnabled(false)
+        barChart.isDragEnabled = false
+        barChart.description.isEnabled = false
+        barChart.isDoubleTapToZoomEnabled = false
+        barChart.legend.isEnabled = false
+        barChart.extraBottomOffset = 8f
+
+        barChart.xAxis.setDrawGridLines(false)
+        barChart.xAxis.textSize = 13f
+        barChart.xAxis.textColor = Color.WHITE
+        barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        barChart.xAxis.setValueFormatter { value, _ ->
+            daysNames[value.toInt()]
+        }
+
+        barChart.axisLeft.setDrawGridLines(false)
+        barChart.axisLeft.setDrawAxisLine(false)
+        barChart.axisLeft.setDrawLabels(false)
+        barChart.axisRight.setDrawAxisLine(false)
+        barChart.axisRight.setDrawGridLines(false)
+        barChart.axisRight.setDrawLabels(false)
+        barChart.animateXY(500, 400)
     }
 }
