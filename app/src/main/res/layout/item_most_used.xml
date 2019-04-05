@@ -11,15 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="YouTube"
-        android:textSize="15sp"
+        android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/appIconIV"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_margin="8dp"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:text="Screen time: "
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@id/appIconIV"
         app:layout_constraintTop_toTopOf="@id/appIconIV" />
 
@@ -42,7 +41,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
         android:text="Opened: "
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@id/appIconIV"
         app:layout_constraintTop_toBottomOf="@id/screenTimeTV" />
 

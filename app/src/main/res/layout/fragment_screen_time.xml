@@ -1,121 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScroll"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/weeklyUsageSummaryTV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center"
-        android:textSize="21sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/barChart"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="210dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/weeklyUsageSummaryTV" />
-
-    <TextView
-        android:id="@+id/avgPerDayNumber"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="4hr, 25 min"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/avgPerDayTitle"
-        app:layout_constraintStart_toStartOf="@id/avgPerDayTitle"
-        app:layout_constraintTop_toBottomOf="@id/barChart" />
+        android:paddingBottom="24dp">
 
-    <TextView
-        android:id="@+id/avgPerDayTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:text="Average per day"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/avgPerDayNumber" />
+        <TextView
+            android:id="@+id/weeklyUsageSummaryTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/avgPerHourNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="30 min"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/avgPerHourTitle"
-        app:layout_constraintStart_toStartOf="@id/avgPerHourTitle"
-        app:layout_constraintTop_toBottomOf="@id/barChart" />
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:indicatorName="BallPulseIndicator"
+            app:layout_constraintBottom_toTopOf="@id/avgPerHourNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/weeklyUsageSummaryTV" />
 
-    <TextView
-        android:id="@+id/avgPerHourTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="36dp"
-        android:text="Average per hour"
-        android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/avgPerHourNumber" />
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barChart"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/weeklyUsageSummaryTV" />
 
-    <TextView
-        android:id="@+id/mostUsedTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="Most used app this week"
-        android:textSize="17sp"
-        app:layout_constraintEnd_toStartOf="@id/mostOpenedTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/avgPerDayTitle" />
+        <TextView
+            android:id="@+id/avgPerDayNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/avgPerDayTitle"
+            app:layout_constraintStart_toStartOf="@id/avgPerDayTitle"
+            app:layout_constraintTop_toBottomOf="@id/barChart" />
 
-    <ImageView
-        android:id="@+id/mostUsedAppIcon"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mostUsedTitle" />
+        <TextView
+            android:id="@+id/avgPerDayTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:text="Average per day"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avgPerDayNumber" />
 
-    <TextView
-        android:id="@+id/mostUsedTV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:gravity="center"
-        android:text="Chrome"
-        app:layout_constraintBottom_toTopOf="@id/mostUsedTimeTV"
-        app:layout_constraintEnd_toEndOf="@+id/mostUsedTitle"
-        app:layout_constraintStart_toEndOf="@+id/mostUsedAppIcon"
-        app:layout_constraintTop_toTopOf="@+id/mostUsedAppIcon"
-        app:layout_constraintVertical_chainStyle="packed" />
+        <TextView
+            android:id="@+id/avgPerHourNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/avgPerHourTitle"
+            app:layout_constraintStart_toStartOf="@id/avgPerHourTitle"
+            app:layout_constraintTop_toBottomOf="@id/barChart" />
 
-    <TextView
-        android:id="@+id/mostUsedTimeTV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/mostUsedTV"
-        app:layout_constraintStart_toEndOf="@+id/mostUsedAppIcon"
-        app:layout_constraintTop_toBottomOf="@+id/mostUsedTV" />
+        <TextView
+            android:id="@+id/avgPerHourTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="36dp"
+            android:text="Average per hour"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avgPerHourNumber" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/mostUsedTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:text="Most used app this week"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@id/mostOpenedTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avgPerDayTitle" />
+
+        <ImageView
+            android:id="@+id/mostUsedAppIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mostUsedTitle" />
+
+        <TextView
+            android:id="@+id/mostUsedTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/mostUsedTimeTV"
+            app:layout_constraintEnd_toEndOf="@+id/mostUsedTitle"
+            app:layout_constraintStart_toEndOf="@+id/mostUsedAppIcon"
+            app:layout_constraintTop_toTopOf="@+id/mostUsedAppIcon"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/mostUsedTimeTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="@+id/mostUsedTV"
+            app:layout_constraintStart_toEndOf="@+id/mostUsedAppIcon"
+            app:layout_constraintTop_toBottomOf="@+id/mostUsedTV" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
