@@ -21,3 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.github.mikephil.charting.** { *; }
+
+-keep class com.wang.avi.** { *; }
+-keep class com.wang.avi.indicators.** { *; }
