@@ -9,4 +9,7 @@ object DayBegin {
     const val _5AM = 5
     const val _6AM = 6
     const val _7AM = 7
+    const val _8AM = 8
+    const val _9AM = 9
+    const val _10AM = 10
 }
