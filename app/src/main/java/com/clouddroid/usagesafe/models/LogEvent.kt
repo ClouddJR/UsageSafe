@@ -1,11 +1,13 @@
 package com.clouddroid.usagesafe.models
 
 import io.realm.RealmObject
+import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
 
 open class LogEvent : RealmObject() {
 
     @PrimaryKey
+    @Index
     var timestamp: Long = 0
     var packageName: String = ""
     var className: String? = ""
