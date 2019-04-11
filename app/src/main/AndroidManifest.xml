@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,13 +27,13 @@
         </activity>
 
         <activity
-            android:name=".activities.AppDetailsActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name=".ui.appdetails.AppDetailsActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.DayDetailsActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name=".ui.daydetails.DayDetailsActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

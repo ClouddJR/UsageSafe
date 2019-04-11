@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/usage_background"
     android:fitsSystemWindows="true"
-    tools:context=".activities.MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <FrameLayout
         android:id="@+id/fragmentPlaceHolder"

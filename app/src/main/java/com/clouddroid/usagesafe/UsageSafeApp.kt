@@ -1,10 +1,10 @@
 package com.clouddroid.usagesafe
 
 import android.app.Application
-import com.clouddroid.usagesafe.di.ApplicationComponent
-import com.clouddroid.usagesafe.di.ApplicationModule
-import com.clouddroid.usagesafe.di.DaggerApplicationComponent
-import com.clouddroid.usagesafe.repositories.DatabaseRepository
+import com.clouddroid.usagesafe.data.local.DatabaseRepository
+import com.clouddroid.usagesafe.injection.component.ApplicationComponent
+import com.clouddroid.usagesafe.injection.component.DaggerApplicationComponent
+import com.clouddroid.usagesafe.injection.module.ApplicationModule
 
 class UsageSafeApp : Application() {
 
