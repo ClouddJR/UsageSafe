@@ -34,18 +34,36 @@
                 android:padding="0dp"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
 
-                <TextView
-                    android:id="@+id/dateTitle"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="21dp"
-                    android:gravity="center"
-                    android:text="Today, 28 march"
-                    android:textColor="@android:color/white"
-                    android:textSize="23sp" />
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/dateTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="21dp"
+                        android:gravity="center"
+                        android:text="Today, 28 march"
+                        android:textColor="@android:color/white"
+                        android:textSize="23sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/ic_settings"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.appcompat.widget.Toolbar>
-
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.github.mikephil.charting.charts.PieChart
