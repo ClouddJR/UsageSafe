@@ -21,8 +21,8 @@ import kotlin.math.roundToInt
 
 class DayDetailsActivity : BaseActivity() {
 
-    private lateinit var adapter: DayDetailsAppsAdapter
     private lateinit var viewModel: DayDetailsViewModel
+    private lateinit var adapter: DayDetailsAppsAdapter
 
     companion object {
         const val DATE_MILLIS_KEY = "day_time_millis"
@@ -32,13 +32,9 @@ class DayDetailsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_details)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        barChart.setNoDataText("")
-        barChart.invalidate()
-
         initViewModel()
+        setUpToolbar()
+        setNoDataTextInChart()
         setUpSpinner()
         initRV()
         observeData()
@@ -66,9 +62,15 @@ class DayDetailsActivity : BaseActivity() {
         viewModel.updateCurrentDay()
     }
 
-    private fun initRV() {
-        adapter = DayDetailsAppsAdapter(mutableListOf())
-        appUsageRV.adapter = adapter
+    private fun setUpToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+    }
+
+    private fun setNoDataTextInChart() {
+        barChart.setNoDataText("")
+        barChart.invalidate()
     }
 
     private fun setUpSpinner() {
@@ -99,25 +101,12 @@ class DayDetailsActivity : BaseActivity() {
 
     }
 
+    private fun initRV() {
+        adapter = DayDetailsAppsAdapter(mutableListOf())
+        appUsageRV.adapter = adapter
+    }
+
     private fun observeData() {
-        viewModel.currentDayText.observe(this, Observer {
-            dateTV.text = it
-        })
-
-        viewModel.shouldLeftArrowBeHidden.observe(this, Observer {
-            when (it) {
-                true -> arrowLeft.visibility = View.INVISIBLE
-                false -> arrowLeft.visibility = View.VISIBLE
-            }
-        })
-
-        viewModel.shouldRightArrowBeHidden.observe(this, Observer {
-            when (it) {
-                true -> arrowRight.visibility = View.INVISIBLE
-                false -> arrowRight.visibility = View.VISIBLE
-            }
-        })
-
         viewModel.barChartData.observe(this, Observer {
             drawChart(it.first, it.second)
         })
@@ -146,6 +135,24 @@ class DayDetailsActivity : BaseActivity() {
         viewModel.getAppsUsageList().observe(this, Observer {
             adapter.swapItems(it)
         })
+
+        viewModel.currentDayText.observe(this, Observer {
+            dateTV.text = it
+        })
+
+        viewModel.shouldLeftArrowBeHidden.observe(this, Observer {
+            when (it) {
+                true -> arrowLeft.visibility = View.INVISIBLE
+                false -> arrowLeft.visibility = View.VISIBLE
+            }
+        })
+
+        viewModel.shouldRightArrowBeHidden.observe(this, Observer {
+            when (it) {
+                true -> arrowRight.visibility = View.INVISIBLE
+                false -> arrowRight.visibility = View.VISIBLE
+            }
+        })
     }
 
     private fun drawChart(barDataSet: BarDataSet, hoursNames: List<String>) {
@@ -168,19 +175,8 @@ class DayDetailsActivity : BaseActivity() {
         barChart.xAxis.textSize = 13f
         barChart.xAxis.textColor = Color.WHITE
         barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-
         barChart.xAxis.setValueFormatter { value, _ ->
             hoursNames[value.toInt()]
-        }
-
-        if (viewModel.currentMode == DayDetailsViewModel.MODE.SCREEN_TIME) {
-            barChart.axisLeft.setValueFormatter { value, _ ->
-                TextUtils.getTotalScreenTimeText(value.toLong(), this)
-            }
-        } else {
-            barChart.axisLeft.setValueFormatter { value, _ ->
-                value.toInt().toString()
-            }
         }
 
         val marker = HourMarkerView(
@@ -195,12 +191,22 @@ class DayDetailsActivity : BaseActivity() {
         barChart.axisLeft.setDrawGridLines(true)
         barChart.axisLeft.typeface = ResourcesCompat.getFont(this, R.font.opensans_regular)
         barChart.axisLeft.textColor = Color.WHITE
-
         barChart.axisLeft.setDrawAxisLine(true)
         barChart.axisLeft.setDrawLabels(true)
+        if (viewModel.currentMode == DayDetailsViewModel.MODE.SCREEN_TIME) {
+            barChart.axisLeft.setValueFormatter { value, _ ->
+                TextUtils.getTotalScreenTimeText(value.toLong(), this)
+            }
+        } else {
+            barChart.axisLeft.setValueFormatter { value, _ ->
+                value.toInt().toString()
+            }
+        }
+
         barChart.axisRight.setDrawAxisLine(false)
         barChart.axisRight.setDrawGridLines(false)
         barChart.axisRight.setDrawLabels(false)
+
         barChart.animateXY(500, 400)
     }
 

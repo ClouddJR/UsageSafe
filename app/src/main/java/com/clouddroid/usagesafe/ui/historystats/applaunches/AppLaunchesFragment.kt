@@ -10,14 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
-import com.clouddroid.usagesafe.ui.appdetails.AppDetailsActivity
-import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
-import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.data.model.LoadingState
-import com.clouddroid.usagesafe.util.PackageInfoUtils
+import com.clouddroid.usagesafe.ui.appdetails.AppDetailsActivity
 import com.clouddroid.usagesafe.ui.appdetails.AppDetailsViewModel
+import com.clouddroid.usagesafe.ui.base.BaseFragment
+import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
 import com.clouddroid.usagesafe.ui.daydetails.DayDetailsViewModel
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsViewModel
+import com.clouddroid.usagesafe.util.PackageInfoUtils
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -42,21 +42,11 @@ class AppLaunchesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
-
-        mostOpenedAppIcon.setOnClickListener(onMostOpenedAppClick)
-        mostOpenedTV.setOnClickListener(onMostOpenedAppClick)
-        mostOpenedNumberTV.setOnClickListener(onMostOpenedAppClick)
+        setOnClickListeners()
     }
 
     fun scrollToTop() {
         nestedScroll.smoothScrollTo(0, 0)
-    }
-
-    private val onMostOpenedAppClick = View.OnClickListener {
-        val intent = Intent(context, AppDetailsActivity::class.java)
-        intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, appLaunchesViewModel.mostOpenedApp.value?.packageName)
-        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.MODE_APP_LAUNCHES)
-        startActivity(intent)
     }
 
     private fun initViewModels() {
@@ -102,6 +92,19 @@ class AppLaunchesFragment : BaseFragment() {
             mostOpenedTV.text = PackageInfoUtils.getAppName(it.packageName, context)
             mostOpenedNumberTV.text = "${it.launchCount} times"
         })
+    }
+
+    private fun setOnClickListeners() {
+        mostOpenedAppIcon.setOnClickListener(onMostOpenedAppClick)
+        mostOpenedTV.setOnClickListener(onMostOpenedAppClick)
+        mostOpenedNumberTV.setOnClickListener(onMostOpenedAppClick)
+    }
+
+    private val onMostOpenedAppClick = View.OnClickListener {
+        val intent = Intent(context, AppDetailsActivity::class.java)
+        intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, appLaunchesViewModel.mostOpenedApp.value?.packageName)
+        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.APP_LAUNCHES)
+        startActivity(intent)
     }
 
     private fun drawChart(barDataSet: BarDataSet, daysNames: List<String>) {

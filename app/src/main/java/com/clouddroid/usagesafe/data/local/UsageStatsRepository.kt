@@ -6,11 +6,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import com.clouddroid.usagesafe.data.model.*
+import com.clouddroid.usagesafe.data.model.AppDetails
+import com.clouddroid.usagesafe.data.model.AppUsageInfo
+import com.clouddroid.usagesafe.data.model.HourUsageInfo
+import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.util.DayBegin
 import com.clouddroid.usagesafe.util.PackageInfoUtils
 import com.clouddroid.usagesafe.util.PackageInfoUtils.getAppName
 import com.clouddroid.usagesafe.util.PackageInfoUtils.getRawAppIcon
+import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_DAY_BEGIN
+import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_IS_LAUNCHER_INCLUDED
 import com.clouddroid.usagesafe.util.PreferencesUtils.get
 import java.util.*
 import javax.inject.Inject
@@ -37,10 +42,10 @@ class UsageStatsRepository @Inject constructor(
     }
 
     fun getLogsFromToday(): List<LogEvent> {
-        val hourBegin = sharedPreferences["day_begin", DayBegin._12AM] ?: DayBegin._12AM
+        val dayBegin = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM] ?: DayBegin._12AM
 
         val beginCalendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, hourBegin)
+            set(Calendar.HOUR_OF_DAY, dayBegin)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -72,7 +77,7 @@ class UsageStatsRepository @Inject constructor(
         return logs
     }
 
-    fun getAppsUsageMapFromToday(): Pair<Map<String, AppUsageInfo>, Int> {
+    fun getUsageFromToday(): Pair<Map<String, AppUsageInfo>, Int> {
 
         var unlockCount = 0
         val allEventsList = mutableListOf<LogEvent>()
@@ -89,9 +94,10 @@ class UsageStatsRepository @Inject constructor(
         }
 
         //getting only relevant events out of all logs (getting only MOVE_TO_BACKGROUND or MOVE_TO_FOREGROUND)
-        getAllRelevantEventsToList(
-            usageStatsManager.queryEvents(beginCalendar.timeInMillis, endCalendar.timeInMillis),
-            allEventsList
+        allEventsList.addAll(
+            getAllRelevantLogsFromEventsList(
+                usageStatsManager.queryEvents(beginCalendar.timeInMillis, endCalendar.timeInMillis)
+            )
         )
 
         //iterating over events to get different stats
@@ -99,13 +105,13 @@ class UsageStatsRepository @Inject constructor(
             val first = allEventsList[i]
             val second = allEventsList[i + 1]
 
-            unlockCount += getPossiblePhoneUnlock(first, second)
-            increaseLaunchCount(first, second, appUsageMap)
-            increaseTotalTimeInForeground(first, second, appUsageMap)
+            if (didPhoneUnlockOccur(first, second)) unlockCount++
+            checkPotentialAppLaunch(first, second, appUsageMap)
+            checkPotentialAppExit(first, second, appUsageMap)
         }
 
         //removing launcher if it should not be included
-        val isLauncherIncluded = sharedPreferences["is_launcher_included"] ?: false
+        val isLauncherIncluded = sharedPreferences[PREF_IS_LAUNCHER_INCLUDED] ?: false
         if (!isLauncherIncluded) {
             val launcherPackageName = PackageInfoUtils.getDefaultLauncherPackageName(packageManager)
             appUsageMap.remove(launcherPackageName)
@@ -114,33 +120,11 @@ class UsageStatsRepository @Inject constructor(
         return Pair(appUsageMap, unlockCount)
     }
 
-    fun getUsageMapFromLogs(logs: List<LogEvent>): MutableMap<String, AppUsageInfo> {
-        val relevantLogs = getAllRelevantEventsToList(logs)
-        val appUsageMap = mutableMapOf<String, AppUsageInfo>()
-
-        for (i in 0 until relevantLogs.size - 1) {
-            val first = relevantLogs[i]
-            val second = relevantLogs[i + 1]
-
-            increaseLaunchCount(first, second, appUsageMap)
-            increaseTotalTimeInForeground(first, second, appUsageMap)
-        }
-
-        //removing launcher if it should not be included
-        val isLauncherIncluded = sharedPreferences["is_launcher_included"] ?: false
-        if (!isLauncherIncluded) {
-            val launcherPackageName = PackageInfoUtils.getDefaultLauncherPackageName(packageManager)
-            appUsageMap.remove(launcherPackageName)
-        }
-
-        return appUsageMap
-    }
-
-    fun getHourlyUsageMap(logs: List<LogEvent>, start: Long, end: Long): MutableMap<Long, HourUsageInfo> {
-        val relevantLogs = getAllRelevantEventsToList(logs)
+    fun getHourlyUsageMapFromLogs(logs: List<LogEvent>, start: Long, end: Long): MutableMap<Long, HourUsageInfo> {
+        val relevantLogs = getAllRelevantLogsFromLogsList(logs)
         val hourUsageMap = mutableMapOf<Long, HourUsageInfo>()
 
-        val isLauncherIncluded = sharedPreferences["is_launcher_included"] ?: false
+        val isLauncherIncluded = sharedPreferences[PREF_IS_LAUNCHER_INCLUDED] ?: false
         val launcherPackageName = PackageInfoUtils.getDefaultLauncherPackageName(packageManager)
 
         for (i in 0 until relevantLogs.size - 1) {
@@ -148,7 +132,7 @@ class UsageStatsRepository @Inject constructor(
             val second = relevantLogs[i + 1]
 
             //getting number of unlocks per hour
-            if (getPossiblePhoneUnlock(first, second) == 1) {
+            if (didPhoneUnlockOccur(first, second)) {
                 val unlockCalendar = Calendar.getInstance().apply {
                     timeInMillis = second.timestamp
                     set(Calendar.MINUTE, 0)
@@ -178,6 +162,7 @@ class UsageStatsRepository @Inject constructor(
             }
 
             //skipping launcher events if it should not be included
+            //but only after calculating number of app launches and unlocks to not mess stats data
             if (!isLauncherIncluded &&
                 (first.packageName == launcherPackageName || second.packageName == launcherPackageName)
             ) {
@@ -211,8 +196,7 @@ class UsageStatsRepository @Inject constructor(
                         set(Calendar.MILLISECOND, 0)
                     }
 
-                    if (hourUsageMap[timestamp] == null) hourUsageMap[timestamp] =
-                        HourUsageInfo()
+                    if (hourUsageMap[timestamp] == null) hourUsageMap[timestamp] = HourUsageInfo()
                     hourUsageMap[timestamp]!!.totalTimeInForeground +=
                         (nextHourCalendar.timeInMillis - firstEventCalendar.timeInMillis)
 
@@ -262,99 +246,39 @@ class UsageStatsRepository @Inject constructor(
         return hourUsageMap.toSortedMap()
     }
 
+    fun getAppsUsageMapFromLogs(logs: List<LogEvent>): MutableMap<String, AppUsageInfo> {
+        val relevantLogs = getAllRelevantLogsFromLogsList(logs)
+        val appUsageMap = mutableMapOf<String, AppUsageInfo>()
+
+        for (i in 0 until relevantLogs.size - 1) {
+            val first = relevantLogs[i]
+            val second = relevantLogs[i + 1]
+
+            checkPotentialAppLaunch(first, second, appUsageMap)
+            checkPotentialAppExit(first, second, appUsageMap)
+        }
+
+        //removing launcher if it should not be included
+        val isLauncherIncluded = sharedPreferences[PREF_IS_LAUNCHER_INCLUDED] ?: false
+        if (!isLauncherIncluded) {
+            val launcherPackageName = PackageInfoUtils.getDefaultLauncherPackageName(packageManager)
+            appUsageMap.remove(launcherPackageName)
+        }
+
+        return appUsageMap
+    }
+
     fun getNumberOfUnlocksFromLogs(logs: List<LogEvent>): Int {
-        val relevantLogs = getAllRelevantEventsToList(logs)
+        val relevantLogs = getAllRelevantLogsFromLogsList(logs)
         var numberOfUnlocks = 0
 
         for (i in 0 until relevantLogs.size - 1) {
             val first = relevantLogs[i]
             val second = relevantLogs[i + 1]
 
-            numberOfUnlocks += getPossiblePhoneUnlock(first, second)
+            if (didPhoneUnlockOccur(first, second)) numberOfUnlocks++
         }
         return numberOfUnlocks
-    }
-
-    private fun getAllRelevantEventsToList(events: UsageEvents?, allEventsList: MutableList<LogEvent>) {
-        events?.let {
-            while (events.hasNextEvent()) {
-                val currentEvent = UsageEvents.Event()
-                events.getNextEvent(currentEvent)
-
-                if (currentEvent.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND ||
-                    currentEvent.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
-                ) {
-                    allEventsList.add(LogEvent().apply {
-                        timestamp = currentEvent.timeStamp
-                        packageName = currentEvent.packageName
-                        className = currentEvent.className
-                        eventType = currentEvent.eventType
-                    })
-                }
-            }
-        }
-    }
-
-    private fun getAllRelevantEventsToList(logs: List<LogEvent>): List<LogEvent> {
-        val list = mutableListOf<LogEvent>()
-
-        logs.forEach { currentEvent ->
-            if (currentEvent.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND ||
-                currentEvent.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
-            ) {
-                list.add(currentEvent)
-            }
-        }
-
-        return list
-    }
-
-    private fun getPossiblePhoneUnlock(first: LogEvent, second: LogEvent): Int {
-        return if (first.packageName == second.packageName
-            && first.className == second.className
-            && first.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
-            && second.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
-            && (second.timestamp - first.timestamp >= 200)
-        ) {
-            1
-        } else {
-            0
-        }
-    }
-
-    private fun increaseLaunchCount(
-        first: LogEvent,
-        second: LogEvent,
-        appUsageMap: MutableMap<String, AppUsageInfo>
-    ) {
-        if (first.packageName != second.packageName
-            && second.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
-        ) {
-            if (appUsageMap[second.packageName] == null) {
-                appUsageMap[second.packageName] = AppUsageInfo().apply {
-                    packageName = second.packageName
-                }
-            }
-            appUsageMap[second.packageName]!!.launchCount++
-        }
-
-    }
-
-    private fun increaseTotalTimeInForeground(
-        first: LogEvent,
-        second: LogEvent,
-        appUsageMap: MutableMap<String, AppUsageInfo>
-    ) {
-        if (first.className == second.className && first.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
-            && second.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
-        ) {
-            if (appUsageMap[second.packageName] == null) {
-                appUsageMap[second.packageName] = AppUsageInfo().apply {
-                    packageName = second.packageName
-                }
-            }
-            appUsageMap[second.packageName]!!.totalTimeInForeground += (second.timestamp - first.timestamp)
-        }
     }
 
     fun getListOfAllApps(context: Context, includeSystemApps: Boolean): List<AppDetails> {
@@ -385,6 +309,86 @@ class UsageStatsRepository @Inject constructor(
         }
 
         return appsList.sortedBy { app -> app.name }
+    }
+
+    private fun getAllRelevantLogsFromEventsList(allEvents: UsageEvents?): List<LogEvent> {
+        val relevantEventsList = mutableListOf<LogEvent>()
+        allEvents?.let {
+            while (allEvents.hasNextEvent()) {
+                val currentEvent = UsageEvents.Event()
+                allEvents.getNextEvent(currentEvent)
+
+                if (currentEvent.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND ||
+                    currentEvent.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+                ) {
+                    relevantEventsList.add(LogEvent().apply {
+                        timestamp = currentEvent.timeStamp
+                        packageName = currentEvent.packageName
+                        className = currentEvent.className
+                        eventType = currentEvent.eventType
+                    })
+                }
+            }
+        }
+
+        return relevantEventsList
+    }
+
+    private fun getAllRelevantLogsFromLogsList(logs: List<LogEvent>): List<LogEvent> {
+        val list = mutableListOf<LogEvent>()
+
+        logs.forEach { currentEvent ->
+            if (currentEvent.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND ||
+                currentEvent.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+            ) {
+                list.add(currentEvent)
+            }
+        }
+
+        return list
+    }
+
+    private fun didPhoneUnlockOccur(firstLog: LogEvent, secondLog: LogEvent): Boolean {
+        return (firstLog.packageName == secondLog.packageName
+                && firstLog.className == secondLog.className
+                && firstLog.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
+                && secondLog.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+                && (secondLog.timestamp - firstLog.timestamp >= 200))
+    }
+
+    private fun checkPotentialAppLaunch(
+        firstLog: LogEvent,
+        secondLog: LogEvent,
+        appUsageMap: MutableMap<String, AppUsageInfo>
+    ) {
+        if (firstLog.packageName != secondLog.packageName
+            && secondLog.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+        ) {
+            if (appUsageMap[secondLog.packageName] == null) {
+                appUsageMap[secondLog.packageName] = AppUsageInfo().apply {
+                    packageName = secondLog.packageName
+                }
+            }
+            appUsageMap[secondLog.packageName]!!.launchCount++
+        }
+
+    }
+
+    private fun checkPotentialAppExit(
+        firstLog: LogEvent,
+        secondLog: LogEvent,
+        appUsageMap: MutableMap<String, AppUsageInfo>
+    ) {
+        if (firstLog.className == secondLog.className && firstLog.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+            && secondLog.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
+        ) {
+            if (appUsageMap[secondLog.packageName] == null) {
+                appUsageMap[secondLog.packageName] = AppUsageInfo().apply {
+                    packageName = secondLog.packageName
+                }
+            }
+            appUsageMap[secondLog.packageName]!!.totalTimeInForeground += (secondLog.timestamp - firstLog.timestamp)
+        }
     }
 
 

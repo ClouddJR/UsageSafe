@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
-import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.data.local.UsageStatsRepository
+import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.util.PackageInfoUtils.getResizedAppIcon
 import com.clouddroid.usagesafe.util.TextUtils.getTotalScreenTimeText
 import com.github.mikephil.charting.data.PieEntry
@@ -31,7 +31,7 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
 
     @SuppressLint("CheckResult")
     fun init() {
-        Observable.fromCallable { usageStatsRepository.getAppsUsageMapFromToday() }
+        Observable.fromCallable { usageStatsRepository.getUsageFromToday() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

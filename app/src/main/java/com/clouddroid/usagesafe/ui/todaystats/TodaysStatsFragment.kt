@@ -4,20 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
-import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
-import com.clouddroid.usagesafe.ui.main.MainActivity
-import com.clouddroid.usagesafe.ui.daydetails.DailyAppDetailsAdapter
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.ui.appdetails.AppDetailsActivity
 import com.clouddroid.usagesafe.ui.base.BaseFragment
+import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
+import com.clouddroid.usagesafe.ui.main.MainActivity
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -32,7 +29,7 @@ import java.util.*
 class TodaysStatsFragment : BaseFragment() {
 
     private lateinit var viewModel: TodaysStatsViewModel
-    private lateinit var appUsageInfoAdapter: DailyAppDetailsAdapter
+    private lateinit var appUsageInfoAdapter: MostUsedAdapter
 
     override fun getLayoutId() = R.layout.fragment_todays_stats
 
@@ -41,18 +38,30 @@ class TodaysStatsFragment : BaseFragment() {
         initViewModel()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.init()
         observeDataChanges()
+        setNoDataTextInChart()
+        setOnArcClickListener()
+        setCurrentDayInToolbar()
+        setOnClickListeners()
+    }
+
+    fun scrollToTop() {
+        nestedScroll.smoothScrollTo(0, 0)
+    }
+
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[TodaysStatsViewModel::class.java]
+    }
+
+    private fun setNoDataTextInChart() {
         pieChart.setNoDataText("")
         pieChart.invalidate()
+    }
 
+    private fun setOnArcClickListener() {
         pieChart.onChartGestureListener = object : OnChartGestureListener {
             override fun onChartGestureEnd(me: MotionEvent?, lpg: ChartTouchListener.ChartGesture?) {}
             override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {}
@@ -81,11 +90,15 @@ class TodaysStatsFragment : BaseFragment() {
                 }
             }
         }
+    }
 
+    private fun setCurrentDayInToolbar() {
         val formatter = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
         val dateText = formatter.format(Date())
         dateTitle.text = dateText
+    }
 
+    private fun setOnClickListeners() {
         showMoreBT.setOnClickListener {
             appUsageInfoAdapter.addItems(viewModel.otherAppsList)
             showMoreBT.visibility = View.GONE
@@ -105,21 +118,8 @@ class TodaysStatsFragment : BaseFragment() {
         }
     }
 
-    fun scrollToTop() {
-        nestedScroll.smoothScrollTo(0, 0)
-    }
-
     private fun navigateTo(destination: MainActivity.FragmentDestination) {
         (activity as MainActivity).switchToFragment(destination)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[TodaysStatsViewModel::class.java]
     }
 
     private fun observeDataChanges() {
@@ -138,45 +138,10 @@ class TodaysStatsFragment : BaseFragment() {
         })
     }
 
-    private fun setUpMostUsedRV(list: MutableList<AppUsageInfo>) {
-        appUsageInfoAdapter = DailyAppDetailsAdapter(list)
-        mostUsedRV.adapter = appUsageInfoAdapter
-        mostUsedRV.isNestedScrollingEnabled = false
-    }
-
-    private fun setUnlockText(unlockCount: Int) {
-        unlockCountTV.text = unlockCount.toString()
-    }
-
-    private fun setLaunchText(launchCount: Int) {
-        launchCountTV.text = launchCount.toString()
-    }
-
-    private fun setChartCenterText(totalScreenTimeText: String) {
-        pieChart.centerText = "Total screen time: \n$totalScreenTimeText"
-    }
-
     private fun drawChart(appUsageMap: Map<String, AppUsageInfo>) {
         val entries = viewModel.prepareEntriesForPieChart(appUsageMap, context)
         val pieDataSet = prepareDataSet(entries)
         fillAndCustomizeChart(pieDataSet)
-    }
-
-    private fun prepareDataSet(entries: List<PieEntry>): PieDataSet {
-        val pieDataSet = PieDataSet(entries, "App usage")
-        pieDataSet.sliceSpace = 3f
-        pieDataSet.colors = viewModel.generateColorsFromAppIcons(entries)
-        pieDataSet.iconsOffset = MPPointF(0f, 32f)
-        pieDataSet.valueTextSize = 0f
-        pieDataSet.valueTypeface = ResourcesCompat.getFont(context!!, R.font.opensans_regular)
-        pieDataSet.valueTextColor = Color.WHITE
-        pieDataSet.xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
-        pieDataSet.valueLinePart1OffsetPercentage = 0.5f
-        pieDataSet.valueLinePart1Length = 0.15f
-        pieDataSet.valueLinePart2Length = 0f
-        pieDataSet.valueLineColor = Color.TRANSPARENT
-        pieDataSet.setAutomaticallyDisableSliceSpacing(true)
-        return pieDataSet
     }
 
     private fun fillAndCustomizeChart(pieDataSet: PieDataSet) {
@@ -197,5 +162,40 @@ class TodaysStatsFragment : BaseFragment() {
         pieChart.setNoDataText("")
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.animateXY(500, 500)
+    }
+
+    private fun prepareDataSet(entries: List<PieEntry>): PieDataSet {
+        val pieDataSet = PieDataSet(entries, "App usage")
+        pieDataSet.sliceSpace = 3f
+        pieDataSet.colors = viewModel.generateColorsFromAppIcons(entries)
+        pieDataSet.iconsOffset = MPPointF(0f, 32f)
+        pieDataSet.valueTextSize = 0f
+        pieDataSet.valueTypeface = ResourcesCompat.getFont(context!!, R.font.opensans_regular)
+        pieDataSet.valueTextColor = Color.WHITE
+        pieDataSet.xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
+        pieDataSet.valueLinePart1OffsetPercentage = 0.5f
+        pieDataSet.valueLinePart1Length = 0.15f
+        pieDataSet.valueLinePart2Length = 0f
+        pieDataSet.valueLineColor = Color.TRANSPARENT
+        pieDataSet.setAutomaticallyDisableSliceSpacing(true)
+        return pieDataSet
+    }
+
+    private fun setChartCenterText(totalScreenTimeText: String) {
+        pieChart.centerText = "Total screen time: \n$totalScreenTimeText"
+    }
+
+    private fun setUpMostUsedRV(list: MutableList<AppUsageInfo>) {
+        appUsageInfoAdapter = MostUsedAdapter(list)
+        mostUsedRV.adapter = appUsageInfoAdapter
+        mostUsedRV.isNestedScrollingEnabled = false
+    }
+
+    private fun setUnlockText(unlockCount: Int) {
+        unlockCountTV.text = unlockCount.toString()
+    }
+
+    private fun setLaunchText(launchCount: Int) {
+        launchCountTV.text = launchCount.toString()
     }
 }

@@ -11,10 +11,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.ui.applimits.AppLimitsFragment
+import com.clouddroid.usagesafe.ui.base.BaseActivity
 import com.clouddroid.usagesafe.ui.contacts.ContactsListFragment
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsFragment
 import com.clouddroid.usagesafe.ui.todaystats.TodaysStatsFragment
-import com.clouddroid.usagesafe.ui.base.BaseActivity
 import com.clouddroid.usagesafe.util.ExtensionUtils.addAndCommit
 import com.clouddroid.usagesafe.util.ExtensionUtils.doesNotContain
 import com.clouddroid.usagesafe.util.ExtensionUtils.showAndHideOthers
@@ -33,9 +33,17 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initViewModel()
-        checkForUsagePermissions()
-        initBottomNav()
         initFragmentsBackStack()
+        initBottomNav()
+        checkForUsagePermissions()
+    }
+
+    override fun onBackPressed() {
+        if (!todaysStatsFragment.isVisible) {
+            navigateTo(FragmentDestination.TODAYS_STATS)
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun initViewModel() {

@@ -30,10 +30,7 @@ class AppLimitsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         initRV()
         observeData()
-
-        systemAppsCB.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.getListOfApps(context!!, isChecked)
-        }
+        setOnClickListeners()
     }
 
     fun scrollToTop() {
@@ -101,5 +98,11 @@ class AppLimitsFragment : BaseFragment() {
         viewModel.appsList.observe(this, Observer {
             adapter.swapItems(it)
         })
+    }
+
+    private fun setOnClickListeners() {
+        systemAppsCB.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.getListOfApps(context!!, isChecked)
+        }
     }
 }

@@ -9,8 +9,6 @@ import java.util.*
 
 object ExtensionUtils {
 
-//****************Fragment Manager**********************************************************************
-
     fun FragmentManager.doesNotContain(fragment: BaseFragment): Boolean {
         return !this.fragments.contains(fragment)
     }
@@ -28,12 +26,6 @@ object ExtensionUtils {
         }
     }
 
-//****************Fragment Manager**********************************************************************
-
-
-
-//****************Calendar******************************************************************************
-
     fun Calendar.isBefore(other: Calendar): Boolean {
         return (this.clone() as Calendar).apply {
             set(Calendar.HOUR_OF_DAY, 23)
@@ -46,7 +38,4 @@ object ExtensionUtils {
                 && this.get(Calendar.MONTH) == other.get(Calendar.MONTH)
                 && this.get(Calendar.DAY_OF_MONTH) == other.get(Calendar.DAY_OF_MONTH)
     }
-
-//****************Calendar******************************************************************************
-
 }

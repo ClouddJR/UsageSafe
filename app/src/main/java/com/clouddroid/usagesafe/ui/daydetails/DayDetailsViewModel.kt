@@ -8,13 +8,15 @@ import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.data.local.DatabaseRepository
 import com.clouddroid.usagesafe.data.local.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
-import com.clouddroid.usagesafe.util.DayBegin
 import com.clouddroid.usagesafe.data.model.LogEvent
+import com.clouddroid.usagesafe.util.DayBegin
+import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_DAY_BEGIN
 import com.clouddroid.usagesafe.util.PreferencesUtils.get
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,24 +34,31 @@ class DayDetailsViewModel @Inject constructor(
         const val UNLOCKS = 2
     }
 
+    private val compositeDisposable = CompositeDisposable()
+
     val shouldLeftArrowBeHidden = MutableLiveData<Boolean>()
     val shouldRightArrowBeHidden = MutableLiveData<Boolean>()
 
+    //stores the current mode that a fragment is in
     var currentMode = MODE.SCREEN_TIME
+
+    //formatted text to be displayed on the bottom view
     val currentDayText = MutableLiveData<String>()
 
-    private val hourDayBegin: Int = sharedPreferences["day_begin", DayBegin._12AM] ?: DayBegin._12AM
+    //beginning of the day according to user preferences
+    private val hourDayBegin: Int = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM] ?: DayBegin._12AM
 
+    //handles the logic for changing days
     private val dayOfFirstSavedLog = databaseRepository.getTheEarliestLogEvent()
     private val dayViewLogic =
         DayViewLogic(Calendar.getInstance(), hourDayBegin, dayOfFirstSavedLog)
 
+    //data about daily usage for further calculation and for charts
     private var totalScreenTime = 0L
     private var totalLaunchCount = 0
     private var totalUnlocks = 0
     val totalScreenTimeLiveData = MutableLiveData<Long>()
     val totalLaunchCountLiveData = MutableLiveData<Int>()
-
     val totalUnlocksLiveData = MutableLiveData<Int>()
 
     private val appsUsageMap = MutableLiveData<Map<String, AppUsageInfo>>()
@@ -57,7 +66,6 @@ class DayDetailsViewModel @Inject constructor(
     private val hourNames = mutableListOf<String>()
     private lateinit var screenTimeBarDataSet: BarDataSet
     private lateinit var appLaunchesBarDataSet: BarDataSet
-
     private lateinit var unlocksBarDataSet: BarDataSet
 
     fun setCurrentDay(time: Long) {
@@ -78,23 +86,23 @@ class DayDetailsViewModel @Inject constructor(
     }
 
     private fun getLogsFromDB(start: Long, end: Long) {
-        val disposable = databaseRepository.getLogEventsFromRange(start, end)
+        compositeDisposable.add(databaseRepository.getLogEventsFromRange(start, end)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { logs ->
                 getUsageMap(logs)
                 calculateDailyUsage(logs, start, end)
-            }
+            })
     }
 
     private fun getUsageMap(list: List<LogEvent>) {
-        val disposable = Single.fromCallable {
-            usageStatsRepository.getUsageMapFromLogs(list)
+        compositeDisposable.add(Single.fromCallable {
+            usageStatsRepository.getAppsUsageMapFromLogs(list)
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { usageMap, _ ->
                 appsUsageMap.value = usageMap
-            }
+            })
     }
 
     fun getAppsUsageList(): LiveData<List<AppUsageInfo>> = Transformations.map(appsUsageMap) {
@@ -111,7 +119,7 @@ class DayDetailsViewModel @Inject constructor(
 
         var index = 0
 
-        val hourlyUsageMap = usageStatsRepository.getHourlyUsageMap(logs, start, end)
+        val hourlyUsageMap = usageStatsRepository.getHourlyUsageMapFromLogs(logs, start, end)
 
         totalScreenTime = 0
         totalLaunchCount = 0
@@ -213,5 +221,10 @@ class DayDetailsViewModel @Inject constructor(
     private fun updateArrowsState() {
         shouldLeftArrowBeHidden.value = dayViewLogic.isCurrentDayTheEarliest
         shouldRightArrowBeHidden.value = dayViewLogic.isCurrentDayTheLatest
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 }

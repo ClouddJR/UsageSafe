@@ -10,15 +10,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
-import com.clouddroid.usagesafe.ui.appdetails.AppDetailsActivity
-import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
-import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.data.model.LoadingState
-import com.clouddroid.usagesafe.util.PackageInfoUtils
-import com.clouddroid.usagesafe.util.TextUtils
+import com.clouddroid.usagesafe.ui.appdetails.AppDetailsActivity
 import com.clouddroid.usagesafe.ui.appdetails.AppDetailsViewModel
+import com.clouddroid.usagesafe.ui.base.BaseFragment
+import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
 import com.clouddroid.usagesafe.ui.daydetails.DayDetailsViewModel
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsViewModel
+import com.clouddroid.usagesafe.util.PackageInfoUtils
+import com.clouddroid.usagesafe.util.TextUtils
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -43,21 +43,11 @@ class ScreenTimeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
-
-        mostUsedAppIcon.setOnClickListener(onMostUsedAppClick)
-        mostUsedTV.setOnClickListener(onMostUsedAppClick)
-        mostUsedTimeTV.setOnClickListener(onMostUsedAppClick)
+        setOnClickListeners()
     }
 
     fun scrollToTop() {
         nestedScroll.smoothScrollTo(0, 0)
-    }
-
-    private val onMostUsedAppClick = View.OnClickListener {
-        val intent = Intent(context, AppDetailsActivity::class.java)
-        intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, screenTimeViewModel.mostUsedApp.value?.packageName)
-        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.MODE_SCREEN_TIME)
-        startActivity(intent)
     }
 
     private fun initViewModels() {
@@ -103,6 +93,19 @@ class ScreenTimeFragment : BaseFragment() {
 
             weeklyUsageSummaryTV.text = "${TextUtils.getTotalScreenTimeText(it, context)} of usage this week"
         })
+    }
+
+    private fun setOnClickListeners() {
+        mostUsedAppIcon.setOnClickListener(onMostUsedAppClick)
+        mostUsedTV.setOnClickListener(onMostUsedAppClick)
+        mostUsedTimeTV.setOnClickListener(onMostUsedAppClick)
+    }
+
+    private val onMostUsedAppClick = View.OnClickListener {
+        val intent = Intent(context, AppDetailsActivity::class.java)
+        intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, screenTimeViewModel.mostUsedApp.value?.packageName)
+        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.SCREEN_TIME)
+        startActivity(intent)
     }
 
     private fun drawChart(barDataSet: BarDataSet, daysNames: List<String>) {

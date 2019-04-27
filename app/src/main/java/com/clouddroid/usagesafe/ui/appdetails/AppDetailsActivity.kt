@@ -10,10 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
-import com.clouddroid.usagesafe.ui.base.BaseActivity
 import com.clouddroid.usagesafe.data.model.LoadingState
-import com.clouddroid.usagesafe.util.PackageInfoUtils
+import com.clouddroid.usagesafe.ui.base.BaseActivity
 import com.clouddroid.usagesafe.ui.common.SpinnerAdapter
+import com.clouddroid.usagesafe.util.PackageInfoUtils
 import com.clouddroid.usagesafe.util.TextUtils
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -23,8 +23,8 @@ import kotlin.math.roundToInt
 
 class AppDetailsActivity : BaseActivity() {
 
-    private lateinit var appPackageName: String
     private lateinit var viewModel: AppDetailsViewModel
+    private lateinit var appPackageName: String
 
     companion object {
         const val PACKAGE_NAME_KEY = "package_name"
@@ -34,15 +34,11 @@ class AppDetailsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_details)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        barChart.setNoDataText("")
-        barChart.invalidate()
-
         receivePackageName()
-        setUpSpinner()
         initViewModel()
+        setUpToolbar()
+        setNoDataTextInChart()
+        setUpSpinner()
         observeData()
         setOnWeekChangeListener()
     }
@@ -62,6 +58,27 @@ class AppDetailsActivity : BaseActivity() {
         Glide.with(this).load(PackageInfoUtils.getRawAppIcon(appPackageName, this)).into(appIconIV)
     }
 
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[AppDetailsViewModel::class.java]
+
+        val passedMode = intent.getIntExtra(MODE_KEY, 0)
+        viewModel.currentMode = passedMode
+
+        viewModel.init(appPackageName)
+        viewModel.updateCurrentWeek()
+    }
+
+    private fun setUpToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+    }
+
+    private fun setNoDataTextInChart() {
+        barChart.setNoDataText("")
+        barChart.invalidate()
+    }
+
     private fun setUpSpinner() {
         val adapter = SpinnerAdapter(
             this, R.layout.spinner_list_item,
@@ -74,10 +91,10 @@ class AppDetailsActivity : BaseActivity() {
             statsTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        AppDetailsViewModel.MODE.MODE_SCREEN_TIME ->
-                            viewModel.switchMode(AppDetailsViewModel.MODE.MODE_SCREEN_TIME)
-                        AppDetailsViewModel.MODE.MODE_APP_LAUNCHES ->
-                            viewModel.switchMode(AppDetailsViewModel.MODE.MODE_APP_LAUNCHES)
+                        AppDetailsViewModel.MODE.SCREEN_TIME ->
+                            viewModel.switchMode(AppDetailsViewModel.MODE.SCREEN_TIME)
+                        AppDetailsViewModel.MODE.APP_LAUNCHES ->
+                            viewModel.switchMode(AppDetailsViewModel.MODE.APP_LAUNCHES)
                     }
                 }
 
@@ -86,38 +103,10 @@ class AppDetailsActivity : BaseActivity() {
         }
     }
 
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory)[AppDetailsViewModel::class.java]
-
-        val passedMode = intent.getIntExtra(MODE_KEY, 0)
-        viewModel.currentMode = passedMode
-
-        viewModel.init(appPackageName)
-        viewModel.updateCurrentWeek()
-    }
 
     private fun observeData() {
-
-        viewModel.currentWeekText.observe(this, Observer {
-            dateTV.text = it
-        })
-
         viewModel.weeklyData.observe(this, Observer {
             viewModel.calculateWeeklyUsage(it)
-        })
-
-        viewModel.shouldLeftArrowBeHidden.observe(this, Observer {
-            when (it) {
-                true -> arrowLeft.visibility = View.INVISIBLE
-                false -> arrowLeft.visibility = View.VISIBLE
-            }
-        })
-
-        viewModel.shouldRightArrowBeHidden.observe(this, Observer {
-            when (it) {
-                true -> arrowRight.visibility = View.INVISIBLE
-                false -> arrowRight.visibility = View.VISIBLE
-            }
         })
 
         viewModel.loadingState.observe(this, Observer {
@@ -156,6 +145,24 @@ class AppDetailsActivity : BaseActivity() {
 
             weeklyUsageSummaryTV.text = "$it app launches this week"
         })
+
+        viewModel.currentWeekText.observe(this, Observer {
+            dateTV.text = it
+        })
+
+        viewModel.shouldLeftArrowBeHidden.observe(this, Observer {
+            when (it) {
+                true -> arrowLeft.visibility = View.INVISIBLE
+                false -> arrowLeft.visibility = View.VISIBLE
+            }
+        })
+
+        viewModel.shouldRightArrowBeHidden.observe(this, Observer {
+            when (it) {
+                true -> arrowRight.visibility = View.INVISIBLE
+                false -> arrowRight.visibility = View.VISIBLE
+            }
+        })
     }
 
     private fun drawChart(barDataSet: BarDataSet, daysNames: List<String>) {
@@ -165,8 +172,7 @@ class AppDetailsActivity : BaseActivity() {
 
         barChart.data = BarData(barDataSet)
         barChart.data.setValueTextSize(9f)
-
-        if (viewModel.currentMode == AppDetailsViewModel.MODE.MODE_SCREEN_TIME) {
+        if (viewModel.currentMode == AppDetailsViewModel.MODE.SCREEN_TIME) {
             barChart.data.setValueFormatter { value, _, _, _ ->
                 TextUtils.getTotalScreenTimeText(value.toLong(), this)
             }
@@ -187,7 +193,6 @@ class AppDetailsActivity : BaseActivity() {
         barChart.xAxis.textSize = 13f
         barChart.xAxis.textColor = Color.WHITE
         barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-
         barChart.xAxis.setValueFormatter { value, _ ->
             daysNames[value.toInt()]
         }
@@ -198,10 +203,10 @@ class AppDetailsActivity : BaseActivity() {
         barChart.axisLeft.typeface = ResourcesCompat.getFont(this, R.font.opensans_regular)
         barChart.axisLeft.textColor = Color.WHITE
 
-
         barChart.axisRight.setDrawAxisLine(false)
         barChart.axisRight.setDrawGridLines(false)
         barChart.axisRight.setDrawLabels(false)
+
         barChart.animateXY(500, 400)
     }
 

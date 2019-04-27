@@ -20,12 +20,12 @@ abstract class BaseFragment : Fragment() {
         injectDependencies()
     }
 
-    private fun injectDependencies() {
-        (activity?.application as UsageSafeApp).component.inject(this)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayoutId(), container, false)
+    }
+
+    private fun injectDependencies() {
+        (activity?.application as UsageSafeApp).component.inject(this)
     }
 
     abstract fun getLayoutId(): Int

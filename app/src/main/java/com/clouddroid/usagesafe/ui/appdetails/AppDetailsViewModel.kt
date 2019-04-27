@@ -2,10 +2,10 @@ package com.clouddroid.usagesafe.ui.appdetails
 
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.data.local.DatabaseRepository
 import com.clouddroid.usagesafe.data.local.UsageStatsRepository
-import com.clouddroid.usagesafe.ui.base.BaseStatsViewModel
+import com.clouddroid.usagesafe.data.model.LogEvent
+import com.clouddroid.usagesafe.ui.base.BaseWeeklyStatsViewModel
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import java.text.SimpleDateFormat
@@ -16,14 +16,14 @@ class AppDetailsViewModel @Inject constructor(
     private val usageStatsRepository: UsageStatsRepository,
     databaseRepository: DatabaseRepository,
     sharedPrefs: SharedPreferences
-) : BaseStatsViewModel(databaseRepository, sharedPrefs) {
+) : BaseWeeklyStatsViewModel(databaseRepository, sharedPrefs) {
 
     object MODE {
-        const val MODE_SCREEN_TIME = 0
-        const val MODE_APP_LAUNCHES = 1
+        const val SCREEN_TIME = 0
+        const val APP_LAUNCHES = 1
     }
 
-    var currentMode = MODE.MODE_SCREEN_TIME
+    var currentMode = MODE.SCREEN_TIME
     var packageName: String = ""
 
     private var totalScreenTime = 0L
@@ -51,21 +51,21 @@ class AppDetailsViewModel @Inject constructor(
         var index = 0
         logsMap.forEach { (day, data) ->
             daysNames.add(formatter.format(Date(day)))
-            val dailyAppUsage = usageStatsRepository.getUsageMapFromLogs(data)[packageName]
+            val dailyAppUsageMap = usageStatsRepository.getAppsUsageMapFromLogs(data)[packageName]
 
-            totalScreenTime += dailyAppUsage?.totalTimeInForeground ?: 0L
-            totalLaunchCount += dailyAppUsage?.launchCount ?: 0
+            totalScreenTime += dailyAppUsageMap?.totalTimeInForeground ?: 0L
+            totalLaunchCount += dailyAppUsageMap?.launchCount ?: 0
 
             screenYVals.add(
                 BarEntry(
                     index.toFloat(),
-                    dailyAppUsage?.totalTimeInForeground?.toFloat() ?: 0f
+                    dailyAppUsageMap?.totalTimeInForeground?.toFloat() ?: 0f
                 )
             )
             launchCountYVals.add(
                 BarEntry(
                     index.toFloat(),
-                    dailyAppUsage?.launchCount?.toFloat() ?: 0f
+                    dailyAppUsageMap?.launchCount?.toFloat() ?: 0f
                 )
             )
 
@@ -76,12 +76,12 @@ class AppDetailsViewModel @Inject constructor(
         appLaunchesBarDataSet = BarDataSet(launchCountYVals, "App launches")
 
         when (currentMode) {
-            MODE.MODE_SCREEN_TIME -> {
+            MODE.SCREEN_TIME -> {
                 barChartData.value = Pair(screenTimeBarDataSet, daysNames)
                 this.totalScreenTimeLiveData.value = totalScreenTime
             }
 
-            MODE.MODE_APP_LAUNCHES -> {
+            MODE.APP_LAUNCHES -> {
                 barChartData.value = Pair(appLaunchesBarDataSet, daysNames)
                 this.totalLaunchCountLiveData.value = totalLaunchCount
             }
@@ -91,12 +91,12 @@ class AppDetailsViewModel @Inject constructor(
 
     fun switchMode(mode: Int) {
         when (mode) {
-            MODE.MODE_SCREEN_TIME -> if (currentMode != MODE.MODE_SCREEN_TIME) {
-                currentMode = MODE.MODE_SCREEN_TIME
+            MODE.SCREEN_TIME -> if (currentMode != MODE.SCREEN_TIME) {
+                currentMode = MODE.SCREEN_TIME
                 switchToScreenTimeMode()
             }
-            MODE.MODE_APP_LAUNCHES -> if (currentMode != MODE.MODE_APP_LAUNCHES) {
-                currentMode = MODE.MODE_APP_LAUNCHES
+            MODE.APP_LAUNCHES -> if (currentMode != MODE.APP_LAUNCHES) {
+                currentMode = MODE.APP_LAUNCHES
                 switchToAppLaunchesMode()
             }
         }

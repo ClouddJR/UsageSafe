@@ -20,11 +20,11 @@ class UsageSafeApp : Application() {
         initRealm()
     }
 
-    private fun initRealm() {
-        DatabaseRepository.RealmInitializer.initRealm(this)
-    }
-
     private fun injectDependencies() {
         component.inject(this)
+    }
+
+    private fun initRealm() {
+        DatabaseRepository.RealmInitializer.initRealm(this)
     }
 }

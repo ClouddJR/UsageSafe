@@ -10,7 +10,7 @@ import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.ui.appdetails.AppDetailsActivity
 import com.clouddroid.usagesafe.util.PackageInfoUtils
 import com.clouddroid.usagesafe.util.TextUtils
-import kotlinx.android.synthetic.main.item_most_used.view.*
+import kotlinx.android.synthetic.main.item_app_usage_details.view.*
 
 class MostUsedAdapter(private val appUsageList: MutableList<AppUsageInfo>) :
     RecyclerView.Adapter<MostUsedAdapter.ViewHolder>() {
@@ -22,7 +22,7 @@ class MostUsedAdapter(private val appUsageList: MutableList<AppUsageInfo>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_most_used, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_app_usage_details, parent, false)
         return ViewHolder(itemView)
     }
 

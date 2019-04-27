@@ -4,8 +4,6 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.data.local.DatabaseRepository
 import com.clouddroid.usagesafe.data.local.UsageStatsRepository
-import com.clouddroid.usagesafe.util.DayBegin
-import com.clouddroid.usagesafe.util.PreferencesUtils.get
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -23,58 +21,32 @@ class MainActivityViewModel @Inject constructor(
 
     fun init() {
         databaseRepository.initialSetupFinished = false
-        if (!isLastWeekDataInsideDb()) {
-            disposable = Observable.fromCallable {
-                usageStatsRepository.getLogsFromLastWeek()
-            }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    databaseRepository.addLogEvent(it) { databaseRepository.initialSetupFinished = true }
-                }
-        } else {
-            removeOldTodayLogs()
-            disposable = Observable.fromCallable {
-                usageStatsRepository.getLogsFromToday()
-            }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    databaseRepository.addLogEvent(it) { databaseRepository.initialSetupFinished = true }
-                }
+
+        removeOldWeeklyLogs()
+
+        disposable = Observable.fromCallable {
+            usageStatsRepository.getLogsFromLastWeek()
         }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                databaseRepository.addLogEvent(it) { databaseRepository.initialSetupFinished = true }
+            }
     }
 
-    private fun removeOldTodayLogs() {
-        val hourBegin = sharedPreferences["day_begin"] ?: DayBegin._12AM
-
+    private fun removeOldWeeklyLogs() {
         val beginCalendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, hourBegin)
-        }
-
-        val endCalendar = (beginCalendar.clone() as Calendar).apply {
-            add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        databaseRepository.removeLogsBetweenRange(beginCalendar.timeInMillis, endCalendar.timeInMillis)
-    }
-
-    private fun isLastWeekDataInsideDb(): Boolean {
-        val yesterdayBeginCalendar = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_MONTH, -2)
+            add(Calendar.DAY_OF_MONTH, -6)
             set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
+            set(Calendar.MINUTE, 1)
         }
-        val yesterdayEndCalendar = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_MONTH, -1)
+
+        val endCalendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 23)
             set(Calendar.MINUTE, 59)
         }
 
-        return databaseRepository.getNumberOfLogsStored(
-            yesterdayBeginCalendar.timeInMillis,
-            yesterdayEndCalendar.timeInMillis
-        ) > 0
+        databaseRepository.removeLogsBetweenRange(beginCalendar.timeInMillis, endCalendar.timeInMillis)
     }
 
     override fun onCleared() {

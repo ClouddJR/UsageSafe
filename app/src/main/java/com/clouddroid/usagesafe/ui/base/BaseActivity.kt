@@ -13,6 +13,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        injectDependencies()
+    }
+
+    private fun injectDependencies() {
         (application as UsageSafeApp).component.inject(this)
     }
 
