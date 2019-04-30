@@ -3,9 +3,11 @@ package com.clouddroid.usagesafe.util
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
+import java.util.*
 
 
 object PackageInfoUtils {
@@ -49,5 +51,20 @@ object PackageInfoUtils {
             intent,
             PackageManager.MATCH_DEFAULT_ONLY
         )?.activityInfo?.packageName ?: ""
+    }
+
+    fun getLaunchableAppList(packageManager: PackageManager): List<ResolveInfo> {
+        val main = Intent(Intent.ACTION_MAIN, null).apply {
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+
+        val launchables = packageManager.queryIntentActivities(main, 0)
+
+        Collections.sort(
+            launchables,
+            ResolveInfo.DisplayNameComparator(packageManager)
+        )
+
+        return launchables
     }
 }
