@@ -28,5 +28,7 @@ abstract class BaseFragment : Fragment() {
         (activity?.application as UsageSafeApp).component.inject(this)
     }
 
+    open fun handleBackButtonPress(): Boolean = false
+
     abstract fun getLayoutId(): Int
 }

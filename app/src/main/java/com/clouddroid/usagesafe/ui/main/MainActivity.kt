@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.ui.applimits.AppLimitsFragment
 import com.clouddroid.usagesafe.ui.base.BaseActivity
+import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.contacts.ContactsListFragment
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsFragment
 import com.clouddroid.usagesafe.ui.todaystats.TodaysStatsFragment
@@ -39,10 +40,22 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (!todaysStatsFragment.isVisible) {
+
+        //delegating back button click event to fragments
+        var clickHandled = false
+        supportFragmentManager.fragments.forEach {
+            when (it) {
+                is BaseFragment -> clickHandled = it.handleBackButtonPress()
+            }
+        }
+
+        if (!todaysStatsFragment.isVisible && !clickHandled) {
             navigateTo(FragmentDestination.TODAYS_STATS)
+            bottomNav.selectedItemId = R.id.todaysStatsFragment
         } else {
-            super.onBackPressed()
+            if (!clickHandled) {
+                super.onBackPressed()
+            }
         }
     }
 
