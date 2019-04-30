@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/dialog_bg_app_limit">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/limitTitleTV"
-        android:layout_width="match_parent"
+        android:id="@+id/appTitleTV"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans_regular"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="?android:attr/actionBarSize"
         android:gravity="center"
-        android:padding="8dp"
-        android:text="Set a limit for this app"
-        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/appIconIV"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_contacts"
+        app:layout_constraintBottom_toBottomOf="@id/appTitleTV"
+        app:layout_constraintStart_toEndOf="@id/appTitleTV"
+        app:layout_constraintTop_toTopOf="@id/appTitleTV" />
 
     <NumberPicker
         android:id="@+id/hourNumberPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:theme="@style/AppTheme.NumberPicker"
         app:layout_constraintEnd_toStartOf="@id/hoursTV"
-        app:layout_constraintTop_toBottomOf="@id/limitTitleTV" />
+        app:layout_constraintTop_toBottomOf="@id/appTitleTV" />
 
     <TextView
         android:id="@+id/hoursTV"
@@ -44,10 +57,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:theme="@style/AppTheme.NumberPicker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/hoursTV"
-        app:layout_constraintTop_toBottomOf="@id/limitTitleTV" />
+        app:layout_constraintTop_toBottomOf="@id/appTitleTV" />
 
 
     <TextView
@@ -61,16 +77,5 @@
         app:layout_constraintStart_toEndOf="@id/minuteNumberPicker"
         app:layout_constraintTop_toTopOf="@id/minuteNumberPicker" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/setLimitBT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:text="Set limit"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hourNumberPicker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
