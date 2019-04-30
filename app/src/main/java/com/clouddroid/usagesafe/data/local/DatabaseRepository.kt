@@ -85,14 +85,6 @@ class DatabaseRepository {
         }
     }
 
-    fun getNumberOfLogsStored(beginMillis: Long, endMillis: Long): Int {
-        val realm = Realm.getInstance(config)
-        val numberOfLogs =
-            realm.where(LogEvent::class.java).between("timestamp", beginMillis, endMillis).findAll().count()
-        realm.close()
-        return numberOfLogs
-    }
-
     fun getTheEarliestLogEvent(): Calendar {
         val realm = Realm.getInstance(config)
         val firstLogCalendar = Calendar.getInstance().apply {
@@ -118,5 +110,12 @@ class DatabaseRepository {
         val listOfContacts = realm.where(Contact::class.java).findAll()
         realm.close()
         return listOfContacts
+    }
+
+    fun getListOfLimits(): List<AppLimit> {
+        val realm = Realm.getInstance(config)
+        val listOfAppLimits = realm.where(AppLimit::class.java).findAll()
+        realm.close()
+        return listOfAppLimits
     }
 }
