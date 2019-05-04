@@ -1,12 +1,15 @@
 package com.clouddroid.usagesafe.ui.applimits
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.data.model.AppLimit
+import com.clouddroid.usagesafe.data.service.AppUsageMonitorService
 import com.clouddroid.usagesafe.ui.applimits.dialog.AppLimitsDialog
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import io.realm.OrderedRealmCollection
@@ -28,6 +31,7 @@ class AppLimitsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeData()
         setOnClickListeners()
+        manageFeatureToggle()
     }
 
     fun scrollToTop() {
@@ -37,13 +41,30 @@ class AppLimitsFragment : BaseFragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[AppLimitsViewModel::class.java]
-        viewModel.getListOfAppLimits()
+        viewModel.init()
     }
 
     private fun observeData() {
         viewModel.appsList.observe(this, Observer {
             initRV(it)
         })
+
+        viewModel.areAppLimitsEnabled.observe(this, Observer { isEnabled ->
+            toggleUsageMonitorService(isEnabled)
+            enableSwitch.isChecked = isEnabled
+            appsListRV.visibility = if (isEnabled) View.VISIBLE else View.GONE
+        })
+    }
+
+    private fun toggleUsageMonitorService(isEnabled: Boolean) {
+        val intent = Intent(context, AppUsageMonitorService::class.java)
+
+        //stopping or launching service that monitors usage
+        when (isEnabled) {
+            true -> ContextCompat.startForegroundService(context!!, intent)
+            false -> context?.stopService(intent)
+        }
+
     }
 
     private fun initRV(appsList: List<AppLimit>) {
@@ -64,6 +85,12 @@ class AppLimitsFragment : BaseFragment() {
     private fun displayDialog() {
         fragmentManager?.let {
             AppLimitsDialog.display(it)
+        }
+    }
+
+    private fun manageFeatureToggle() {
+        enableSwitch.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.updateFeatureState(isChecked)
         }
     }
 }
