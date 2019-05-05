@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+
         <activity
             android:name=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -35,6 +36,10 @@
             android:name=".ui.daydetails.DayDetailsActivity"
             android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".data.service.AppUsageMonitorService"
+            android:exported="false" />
     </application>
 
 </manifest>
