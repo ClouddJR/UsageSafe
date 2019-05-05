@@ -1,6 +1,7 @@
 package com.clouddroid.usagesafe.injection.component
 
 import com.clouddroid.usagesafe.UsageSafeApp
+import com.clouddroid.usagesafe.data.service.AppUsageMonitorService
 import com.clouddroid.usagesafe.injection.module.ApplicationModule
 import com.clouddroid.usagesafe.injection.module.ViewModelsModule
 import com.clouddroid.usagesafe.ui.base.BaseActivity
@@ -16,4 +17,5 @@ interface ApplicationComponent {
     fun inject(target: BaseActivity)
     fun inject(target: BaseFragment)
     fun inject(target: BaseDialogFragment)
+    fun inject(target: AppUsageMonitorService)
 }
