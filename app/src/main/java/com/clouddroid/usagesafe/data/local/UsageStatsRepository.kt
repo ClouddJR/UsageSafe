@@ -58,7 +58,7 @@ class UsageStatsRepository @Inject constructor(
         return getLogsFromRange(beginCalendar.timeInMillis, endCalendar.timeInMillis)
     }
 
-    private fun getLogsFromRange(beginMillis: Long, endMillis: Long): List<LogEvent> {
+    fun getLogsFromRange(beginMillis: Long, endMillis: Long): List<LogEvent> {
         val logs = mutableListOf<LogEvent>()
 
         val events = usageStatsManager.queryEvents(beginMillis, endMillis)
