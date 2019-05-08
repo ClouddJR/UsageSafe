@@ -53,7 +53,7 @@ class DatabaseRepository {
         val chunkedList = logEvents.chunked(500)
         chunkedList.forEach { list ->
             val realm = Realm.getInstance(config)
-            if (chunkedList.last() == list) {
+            if (chunkedList.lastIndex == chunkedList.indexOf(list)) {
                 realm.executeTransactionAsync({
                     it.insertOrUpdate(list)
                 }, {
