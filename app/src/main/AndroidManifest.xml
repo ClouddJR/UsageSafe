@@ -37,6 +37,11 @@
             android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name=".ui.appblocking.BlockingActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar.Translucent" />
+
         <service
             android:name=".data.service.AppUsageMonitorService"
             android:exported="false" />
