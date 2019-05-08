@@ -54,7 +54,7 @@ class AppLaunchesViewModel @Inject constructor(
 
         barChartData.value = Pair(BarDataSet(yVals, ""), daysNames)
         this.totalLaunchCount.value = totalLaunchCount
-        this.mostOpenedApp.value = weeklyAppUsage.toList().maxBy { it.second.launchCount }!!.second
+        this.mostOpenedApp.value = weeklyAppUsage.toList().maxBy { it.second.launchCount }?.second
     }
 
 
