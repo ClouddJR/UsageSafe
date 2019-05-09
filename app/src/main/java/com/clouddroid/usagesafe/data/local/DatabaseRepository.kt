@@ -35,6 +35,14 @@ class DatabaseRepository {
         }
     }
 
+    fun deleteAppLimit(appLimit: AppLimit) {
+        val realm = Realm.getInstance(config)
+        realm.executeTransaction {
+            it.where(AppLimit::class.java).equalTo("packageName", appLimit.packageName)
+                .findAll().deleteAllFromRealm()
+        }
+    }
+
     fun saveScreenLimit(screenLimit: ScreenLimit) {
         val realm = Realm.getInstance(config)
         realm.executeTransactionAsync {
@@ -51,6 +59,7 @@ class DatabaseRepository {
 
     fun addLogEvent(logEvents: List<LogEvent>, onFinishedListener: () -> Unit) {
         val chunkedList = logEvents.chunked(500)
+        if (chunkedList.isEmpty()) onFinishedListener.invoke()
         chunkedList.forEach { list ->
             val realm = Realm.getInstance(config)
             if (chunkedList.lastIndex == chunkedList.indexOf(list)) {
