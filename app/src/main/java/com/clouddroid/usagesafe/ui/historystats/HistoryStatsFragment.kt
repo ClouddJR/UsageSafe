@@ -1,16 +1,18 @@
 package com.clouddroid.usagesafe.ui.historystats
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
-import com.clouddroid.usagesafe.ui.main.MainActivity
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.historystats.applaunches.AppLaunchesFragment
 import com.clouddroid.usagesafe.ui.historystats.screen.ScreenTimeFragment
 import com.clouddroid.usagesafe.ui.historystats.unlocks.UnlocksFragment
+import com.clouddroid.usagesafe.ui.main.MainActivity
+import com.clouddroid.usagesafe.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_history_stats.*
 
 class HistoryStatsFragment : BaseFragment() {
@@ -33,6 +35,7 @@ class HistoryStatsFragment : BaseFragment() {
         setUpViewPager()
         observeData()
         setOnWeekChangeListener()
+        setOnClickListeners()
     }
 
     fun scrollToTop() {
@@ -88,6 +91,13 @@ class HistoryStatsFragment : BaseFragment() {
 
         arrowLeft.setOnClickListener {
             viewModel.leftArrowClicked()
+        }
+    }
+
+    private fun setOnClickListeners() {
+        settingsIcon.setOnClickListener {
+            startActivity(Intent(context, SettingsActivity::class.java))
+            activity?.finish()
         }
     }
 

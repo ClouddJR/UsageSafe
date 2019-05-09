@@ -15,6 +15,7 @@ import com.clouddroid.usagesafe.ui.appdetails.AppDetailsActivity
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
 import com.clouddroid.usagesafe.ui.main.MainActivity
+import com.clouddroid.usagesafe.ui.settings.SettingsActivity
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -102,6 +103,11 @@ class TodaysStatsFragment : BaseFragment() {
         showMoreBT.setOnClickListener {
             appUsageInfoAdapter.addItems(viewModel.otherAppsList)
             showMoreBT.visibility = View.GONE
+        }
+
+        settingsIcon.setOnClickListener {
+            startActivity(Intent(context, SettingsActivity::class.java))
+            activity?.finish()
         }
 
         unlockCountTV.setOnClickListener {

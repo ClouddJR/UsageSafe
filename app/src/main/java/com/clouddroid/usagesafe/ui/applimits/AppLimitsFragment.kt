@@ -12,6 +12,7 @@ import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.service.AppUsageMonitorService
 import com.clouddroid.usagesafe.ui.applimits.dialog.AppLimitsDialog
 import com.clouddroid.usagesafe.ui.base.BaseFragment
+import com.clouddroid.usagesafe.ui.settings.SettingsActivity
 import io.realm.OrderedRealmCollection
 import kotlinx.android.synthetic.main.fragment_app_limits.*
 
@@ -79,6 +80,11 @@ class AppLimitsFragment : BaseFragment() {
     private fun setOnClickListeners() {
         addLimitFAB.setOnClickListener {
             displayDialog()
+        }
+
+        settingsIcon.setOnClickListener {
+            startActivity(Intent(context, SettingsActivity::class.java))
+            activity?.finish()
         }
     }
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="main_category"
+        app:title="Main">
+
+        <Preference
+            app:key="premium"
+            app:title="Premium functionality" />
+
+        <Preference
+            app:key="rate"
+            app:title="Rate the app" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="about_category"
+        app:title="About">
+
+        <Preference
+            app:key="privacy_policy"
+            app:title="Privacy Policy" />
+
+        <Preference
+            app:key="contact"
+            app:title="Contact" />
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

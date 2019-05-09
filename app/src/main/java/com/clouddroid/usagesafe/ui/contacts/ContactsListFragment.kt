@@ -1,6 +1,7 @@
 package com.clouddroid.usagesafe.ui.contacts
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.ui.base.BaseFragment
+import com.clouddroid.usagesafe.ui.settings.SettingsActivity
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_contacts_list.*
 
@@ -29,7 +31,7 @@ class ContactsListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRV()
-        initOnFABClick()
+        setOnClickListeners()
         observeDataChanges()
     }
 
@@ -47,9 +49,14 @@ class ContactsListFragment : BaseFragment() {
         contactsListRV.adapter = adapter
     }
 
-    private fun initOnFABClick() {
+    private fun setOnClickListeners() {
         addContactFAB.setOnClickListener {
             displayAddContactDialog()
+        }
+
+        settingsIcon.setOnClickListener {
+            startActivity(Intent(context, SettingsActivity::class.java))
+            activity?.finish()
         }
     }
 

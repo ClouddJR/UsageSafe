@@ -24,6 +24,7 @@ class BlockingDialog(private val passedContext: Context, private val onButtonCli
     private fun setOnClickListener() {
         exitButton.setOnClickListener {
             onButtonClick.invoke()
+            dismiss()
         }
     }
 }
