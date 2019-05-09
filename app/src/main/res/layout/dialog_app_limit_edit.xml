@@ -78,14 +78,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/deleteLimitBT"
             style="?borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_weight="0.5"
-            android:text="Delete" />
+            android:text="Delete"
+            android:textColor="@color/button_text_color" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/updateLimitBT"
