@@ -47,10 +47,16 @@
         <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
 
-    <style name="AppTheme.NumberPicker">
+    <style name="AppTheme.NumberPickerLargeText">
         <item name="android:colorControlNormal">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AppTheme.NumberPickerSmallText">
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="ColorAccentRippleEffect">

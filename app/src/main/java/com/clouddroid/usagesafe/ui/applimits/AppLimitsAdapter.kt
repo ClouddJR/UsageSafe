@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
+import com.clouddroid.usagesafe.UsageSafeApp
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.util.PackageInfoUtils
 import com.clouddroid.usagesafe.util.TextUtils
@@ -43,7 +44,17 @@ class AppLimitsAdapter(
             itemView.appTitleTV.text = appName
 
             itemView.currentLimitTV.text =
-                "Current limit: ${TextUtils.getTotalScreenTimeText(appLimit.currentLimit, itemView.context)}"
+                "Current limit: ${TextUtils.getAppLimitText(appLimit.currentLimit)}"
+
+            itemView.setOnClickListener {
+                displayEditOrDeleteDialog(itemView.context, appLimit)
+            }
+        }
+
+        private fun displayEditOrDeleteDialog(context: Context, appLimit: AppLimit) {
+            val databaseRepository = (context.applicationContext as UsageSafeApp).component.getDatabaseRepository()
+            val dialog = AppLimitEditDialog(context, appLimit, databaseRepository)
+            dialog.show()
         }
     }
 }
