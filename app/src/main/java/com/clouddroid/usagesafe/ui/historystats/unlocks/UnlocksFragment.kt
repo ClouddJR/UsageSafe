@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.data.model.LoadingState
-import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
 import com.clouddroid.usagesafe.ui.base.BaseFragment
+import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
 import com.clouddroid.usagesafe.ui.daydetails.DayDetailsViewModel
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsViewModel
 import com.github.mikephil.charting.components.XAxis
@@ -84,15 +84,10 @@ class UnlocksFragment : BaseFragment() {
     }
 
     private fun drawChart(barDataSet: BarDataSet, daysNames: List<String>) {
+        resetChart()
         barDataSet.valueTypeface = ResourcesCompat.getFont(context!!, R.font.opensans_regular)
         barDataSet.valueTextColor = Color.WHITE
         barDataSet.color = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
-
-        barChart.data = BarData(barDataSet)
-        barChart.data.setValueFormatter { value, _, _, _ ->
-            value.toInt().toString()
-        }
-        barChart.data.setValueTextSize(9f)
 
         barChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onNothingSelected() {
@@ -119,9 +114,16 @@ class UnlocksFragment : BaseFragment() {
         barChart.xAxis.textSize = 13f
         barChart.xAxis.textColor = Color.WHITE
         barChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        barChart.xAxis.labelCount = daysNames.size
         barChart.xAxis.setValueFormatter { value, _ ->
             daysNames[value.toInt()]
         }
+
+        barChart.data = BarData(barDataSet)
+        barChart.data.setValueFormatter { value, _, _, _ ->
+            value.toInt().toString()
+        }
+        barChart.data.setValueTextSize(9f)
 
         barChart.axisLeft.setDrawGridLines(false)
         barChart.axisLeft.setDrawAxisLine(false)
@@ -130,5 +132,11 @@ class UnlocksFragment : BaseFragment() {
         barChart.axisRight.setDrawGridLines(false)
         barChart.axisRight.setDrawLabels(false)
         barChart.animateXY(500, 400)
+    }
+
+    private fun resetChart() {
+        barChart.data?.clearValues()
+        barChart.xAxis.valueFormatter = null
+        barChart.notifyDataSetChanged()
     }
 }
