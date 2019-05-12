@@ -1,31 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         app:key="main_category"
-        app:title="Main">
+        app:title="@string/main_section_title">
+
+        <ListPreference
+            app:defaultValue="12-hour clock"
+            app:entries="@array/time_formats"
+            app:entryValues="@array/time_formats"
+            app:key="time_format"
+            app:title="@string/time_format"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/day_begin_hours_titles"
+            app:entryValues="@array/day_begin_hours_values"
+            app:key="day_begin"
+            app:title="@string/day_begin"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="six"
+            app:entries="@array/week_begin_titles"
+            app:entryValues="@array/week_begin_values"
+            app:key="week_begin"
+            app:title="@string/week_begin"
+            app:useSimpleSummaryProvider="true" />
 
         <Preference
             app:key="premium"
-            app:title="Premium functionality" />
+            app:title="@string/premium" />
 
         <Preference
             app:key="rate"
-            app:title="Rate the app" />
+            app:title="@string/rate" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         app:key="about_category"
-        app:title="About">
+        app:title="@string/about_section_title">
 
         <Preference
             app:key="privacy_policy"
-            app:title="Privacy Policy" />
+            app:title="@string/privacy_policy" />
 
         <Preference
             app:key="contact"
-            app:title="Contact" />
+            app:title="@string/contact" />
 
     </PreferenceCategory>
 

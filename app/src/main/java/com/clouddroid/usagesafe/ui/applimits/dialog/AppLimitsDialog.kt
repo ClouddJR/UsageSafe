@@ -65,7 +65,7 @@ class AppLimitsDialog : BaseDialogFragment() {
         val height = ViewGroup.LayoutParams.MATCH_PARENT
         val width = ViewGroup.LayoutParams.MATCH_PARENT
         dialog?.window?.setLayout(width, height)
-        dialog?.window?.setWindowAnimations(R.style.AppTheme_Slide)
+        dialog?.window?.setWindowAnimations(R.style.SlideAnimation)
     }
 
     private fun initViewModel() {

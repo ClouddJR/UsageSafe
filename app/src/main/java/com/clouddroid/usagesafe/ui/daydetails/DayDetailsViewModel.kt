@@ -11,7 +11,9 @@ import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.util.DayBegin
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_DAY_BEGIN
+import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_TIME_FORMAT
 import com.clouddroid.usagesafe.util.PreferencesUtils.get
+import com.clouddroid.usagesafe.util.TimeFormat
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import io.reactivex.Single
@@ -46,7 +48,10 @@ class DayDetailsViewModel @Inject constructor(
     val currentDayText = MutableLiveData<String>()
 
     //beginning of the day according to user preferences
-    private val hourDayBegin: Int = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM] ?: DayBegin._12AM
+    private val hourDayBegin: Int = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM]!!.toInt()
+
+    //preferred time format according to user preferences
+    private val timeFormat: String = sharedPreferences[PREF_TIME_FORMAT, TimeFormat._12_HOUR_CLOCK]!!
 
     //handles the logic for changing days
     private val dayOfFirstSavedLog = databaseRepository.getTheEarliestLogEvent()
@@ -111,7 +116,12 @@ class DayDetailsViewModel @Inject constructor(
     }
 
     private fun calculateDailyUsage(logs: List<LogEvent>, start: Long, end: Long) {
-        val formatter = SimpleDateFormat("h a", Locale.getDefault())
+
+        val formatter = when (timeFormat) {
+            TimeFormat._12_HOUR_CLOCK -> SimpleDateFormat("h a", Locale.getDefault())
+            TimeFormat._24_HOUR_CLOCK -> SimpleDateFormat("H", Locale.getDefault())
+            else -> SimpleDateFormat("H", Locale.getDefault())
+        }
 
         val screenYVals = mutableListOf<BarEntry>()
         val launchCountYVals = mutableListOf<BarEntry>()

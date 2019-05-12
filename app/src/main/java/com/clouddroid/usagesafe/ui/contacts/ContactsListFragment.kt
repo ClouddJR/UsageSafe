@@ -61,7 +61,7 @@ class ContactsListFragment : BaseFragment() {
     }
 
     private fun displayAddContactDialog() {
-        val dialog = AlertDialog.Builder(context!!, R.style.AlertDialog)
+        val dialog = AlertDialog.Builder(context!!)
             .setView(R.layout.dialog_add_contact)
             .show()
 

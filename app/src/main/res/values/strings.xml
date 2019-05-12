@@ -4,4 +4,81 @@
     <string name="total_screen_time_text">%d hr, %d min</string>
     <string name="most_used_screen_time">Screen time: %1$s</string>
     <string name="most_used_opened_times">Opened: %d times </string>
+
+    <!--settings-->
+    <string name="main_section_title">Main</string>
+
+    <string name="time_format">Time format</string>
+    <string name="time_format_12h">12-hour clock</string>
+    <string name="time_format_24h">24-hour clock</string>
+
+    <string-array name="time_formats">
+        <item>@string/time_format_12h</item>
+        <item>@string/time_format_24h</item>
+    </string-array>
+
+    <string name="day_begin">Beginning of the day</string>
+    <string name="day_begin_12am">12 a.m</string>
+    <string name="day_begin_1am">1 a.m</string>
+    <string name="day_begin_2am">2 a.m</string>
+    <string name="day_begin_3am">3 a.m</string>
+    <string name="day_begin_4am">4 a.m</string>
+    <string name="day_begin_5am">5 a.m</string>
+    <string name="day_begin_6am">6 a.m</string>
+    <string name="day_begin_7am">7 a.m</string>
+    <string name="day_begin_8am">8 a.m</string>
+    <string name="day_begin_9am">9 a.m</string>
+    <string name="day_begin_10am">10 a.m</string>
+
+    <string-array name="day_begin_hours_titles">
+        <item>@string/day_begin_12am</item>
+        <item>@string/day_begin_1am</item>
+        <item>@string/day_begin_2am</item>
+        <item>@string/day_begin_3am</item>
+        <item>@string/day_begin_4am</item>
+        <item>@string/day_begin_5am</item>
+        <item>@string/day_begin_6am</item>
+        <item>@string/day_begin_7am</item>
+        <item>@string/day_begin_8am</item>
+        <item>@string/day_begin_9am</item>
+        <item>@string/day_begin_10am</item>
+    </string-array>
+
+    <string-array name="day_begin_hours_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string name="week_begin">Beginning of the week</string>
+    <string name="week_begin_six_days_ago">six days ago</string>
+    <string name="week_begin_sunday">Sunday</string>
+    <string name="week_begin_monday">Monday</string>
+
+    <string-array name="week_begin_titles">
+        <item>@string/week_begin_six_days_ago</item>
+        <item>@string/week_begin_sunday</item>
+        <item>@string/week_begin_monday</item>
+    </string-array>
+
+    <string-array name="week_begin_values">
+        <item>six</item>
+        <item>sunday</item>
+        <item>monday</item>
+    </string-array>
+
+    <string name="premium">Premium functionality</string>
+    <string name="rate">Rate the app</string>
+
+    <string name="about_section_title">About</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="contact">Contact</string>
 </resources>

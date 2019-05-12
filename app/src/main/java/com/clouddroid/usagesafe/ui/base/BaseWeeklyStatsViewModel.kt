@@ -38,7 +38,7 @@ abstract class BaseWeeklyStatsViewModel(
 
     //beginning of the week and day according to user preferences
     private val weekBegin: String = sharedPreferences[PREF_WEEK_BEGIN] ?: WeekBegin.SIX_DAYS_AGO
-    private val hourDayBegin: Int = sharedPreferences[PREF_DAY_BEGIN] ?: DayBegin._12AM
+    private val hourDayBegin: Int = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM]!!.toInt()
 
     val weeklyData = MutableLiveData<Map<Long, MutableList<LogEvent>>>()
 

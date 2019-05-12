@@ -33,16 +33,13 @@ class UsageStatsRepository @Inject constructor(
             set(Calendar.MINUTE, 1)
         }
 
-        val endCalendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-        }
+        val endCalendar = Calendar.getInstance()
 
         return getLogsFromRange(beginCalendar.timeInMillis, endCalendar.timeInMillis)
     }
 
     fun getLogsFromToday(): List<LogEvent> {
-        val dayBegin = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM] ?: DayBegin._12AM
+        val dayBegin = Integer.parseInt(sharedPreferences[PREF_DAY_BEGIN]!!)
 
         val beginCalendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, dayBegin)
@@ -79,18 +76,20 @@ class UsageStatsRepository @Inject constructor(
 
     fun getUsageFromToday(): Pair<Map<String, AppUsageInfo>, Int> {
 
+        val dayBegin = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM]!!.toInt()
+
         var unlockCount = 0
         val allEventsList = mutableListOf<LogEvent>()
         val appUsageMap = mutableMapOf<String, AppUsageInfo>()
 
         val beginCalendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 1)
+            set(Calendar.HOUR_OF_DAY, dayBegin)
+            set(Calendar.MINUTE, 0)
         }
 
-        val endCalendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
+        val endCalendar = (beginCalendar.clone() as Calendar).apply {
+            add(Calendar.HOUR_OF_DAY, 23)
+            add(Calendar.MINUTE, 59)
         }
 
         //getting only relevant events out of all logs (getting only MOVE_TO_BACKGROUND or MOVE_TO_FOREGROUND)
