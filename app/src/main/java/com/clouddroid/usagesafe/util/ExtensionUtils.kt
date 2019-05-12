@@ -38,4 +38,8 @@ object ExtensionUtils {
                 && this.get(Calendar.MONTH) == other.get(Calendar.MONTH)
                 && this.get(Calendar.DAY_OF_MONTH) == other.get(Calendar.DAY_OF_MONTH)
     }
+
+    fun Calendar.isWithin(start: Calendar, end: Calendar): Boolean {
+        return this.after(start) && this.before(end)
+    }
 }

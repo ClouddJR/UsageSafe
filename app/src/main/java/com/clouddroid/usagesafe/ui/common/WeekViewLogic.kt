@@ -1,8 +1,8 @@
 package com.clouddroid.usagesafe.ui.common
 
-import com.clouddroid.usagesafe.util.WeekBegin
 import com.clouddroid.usagesafe.util.ExtensionUtils.isBefore
-import com.clouddroid.usagesafe.util.ExtensionUtils.isTheSameDay
+import com.clouddroid.usagesafe.util.ExtensionUtils.isWithin
+import com.clouddroid.usagesafe.util.WeekBegin
 import java.util.*
 
 class WeekViewLogic(
@@ -17,8 +17,37 @@ class WeekViewLogic(
     var isCurrentWeekTheLatest = false
 
     init {
-        setCurrentWeek(todayCalendar)
+        setCurrentWeek(getInitialEndOfWeek(todayCalendar))
         checkConstraints(currentWeek.first, currentWeek.second)
+    }
+
+    private fun getInitialEndOfWeek(todayCalendar: Calendar): Calendar {
+        return when (weekBegin) {
+            WeekBegin.MONDAY -> {
+                todayCalendar.apply {
+
+                    //looking for next Sunday
+                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                        add(Calendar.DAY_OF_MONTH, 1)
+                    }
+                }
+            }
+            WeekBegin.SUNDAY -> {
+                todayCalendar.apply {
+
+                    //looking for next Saturday
+                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
+                        add(Calendar.DAY_OF_MONTH, 1)
+                    }
+                }
+            }
+            WeekBegin.SIX_DAYS_AGO -> {
+                todayCalendar
+            }
+            else -> {
+                todayCalendar
+            }
+        }
     }
 
     private fun setCurrentWeek(lastDayOfWeek: Calendar) {
@@ -78,12 +107,12 @@ class WeekViewLogic(
                 currentEndOfWeek.apply {
 
                     //looking for next Monday
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY && before(todayCalendar)) {
+                    while (get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
                         add(Calendar.DAY_OF_MONTH, 1)
                     }
 
                     //calculating the end of this week
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY && before(todayCalendar)) {
+                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
                         add(Calendar.DAY_OF_MONTH, 1)
                     }
 
@@ -94,12 +123,12 @@ class WeekViewLogic(
                 currentEndOfWeek.apply {
 
                     //looking for next Sunday
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY && before(todayCalendar)) {
+                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
                         add(Calendar.DAY_OF_MONTH, 1)
                     }
 
                     //calculating the end of this week
-                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && before(todayCalendar)) {
+                    while (get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
                         add(Calendar.DAY_OF_MONTH, 1)
                     }
                 }
@@ -166,7 +195,7 @@ class WeekViewLogic(
         isCurrentWeekTheEarliest = lastDayOfPreviousWeek.isBefore(dayOfFirstSavedLog)
 
         //checking if this is the latest possible week
-        val lastDayOfNextWeek = getLastDayOfNextWeek(currentEndOfWeek.clone() as Calendar)
-        isCurrentWeekTheLatest = lastDayOfNextWeek.isTheSameDay(currentEndOfWeek)
+        val currentCalendar = Calendar.getInstance()
+        isCurrentWeekTheLatest = currentCalendar.isWithin(currentBeginOfWeek, currentEndOfWeek)
     }
 }
