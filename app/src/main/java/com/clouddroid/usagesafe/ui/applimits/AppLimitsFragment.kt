@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewPropertyAnimator
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,6 +22,8 @@ class AppLimitsFragment : BaseFragment() {
 
     private lateinit var viewModel: AppLimitsViewModel
     private lateinit var adapter: AppLimitsAdapter
+
+    private var viewPropertyAnimator: ViewPropertyAnimator? = null
 
     override fun getLayoutId() = R.layout.fragment_app_limits
 
@@ -53,7 +57,26 @@ class AppLimitsFragment : BaseFragment() {
         viewModel.areAppLimitsEnabled.observe(this, Observer { isEnabled ->
             toggleUsageMonitorService(isEnabled)
             enableSwitch.isChecked = isEnabled
-            appsListRV.visibility = if (isEnabled) View.VISIBLE else View.GONE
+
+            //toggle the RV visibility and schedule items animation if visible
+            if (isEnabled) {
+                if (viewPropertyAnimator != null) {
+                    viewPropertyAnimator!!.cancel()
+                }
+                appsListRV.alpha = 1f
+                appsListRV.visibility = View.VISIBLE
+                val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+                appsListRV.layoutAnimation = animation
+                appsListRV.scheduleLayoutAnimation()
+                appsListRV.invalidate()
+
+            } else {
+                viewPropertyAnimator = appsListRV.animate()
+                    .alpha(0f)
+                    .setDuration(300)
+                    .withEndAction { appsListRV.visibility = View.INVISIBLE }
+                viewPropertyAnimator?.start()
+            }
         })
     }
 
