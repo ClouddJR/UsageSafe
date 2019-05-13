@@ -56,7 +56,6 @@ class ContactsListFragment : BaseFragment() {
 
         settingsIcon.setOnClickListener {
             startActivity(Intent(context, SettingsActivity::class.java))
-            activity?.finish()
         }
     }
 

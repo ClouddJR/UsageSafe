@@ -1,7 +1,7 @@
 package com.clouddroid.usagesafe.ui.todaystats
 
-import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.core.graphics.drawable.toBitmap
@@ -13,15 +13,22 @@ import androidx.palette.graphics.Palette
 import com.clouddroid.usagesafe.data.local.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.util.PackageInfoUtils.getResizedAppIcon
+import com.clouddroid.usagesafe.util.PreferencesKeys
 import com.clouddroid.usagesafe.util.TextUtils.getTotalScreenTimeText
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository: UsageStatsRepository) : ViewModel() {
+class TodaysStatsViewModel @Inject constructor(
+    private val usageStatsRepository: UsageStatsRepository,
+    private val sharedPreferences: SharedPreferences
+) : ViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private val compositeDisposable = CompositeDisposable()
 
     private val appUsageMap = MutableLiveData<Map<String, AppUsageInfo>>()
     val unlockCount = MutableLiveData<Int>()
@@ -29,9 +36,23 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
 
     val otherAppsList = mutableListOf<AppUsageInfo>()
 
-    @SuppressLint("CheckResult")
     fun init() {
-        Observable.fromCallable { usageStatsRepository.getUsageFromToday() }
+        getUsageFromToday()
+        registerPreferencesListener()
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        if (key == PreferencesKeys.PREF_DAY_BEGIN) {
+            getUsageFromToday()
+        }
+    }
+
+    private fun registerPreferencesListener() {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun getUsageFromToday() {
+        compositeDisposable.add(Observable.fromCallable { usageStatsRepository.getUsageFromToday() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -46,8 +67,7 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
 
             }, {
                 it.printStackTrace()
-            })
-
+            }))
     }
 
     fun getAppUsageMap(): LiveData<Map<String, AppUsageInfo>> = Transformations.map(appUsageMap) {
@@ -160,4 +180,9 @@ class TodaysStatsViewModel @Inject constructor(private val usageStatsRepository:
     }
 
     private fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
+    }
 }

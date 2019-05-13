@@ -9,6 +9,7 @@ import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.ui.common.WeekViewLogic
 import com.clouddroid.usagesafe.ui.common.WeeklyDataMapHolder
 import com.clouddroid.usagesafe.util.DayBegin
+import com.clouddroid.usagesafe.util.PreferencesKeys
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_DAY_BEGIN
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_WEEK_BEGIN
 import com.clouddroid.usagesafe.util.PreferencesUtils.get
@@ -21,8 +22,8 @@ import java.util.*
 
 abstract class BaseWeeklyStatsViewModel(
     protected val databaseRepository: DatabaseRepository,
-    sharedPreferences: SharedPreferences
-) : ViewModel() {
+    private val sharedPreferences: SharedPreferences
+) : ViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -37,13 +38,39 @@ abstract class BaseWeeklyStatsViewModel(
     val currentWeekText = MutableLiveData<String>()
 
     //beginning of the week and day according to user preferences
-    private val weekBegin: String = sharedPreferences[PREF_WEEK_BEGIN] ?: WeekBegin.SIX_DAYS_AGO
-    private val hourDayBegin: Int = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM]!!.toInt()
+    private var weekBegin: String = sharedPreferences[PREF_WEEK_BEGIN, WeekBegin.SIX_DAYS_AGO]!!
+    private var hourDayBegin: Int = sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM]!!.toInt()
 
     val weeklyData = MutableLiveData<Map<Long, MutableList<LogEvent>>>()
 
     private val dayOfFirstSavedLog = databaseRepository.getTheEarliestLogEvent()
-    private val weekViewLogic = WeekViewLogic(Calendar.getInstance(), weekBegin, dayOfFirstSavedLog)
+    private val weekViewLogic = WeekViewLogic(Calendar.getInstance(), dayOfFirstSavedLog, weekBegin)
+
+    override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String) {
+
+        //reacting when user changed beginning of the week
+        if (key == PreferencesKeys.PREF_WEEK_BEGIN) {
+            weekBegin = prefs[PREF_WEEK_BEGIN, WeekBegin.SIX_DAYS_AGO]!!
+            weekViewLogic.weekBegin = weekBegin
+            weekViewLogic.refreshWeek()
+            updateCurrentWeek()
+        }
+
+        //reacting when user changed beginning of the day
+        if (key == PreferencesKeys.PREF_DAY_BEGIN) {
+            hourDayBegin = prefs[PREF_DAY_BEGIN, DayBegin._12AM]!!.toInt()
+            updateCurrentWeek()
+        }
+    }
+
+    fun init() {
+        registerPreferencesListener()
+        updateCurrentWeek()
+    }
+
+    private fun registerPreferencesListener() {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
 
     fun updateCurrentWeek() {
         loadingState.value = LoadingState.LOADING
@@ -94,6 +121,7 @@ abstract class BaseWeeklyStatsViewModel(
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
 }

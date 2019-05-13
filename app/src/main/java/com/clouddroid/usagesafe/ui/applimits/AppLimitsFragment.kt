@@ -107,7 +107,6 @@ class AppLimitsFragment : BaseFragment() {
 
         settingsIcon.setOnClickListener {
             startActivity(Intent(context, SettingsActivity::class.java))
-            activity?.finish()
         }
     }
 

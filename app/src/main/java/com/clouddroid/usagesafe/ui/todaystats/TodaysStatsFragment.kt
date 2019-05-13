@@ -107,18 +107,20 @@ class TodaysStatsFragment : BaseFragment() {
 
         settingsIcon.setOnClickListener {
             startActivity(Intent(context, SettingsActivity::class.java))
-            activity?.finish()
         }
 
         unlockCountTV.setOnClickListener {
             navigateTo(MainActivity.FragmentDestination.UNLOCKS)
         }
+
         unlockTV.setOnClickListener {
             navigateTo(MainActivity.FragmentDestination.UNLOCKS)
         }
+
         launchCountTV.setOnClickListener {
             navigateTo(MainActivity.FragmentDestination.APP_LAUNCHES)
         }
+
         launchTV.setOnClickListener {
             navigateTo(MainActivity.FragmentDestination.APP_LAUNCHES)
         }

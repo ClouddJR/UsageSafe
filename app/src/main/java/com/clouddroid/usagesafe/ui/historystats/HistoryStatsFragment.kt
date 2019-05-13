@@ -48,7 +48,7 @@ class HistoryStatsFragment : BaseFragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[HistoryStatsViewModel::class.java]
-        viewModel.updateCurrentWeek()
+        viewModel.init()
     }
 
     private fun setUpViewPager() {
@@ -97,7 +97,6 @@ class HistoryStatsFragment : BaseFragment() {
     private fun setOnClickListeners() {
         settingsIcon.setOnClickListener {
             startActivity(Intent(context, SettingsActivity::class.java))
-            activity?.finish()
         }
     }
 

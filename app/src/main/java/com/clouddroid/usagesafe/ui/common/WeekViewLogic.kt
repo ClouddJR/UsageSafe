@@ -7,45 +7,55 @@ import java.util.*
 
 class WeekViewLogic(
     private val todayCalendar: Calendar,
-    private val weekBegin: String,
-    private val dayOfFirstSavedLog: Calendar
+    private val dayOfFirstSavedLog: Calendar,
+    var weekBegin: String
 ) {
 
+    // stores the pair of beginning and end of the week respectively
     lateinit var currentWeek: Pair<Calendar, Calendar>
 
+    // booleans indicating whether current week is the earliest (db doesn't have earlier logs)
+    // or latest (contains present day)
     var isCurrentWeekTheEarliest = false
     var isCurrentWeekTheLatest = false
 
     init {
-        setCurrentWeek(getInitialEndOfWeek(todayCalendar))
+        setCurrentWeek(getEndOfWeekForTodayCalendar(todayCalendar))
         checkConstraints(currentWeek.first, currentWeek.second)
     }
 
-    private fun getInitialEndOfWeek(todayCalendar: Calendar): Calendar {
+    // called when week begin was changed in settings to refresh data
+    fun refreshWeek() {
+        setCurrentWeek(getEndOfWeekForTodayCalendar(todayCalendar))
+        checkConstraints(currentWeek.first, currentWeek.second)
+    }
+
+    private fun getEndOfWeekForTodayCalendar(todayCalendar: Calendar): Calendar {
+        val todayCalendarCopy = todayCalendar.clone() as Calendar
         return when (weekBegin) {
             WeekBegin.MONDAY -> {
-                todayCalendar.apply {
+                todayCalendarCopy.apply {
 
-                    //looking for next Sunday
+                    // looking for next Sunday
                     while (get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
                         add(Calendar.DAY_OF_MONTH, 1)
                     }
                 }
             }
             WeekBegin.SUNDAY -> {
-                todayCalendar.apply {
+                todayCalendarCopy.apply {
 
-                    //looking for next Saturday
+                    // looking for next Saturday
                     while (get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
                         add(Calendar.DAY_OF_MONTH, 1)
                     }
                 }
             }
             WeekBegin.SIX_DAYS_AGO -> {
-                todayCalendar
+                todayCalendarCopy
             }
             else -> {
-                todayCalendar
+                todayCalendarCopy
             }
         }
     }
