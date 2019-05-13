@@ -21,13 +21,13 @@ class WeekViewLogic(
 
     init {
         setCurrentWeek(getEndOfWeekForTodayCalendar(todayCalendar))
-        checkConstraints(currentWeek.first, currentWeek.second)
+        checkConstraints(todayCalendar)
     }
 
     // called when week begin was changed in settings to refresh data
     fun refreshWeek() {
         setCurrentWeek(getEndOfWeekForTodayCalendar(todayCalendar))
-        checkConstraints(currentWeek.first, currentWeek.second)
+        checkConstraints(todayCalendar)
     }
 
     private fun getEndOfWeekForTodayCalendar(todayCalendar: Calendar): Calendar {
@@ -107,7 +107,7 @@ class WeekViewLogic(
         val lastDayOfNextWeek = getLastDayOfNextWeek(currentEndOfWeek)
         setCurrentWeek(lastDayOfNextWeek)
 
-        checkConstraints(currentWeek.first, currentWeek.second)
+        checkConstraints(todayCalendar)
     }
 
     private fun getLastDayOfNextWeek(currentEndOfWeek: Calendar): Calendar {
@@ -146,13 +146,13 @@ class WeekViewLogic(
 
             WeekBegin.SIX_DAYS_AGO -> {
                 currentEndOfWeek.apply {
-                    if (before(todayCalendar)) add(Calendar.DAY_OF_MONTH, 7)
+                    add(Calendar.DAY_OF_MONTH, 7)
                 }
             }
 
             else -> {
                 currentEndOfWeek.apply {
-                    if (before(todayCalendar)) add(Calendar.DAY_OF_MONTH, 7)
+                    add(Calendar.DAY_OF_MONTH, 7)
                 }
             }
         }
@@ -164,7 +164,7 @@ class WeekViewLogic(
         val lastDayOfPreviousWeek = getPreviousWeek(currentBeginOfWeek)
         setCurrentWeek(lastDayOfPreviousWeek)
 
-        checkConstraints(currentWeek.first, currentWeek.second)
+        checkConstraints(todayCalendar)
     }
 
     private fun getPreviousWeek(currentBeginOfWeek: Calendar): Calendar {
@@ -198,14 +198,13 @@ class WeekViewLogic(
         }
     }
 
-    private fun checkConstraints(currentBeginOfWeek: Calendar, currentEndOfWeek: Calendar) {
+    private fun checkConstraints(todayCalendar: Calendar) {
 
         //checking if this is the earliest possible week
-        val lastDayOfPreviousWeek = getPreviousWeek(currentBeginOfWeek.clone() as Calendar)
+        val lastDayOfPreviousWeek = getPreviousWeek(currentWeek.first.clone() as Calendar)
         isCurrentWeekTheEarliest = lastDayOfPreviousWeek.isBefore(dayOfFirstSavedLog)
 
         //checking if this is the latest possible week
-        val currentCalendar = Calendar.getInstance()
-        isCurrentWeekTheLatest = currentCalendar.isWithin(currentBeginOfWeek, currentEndOfWeek)
+        isCurrentWeekTheLatest = todayCalendar.isWithin(currentWeek.first, currentWeek.second)
     }
 }
