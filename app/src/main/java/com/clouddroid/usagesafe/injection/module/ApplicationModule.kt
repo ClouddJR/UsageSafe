@@ -7,7 +7,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import com.clouddroid.usagesafe.data.local.AppLimitDao
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.local.LocalDatabase
 import com.clouddroid.usagesafe.data.local.LogEventDao
 import com.clouddroid.usagesafe.util.PreferencesUtils.defaultPrefs
@@ -48,6 +48,7 @@ class ApplicationModule(private val application: Application) {
     fun provideDatabaseRepository(
         appLimitsDataSource: AppLimitDao,
         logEventsDataSource: LogEventDao
-    ): DatabaseRepository = DatabaseRepository(appLimitsDataSource, logEventsDataSource)
+    ): DatabaseRepository =
+        DatabaseRepository(appLimitsDataSource, logEventsDataSource)
 
 }

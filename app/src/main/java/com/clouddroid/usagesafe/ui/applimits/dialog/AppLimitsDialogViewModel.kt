@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.model.AppDetails
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.util.PackageInfoUtils

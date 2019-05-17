@@ -1,10 +1,11 @@
-package com.clouddroid.usagesafe.data.local
+package com.clouddroid.usagesafe.data.repository
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.clouddroid.usagesafe.data.local.LocalDatabase
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.model.LogEvent
 import junit.framework.Assert.assertEquals
@@ -35,7 +36,8 @@ class DatabaseRepositoryTest {
         )
             .allowMainThreadQueries()
             .build()
-        databaseRepository = DatabaseRepository(database.appLimitDao(), database.logEventDao())
+        databaseRepository =
+            DatabaseRepository(database.appLimitDao(), database.logEventDao())
     }
 
     @After

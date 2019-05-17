@@ -3,7 +3,7 @@ package com.clouddroid.usagesafe.ui.applimits
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_IS_APP_LIMIT_FEATURE_ENABLED
 import com.clouddroid.usagesafe.util.PreferencesUtils.get

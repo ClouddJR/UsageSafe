@@ -1,4 +1,4 @@
-package com.clouddroid.usagesafe.data.local
+package com.clouddroid.usagesafe.data.repository
 
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager

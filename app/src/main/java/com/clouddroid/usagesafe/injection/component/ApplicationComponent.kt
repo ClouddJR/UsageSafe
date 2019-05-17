@@ -1,7 +1,7 @@
 package com.clouddroid.usagesafe.injection.component
 
 import com.clouddroid.usagesafe.UsageSafeApp
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.service.AppUsageMonitorService
 import com.clouddroid.usagesafe.injection.module.ApplicationModule
 import com.clouddroid.usagesafe.injection.module.ViewModelsModule

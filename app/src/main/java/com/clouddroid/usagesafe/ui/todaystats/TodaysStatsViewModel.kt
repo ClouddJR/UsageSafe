@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
-import com.clouddroid.usagesafe.data.local.UsageStatsRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.util.PackageInfoUtils.getResizedAppIcon
 import com.clouddroid.usagesafe.util.PreferencesKeys

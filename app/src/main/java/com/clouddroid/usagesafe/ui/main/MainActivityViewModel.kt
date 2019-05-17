@@ -2,8 +2,8 @@ package com.clouddroid.usagesafe.ui.main
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
-import com.clouddroid.usagesafe.data.local.UsageStatsRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

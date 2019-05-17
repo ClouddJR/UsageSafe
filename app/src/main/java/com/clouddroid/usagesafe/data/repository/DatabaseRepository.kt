@@ -1,5 +1,7 @@
-package com.clouddroid.usagesafe.data.local
+package com.clouddroid.usagesafe.data.repository
 
+import com.clouddroid.usagesafe.data.local.AppLimitDao
+import com.clouddroid.usagesafe.data.local.LogEventDao
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.model.LogEvent
 import io.reactivex.Flowable

@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
-import com.clouddroid.usagesafe.data.local.UsageStatsRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.util.DayBegin

@@ -2,7 +2,7 @@ package com.clouddroid.usagesafe.ui.historystats.screen
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.local.UsageStatsRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.data.model.LogEvent
 import com.github.mikephil.charting.data.BarDataSet

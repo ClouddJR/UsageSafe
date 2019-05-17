@@ -3,7 +3,7 @@ package com.clouddroid.usagesafe.ui.historystats.unlocks
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.data.model.LogEvent
-import com.clouddroid.usagesafe.data.local.UsageStatsRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import java.text.SimpleDateFormat

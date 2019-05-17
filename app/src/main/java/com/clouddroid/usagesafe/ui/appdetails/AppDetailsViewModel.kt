@@ -2,8 +2,8 @@ package com.clouddroid.usagesafe.ui.appdetails
 
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
-import com.clouddroid.usagesafe.data.local.UsageStatsRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.ui.base.BaseWeeklyStatsViewModel
 import com.github.mikephil.charting.data.BarDataSet

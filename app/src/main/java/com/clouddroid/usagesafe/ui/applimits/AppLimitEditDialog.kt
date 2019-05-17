@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.util.PackageInfoUtils
 import kotlinx.android.synthetic.main.dialog_app_limit_edit.*

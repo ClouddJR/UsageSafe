@@ -3,7 +3,7 @@ package com.clouddroid.usagesafe.ui.base
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.local.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.model.LoadingState
 import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.ui.common.WeekViewLogic
