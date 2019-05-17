@@ -17,7 +17,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import kotlinx.android.synthetic.main.activity_day_details.*
-import kotlin.math.roundToInt
+import java.math.RoundingMode
 
 class DayDetailsActivity : BaseActivity() {
 
@@ -119,15 +119,15 @@ class DayDetailsActivity : BaseActivity() {
         })
 
         viewModel.totalLaunchCountLiveData.observe(this, Observer {
-            val avgPerHour = (it / 24.0).roundToInt()
-            avgPerHourNumber.text = avgPerHour.toString().format("%.2")
+            val avgPerHour = (it / 24.0).toBigDecimal().setScale(2, RoundingMode.UP)
+            avgPerHourNumber.text = "$avgPerHour"
 
             dailyUsageSummaryTV.text = "$it app launches today"
         })
 
         viewModel.totalUnlocksLiveData.observe(this, Observer {
-            val avgPerHour = (it / 24.0).roundToInt()
-            avgPerHourNumber.text = avgPerHour.toString().format("%.2")
+            val avgPerHour = (it / 24.0).toBigDecimal().setScale(2, RoundingMode.UP)
+            avgPerHourNumber.text = "$avgPerHour"
 
             dailyUsageSummaryTV.text = "$it unlocks today"
         })

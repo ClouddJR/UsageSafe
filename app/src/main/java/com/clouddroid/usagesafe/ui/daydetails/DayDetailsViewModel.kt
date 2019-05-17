@@ -122,7 +122,7 @@ class DayDetailsViewModel @Inject constructor(
 
         val formatter = when (timeFormat) {
             TimeFormat._12_HOUR_CLOCK -> SimpleDateFormat("h a", Locale.getDefault())
-            TimeFormat._24_HOUR_CLOCK -> SimpleDateFormat("H", Locale.getDefault())
+            TimeFormat._24_HOUR_CLOCK -> SimpleDateFormat("H:00", Locale.getDefault())
             else -> SimpleDateFormat("H", Locale.getDefault())
         }
 
