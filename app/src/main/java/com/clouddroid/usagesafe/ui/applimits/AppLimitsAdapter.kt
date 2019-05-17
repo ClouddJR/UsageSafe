@@ -11,16 +11,14 @@ import com.clouddroid.usagesafe.UsageSafeApp
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.util.PackageInfoUtils
 import com.clouddroid.usagesafe.util.TextUtils
-import io.realm.OrderedRealmCollection
-import io.realm.RealmRecyclerViewAdapter
 import kotlinx.android.synthetic.main.item_app_limit.view.*
 
 
 class AppLimitsAdapter(
-    private val appsList: OrderedRealmCollection<AppLimit>,
+    private val appsList: List<AppLimit>,
     val context: Context
 ) :
-    RealmRecyclerViewAdapter<AppLimit, AppLimitsAdapter.ItemViewHolder>(appsList, true) {
+    RecyclerView.Adapter<AppLimitsAdapter.ItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val itemView =
@@ -44,7 +42,7 @@ class AppLimitsAdapter(
             itemView.appTitleTV.text = appName
 
             itemView.currentLimitTV.text =
-                "Current limit: ${TextUtils.getAppLimitText(appLimit.currentLimit)}"
+                "Current limit: ${TextUtils.getAppLimitText(appLimit.limit)}"
 
             itemView.setOnClickListener {
                 displayEditOrDeleteDialog(itemView.context, appLimit)

@@ -8,7 +8,9 @@ import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_IS_APP_LIMIT_FEATURE_ENABLED
 import com.clouddroid.usagesafe.util.PreferencesUtils.get
 import com.clouddroid.usagesafe.util.PreferencesUtils.set
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class AppLimitsViewModel @Inject constructor(
@@ -27,7 +29,12 @@ class AppLimitsViewModel @Inject constructor(
     }
 
     private fun getListOfAppLimits() {
-        appsList.value = databaseRepository.getListOfLimits()
+        disposable = databaseRepository.getListOfLimits()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                appsList.value = it
+            }
     }
 
     override fun onCleared() {

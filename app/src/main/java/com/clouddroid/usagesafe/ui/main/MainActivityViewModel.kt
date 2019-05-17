@@ -4,11 +4,13 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import com.clouddroid.usagesafe.data.local.DatabaseRepository
 import com.clouddroid.usagesafe.data.local.UsageStatsRepository
-import io.reactivex.Observable
+import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor(
@@ -20,18 +22,19 @@ class MainActivityViewModel @Inject constructor(
     private lateinit var disposable: Disposable
 
     fun init() {
-        databaseRepository.initialSetupFinished = false
-
-        removeOldWeeklyLogs()
-
-        disposable = Observable.fromCallable {
+        databaseRepository.initialSetupLatch = CountDownLatch(1)
+        disposable = Single.fromCallable {
+            removeOldWeeklyLogs()
             usageStatsRepository.getLogsFromLastWeek()
         }
+            .flatMapCompletable { Completable.fromAction { databaseRepository.addLogEvents(it) } }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                databaseRepository.addLogEvent(it) { databaseRepository.initialSetupFinished = true }
-            }
+            .subscribe({
+                databaseRepository.initialSetupLatch.countDown()
+            }, {
+                databaseRepository.initialSetupLatch.countDown()
+            })
     }
 
     private fun removeOldWeeklyLogs() {

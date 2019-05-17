@@ -14,6 +14,7 @@ import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_DAY_BEGIN
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_WEEK_BEGIN
 import com.clouddroid.usagesafe.util.PreferencesUtils.get
 import com.clouddroid.usagesafe.util.WeekBegin
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -91,15 +92,19 @@ abstract class BaseWeeklyStatsViewModel(
     private fun getLogsFromDB(start: Long, end: Long) {
         val weeklyDataHolder = WeeklyDataMapHolder(start, end, hourDayBegin)
 
-        compositeDisposable.add(databaseRepository.getLogEventsFromRange(start, end)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { logs ->
-                loadingState.value = LoadingState.FINISHED
-                weeklyDataHolder.addDayLogs(logs)
-                this.weeklyData.value =
-                    weeklyDataHolder.logsMap.toSortedMap(Comparator<Long> { o1, o2 -> o1.compareTo(o2) })
-            })
+        compositeDisposable.add(
+            Single.fromCallable {
+                databaseRepository.initialSetupLatch.await()
+                databaseRepository.getLogEventsFromRange(start, end)
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { logs ->
+                    loadingState.value = LoadingState.FINISHED
+                    weeklyDataHolder.addDayLogs(logs)
+                    this.weeklyData.value =
+                        weeklyDataHolder.logsMap.toSortedMap(Comparator<Long> { day1, day2 -> day1.compareTo(day2) })
+                })
     }
 
 

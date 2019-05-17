@@ -1,13 +1,16 @@
 package com.clouddroid.usagesafe.data.model
 
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
-import java.util.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-open class AppLimit : RealmObject() {
+@Entity(tableName = "applimits")
+data class AppLimit(
 
     @PrimaryKey
-    var packageName: String = ""
-    var currentLimit: Long = 0
-    var lastNotification: Date = Date(0)
-}
+    @ColumnInfo(name = "packagename")
+    var packageName: String = "",
+
+    @ColumnInfo(name = "limit")
+    var limit: Long = 0
+)

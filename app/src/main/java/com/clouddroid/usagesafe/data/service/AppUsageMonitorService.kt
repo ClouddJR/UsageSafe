@@ -21,6 +21,7 @@ import com.clouddroid.usagesafe.util.NotificationUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -42,6 +43,7 @@ class AppUsageMonitorService : Service() {
     override fun onCreate() {
         super.onCreate()
         injectDependencies()
+        observeAppLimitsList()
         updateAppUsageMapPeriodically()
         watchForLaunchingAppWithLimitExceeded()
         Log.d(AppUsageMonitorService::class.java.name, "Service creation")
@@ -49,7 +51,6 @@ class AppUsageMonitorService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotification()
-        updateAppList()
         return START_STICKY
     }
 
@@ -110,9 +111,9 @@ class AppUsageMonitorService : Service() {
                 //filtering logs to get only those related to app launches that have a limit set by user
                 //and those that have their limit exceeded
                 logs.filter { logEvent ->
-                    logEvent.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND && appLimitsList.any { appLimit ->
+                    logEvent.type == UsageEvents.Event.MOVE_TO_FOREGROUND && appLimitsList.any { appLimit ->
                         appLimit.packageName == logEvent.packageName
-                                && appLimit.currentLimit <= appUsageMap[logEvent.packageName]?.totalTimeInForeground ?: 0
+                                && appLimit.limit <= appUsageMap[logEvent.packageName]?.totalTimeInForeground ?: 0
                     }
                 }
             }
@@ -140,7 +141,7 @@ class AppUsageMonitorService : Service() {
 
             //if today's usage plus current time spent in foreground is more than a limit, we should block this
             if (logsList.last().packageName == foregroundAppPackageName
-                && foregroundAppUsageTime + amountOfTimeSinceArriving >= it.currentLimit
+                && foregroundAppUsageTime + amountOfTimeSinceArriving >= it.limit
             ) {
                 //add time spent in foreground to app usage map
                 //otherwise we would have to wait couple of minutes for that map to be updated
@@ -174,8 +175,13 @@ class AppUsageMonitorService : Service() {
         startForeground(NotificationUtils.APP_USAGE_MONITOR_SERVICE_NOTIFICATION_ID, notification)
     }
 
-    private fun updateAppList() {
-        appLimitsList = databaseRepository.getListOfLimits()
+    private fun observeAppLimitsList() {
+        compositeDisposable.add(databaseRepository.getListOfLimits()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                appLimitsList = it
+            })
     }
 
 }

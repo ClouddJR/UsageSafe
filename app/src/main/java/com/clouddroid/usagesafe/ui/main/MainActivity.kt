@@ -13,7 +13,6 @@ import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.ui.applimits.AppLimitsFragment
 import com.clouddroid.usagesafe.ui.base.BaseActivity
 import com.clouddroid.usagesafe.ui.base.BaseFragment
-import com.clouddroid.usagesafe.ui.contacts.ContactsListFragment
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsFragment
 import com.clouddroid.usagesafe.ui.todaystats.TodaysStatsFragment
 import com.clouddroid.usagesafe.util.ExtensionUtils.addAndCommit
@@ -28,7 +27,6 @@ class MainActivity : BaseActivity() {
     private val todaysStatsFragment = TodaysStatsFragment()
     private val appLimitsFragment = AppLimitsFragment()
     private val historyStatsFragment = HistoryStatsFragment()
-    private val contactsListFragment = ContactsListFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +67,8 @@ class MainActivity : BaseActivity() {
             .add(R.id.fragmentPlaceHolder, todaysStatsFragment)
             .add(R.id.fragmentPlaceHolder, appLimitsFragment)
             .add(R.id.fragmentPlaceHolder, historyStatsFragment)
-            .add(R.id.fragmentPlaceHolder, contactsListFragment)
             .hide(appLimitsFragment)
             .hide(historyStatsFragment)
-            .hide(contactsListFragment)
             .commit()
         bottomNav.menu.findItem(R.id.todaysStatsFragment).isChecked = true
     }
@@ -83,7 +79,6 @@ class MainActivity : BaseActivity() {
                 R.id.todaysStatsFragment -> navigateTo(FragmentDestination.TODAYS_STATS)
                 R.id.appLimitsFragment -> navigateTo(FragmentDestination.APP_LIMITS)
                 R.id.historyStatsFragment -> navigateTo(FragmentDestination.HISTORY)
-                R.id.contactsListFragment -> navigateTo(FragmentDestination.CONTACTS_LIST)
                 else -> navigateTo(FragmentDestination.TODAYS_STATS)
             }
             true
@@ -94,7 +89,6 @@ class MainActivity : BaseActivity() {
                 R.id.todaysStatsFragment -> todaysStatsFragment.scrollToTop()
                 R.id.appLimitsFragment -> appLimitsFragment.scrollToTop()
                 R.id.historyStatsFragment -> historyStatsFragment.scrollToTop()
-                R.id.contactsListFragment -> contactsListFragment.scrollToTop()
                 else -> {
                 }
             }
@@ -139,10 +133,6 @@ class MainActivity : BaseActivity() {
                 historyStatsFragment,
                 supportFragmentManager.fragments
             )
-            FragmentDestination.CONTACTS_LIST -> transaction.showAndHideOthers(
-                contactsListFragment,
-                supportFragmentManager.fragments
-            )
         }
 
         transaction.commit()
@@ -177,11 +167,6 @@ class MainActivity : BaseActivity() {
                     supportFragmentManager.addAndCommit(historyStatsFragment)
                 }
             }
-            FragmentDestination.CONTACTS_LIST -> {
-                if (supportFragmentManager.doesNotContain(contactsListFragment)) {
-                    supportFragmentManager.addAndCommit(contactsListFragment)
-                }
-            }
             else -> {
             }
         }
@@ -208,7 +193,6 @@ class MainActivity : BaseActivity() {
         TODAYS_STATS,
         APP_LIMITS,
         HISTORY,
-        CONTACTS_LIST,
         SCREEN_TIME,
         UNLOCKS,
         APP_LAUNCHES

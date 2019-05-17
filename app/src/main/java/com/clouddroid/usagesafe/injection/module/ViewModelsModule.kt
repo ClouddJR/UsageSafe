@@ -7,7 +7,6 @@ import com.clouddroid.usagesafe.ui.applimits.AppLimitsViewModel
 import com.clouddroid.usagesafe.ui.applimits.dialog.AppLimitsDialogViewModel
 import com.clouddroid.usagesafe.ui.base.ViewModelFactory
 import com.clouddroid.usagesafe.ui.base.ViewModelKey
-import com.clouddroid.usagesafe.ui.contacts.ContactsViewModel
 import com.clouddroid.usagesafe.ui.daydetails.DayDetailsViewModel
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsViewModel
 import com.clouddroid.usagesafe.ui.historystats.applaunches.AppLaunchesViewModel
@@ -39,11 +38,6 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(MainActivityViewModel::class)
     fun provideMainActivityViewModel(viewModel: MainActivityViewModel): ViewModel = viewModel
-
-    @Provides
-    @IntoMap
-    @ViewModelKey(ContactsViewModel::class)
-    fun provideContactsViewModel(viewModel: ContactsViewModel): ViewModel = viewModel
 
     @Provides
     @IntoMap

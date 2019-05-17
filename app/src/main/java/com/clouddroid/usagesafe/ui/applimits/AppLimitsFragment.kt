@@ -15,7 +15,6 @@ import com.clouddroid.usagesafe.data.service.AppUsageMonitorService
 import com.clouddroid.usagesafe.ui.applimits.dialog.AppLimitsDialog
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.settings.SettingsActivity
-import io.realm.OrderedRealmCollection
 import kotlinx.android.synthetic.main.fragment_app_limits.*
 
 class AppLimitsFragment : BaseFragment() {
@@ -92,10 +91,7 @@ class AppLimitsFragment : BaseFragment() {
     }
 
     private fun initRV(appsList: List<AppLimit>) {
-        adapter = AppLimitsAdapter(
-            appsList as OrderedRealmCollection<AppLimit>,
-            context!!
-        )
+        adapter = AppLimitsAdapter(appsList, context!!)
 
         appsListRV.adapter = adapter
     }

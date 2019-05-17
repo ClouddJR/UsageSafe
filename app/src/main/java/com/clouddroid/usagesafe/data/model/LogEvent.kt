@@ -1,19 +1,22 @@
 package com.clouddroid.usagesafe.data.model
 
-import io.realm.RealmObject
-import io.realm.annotations.Index
-import io.realm.annotations.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-open class LogEvent : RealmObject() {
+@Entity(tableName = "logevents")
+data class LogEvent (
 
     @PrimaryKey
-    @Index
-    var timestamp: Long = 0
-    var packageName: String = ""
-    var className: String? = ""
-    var eventType = 0
+    @ColumnInfo(name = "timestamp")
+    var timestamp: Long = 0,
 
-    override fun toString(): String {
-        return "LogEvent (timestamp=$timestamp, packageName='$packageName')"
-    }
-}
+    @ColumnInfo(name = "packagename")
+    var packageName: String = "",
+
+    @ColumnInfo(name = "classname")
+    var className: String? = "",
+
+    @ColumnInfo(name = "type")
+    var type: Int = 0
+)

@@ -55,8 +55,7 @@ class DayDetailsViewModel @Inject constructor(
 
     //handles the logic for changing days
     private val dayOfFirstSavedLog = databaseRepository.getTheEarliestLogEvent()
-    private val dayViewLogic =
-        DayViewLogic(Calendar.getInstance(), hourDayBegin, dayOfFirstSavedLog)
+    private val dayViewLogic = DayViewLogic(Calendar.getInstance(), hourDayBegin, dayOfFirstSavedLog)
 
     //data about daily usage for further calculation and for charts
     private var totalScreenTime = 0L
@@ -91,19 +90,23 @@ class DayDetailsViewModel @Inject constructor(
     }
 
     private fun getLogsFromDB(start: Long, end: Long) {
-        compositeDisposable.add(databaseRepository.getLogEventsFromRange(start, end)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { logs ->
-                getUsageMap(logs)
-                calculateDailyUsage(logs, start, end)
-            })
+        compositeDisposable.add(
+            Single.fromCallable {
+                databaseRepository.getLogEventsFromRange(start, end)
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { logs ->
+                    getUsageMap(logs)
+                    calculateDailyUsage(logs, start, end)
+                })
     }
 
     private fun getUsageMap(list: List<LogEvent>) {
         compositeDisposable.add(Single.fromCallable {
             usageStatsRepository.getAppsUsageMapFromLogs(list)
-        }.subscribeOn(Schedulers.io())
+        }
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { usageMap, _ ->
                 appsUsageMap.value = usageMap

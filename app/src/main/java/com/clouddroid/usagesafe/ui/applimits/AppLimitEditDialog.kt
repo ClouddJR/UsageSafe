@@ -54,7 +54,7 @@ class AppLimitEditDialog(
     }
 
     private fun setUpNumberPickers() {
-        var minutes = TimeUnit.MILLISECONDS.toMinutes(appLimit.currentLimit)
+        var minutes = TimeUnit.MILLISECONDS.toMinutes(appLimit.limit)
         val hours = minutes / 60
         minutes %= 60
 
@@ -72,7 +72,7 @@ class AppLimitEditDialog(
         deleteLimitBT.setOnClickListener {
             val appLimitToBeDeleted = AppLimit()
             appLimitToBeDeleted.packageName = appLimit.packageName
-            appLimitToBeDeleted.currentLimit =
+            appLimitToBeDeleted.limit =
                 getLimitFromHoursAndMinutes(hourNumberPicker.value, minuteNumberPicker.value)
             databaseRepository.deleteAppLimit(appLimitToBeDeleted)
             dismiss()
@@ -81,7 +81,7 @@ class AppLimitEditDialog(
         updateLimitBT.setOnClickListener {
             val appLimitToBeUpdated = AppLimit()
             appLimitToBeUpdated.packageName = appLimit.packageName
-            appLimitToBeUpdated.currentLimit =
+            appLimitToBeUpdated.limit =
                 getLimitFromHoursAndMinutes(hourNumberPicker.value, minuteNumberPicker.value)
             databaseRepository.addAppLimit(appLimitToBeUpdated)
             dismiss()

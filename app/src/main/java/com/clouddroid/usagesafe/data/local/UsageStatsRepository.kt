@@ -67,7 +67,7 @@ class UsageStatsRepository @Inject constructor(
             logEvent.className = currentEvent.className
             logEvent.timestamp = currentEvent.timeStamp
             logEvent.packageName = currentEvent.packageName
-            logEvent.eventType = currentEvent.eventType
+            logEvent.type = currentEvent.eventType
             logs.add(logEvent)
         }
 
@@ -146,7 +146,7 @@ class UsageStatsRepository @Inject constructor(
 
             //getting number of app launches
             if (first.packageName != second.packageName
-                && second.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND && second.packageName != launcherPackageName
+                && second.type == UsageEvents.Event.MOVE_TO_FOREGROUND && second.packageName != launcherPackageName
             ) {
                 val launchCalendar = Calendar.getInstance().apply {
                     timeInMillis = second.timestamp
@@ -177,8 +177,8 @@ class UsageStatsRepository @Inject constructor(
                 timeInMillis = second.timestamp
             }
 
-            if (first.className == second.className && first.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
-                && second.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
+            if (first.className == second.className && first.type == UsageEvents.Event.MOVE_TO_FOREGROUND
+                && second.type == UsageEvents.Event.MOVE_TO_BACKGROUND
             ) {
                 //app session lasted throughout multiple hours
                 while (firstEventCalendar.get(Calendar.HOUR_OF_DAY) != secondEventCalendar.get(Calendar.HOUR_OF_DAY)) {
@@ -324,7 +324,7 @@ class UsageStatsRepository @Inject constructor(
                         timestamp = currentEvent.timeStamp
                         packageName = currentEvent.packageName
                         className = currentEvent.className
-                        eventType = currentEvent.eventType
+                        type = currentEvent.eventType
                     })
                 }
             }
@@ -337,8 +337,8 @@ class UsageStatsRepository @Inject constructor(
         val list = mutableListOf<LogEvent>()
 
         logs.forEach { currentEvent ->
-            if (currentEvent.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND ||
-                currentEvent.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+            if (currentEvent.type == UsageEvents.Event.MOVE_TO_BACKGROUND ||
+                currentEvent.type == UsageEvents.Event.MOVE_TO_FOREGROUND
             ) {
                 list.add(currentEvent)
             }
@@ -350,8 +350,8 @@ class UsageStatsRepository @Inject constructor(
     private fun didPhoneUnlockOccur(firstLog: LogEvent, secondLog: LogEvent): Boolean {
         return (firstLog.packageName == secondLog.packageName
                 && firstLog.className == secondLog.className
-                && firstLog.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
-                && secondLog.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+                && firstLog.type == UsageEvents.Event.MOVE_TO_BACKGROUND
+                && secondLog.type == UsageEvents.Event.MOVE_TO_FOREGROUND
                 && (secondLog.timestamp - firstLog.timestamp >= 200))
     }
 
@@ -361,7 +361,7 @@ class UsageStatsRepository @Inject constructor(
         appUsageMap: MutableMap<String, AppUsageInfo>
     ) {
         if (firstLog.packageName != secondLog.packageName
-            && secondLog.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
+            && secondLog.type == UsageEvents.Event.MOVE_TO_FOREGROUND
         ) {
             if (appUsageMap[secondLog.packageName] == null) {
                 appUsageMap[secondLog.packageName] = AppUsageInfo().apply {
@@ -378,8 +378,8 @@ class UsageStatsRepository @Inject constructor(
         secondLog: LogEvent,
         appUsageMap: MutableMap<String, AppUsageInfo>
     ) {
-        if (firstLog.className == secondLog.className && firstLog.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
-            && secondLog.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
+        if (firstLog.className == secondLog.className && firstLog.type == UsageEvents.Event.MOVE_TO_FOREGROUND
+            && secondLog.type == UsageEvents.Event.MOVE_TO_BACKGROUND
         ) {
             if (appUsageMap[secondLog.packageName] == null) {
                 appUsageMap[secondLog.packageName] = AppUsageInfo().apply {

@@ -66,7 +66,7 @@ class AppLimitsDialogViewModel @Inject constructor(
 
         val appLimit = AppLimit()
         appLimit.packageName = selectedApp.value ?: ""
-        appLimit.currentLimit = limitMillis
+        appLimit.limit = limitMillis
 
         databaseRepository.addAppLimit(appLimit)
     }

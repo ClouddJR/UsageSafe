@@ -52,7 +52,9 @@ class TodaysStatsViewModel @Inject constructor(
     }
 
     private fun getUsageFromToday() {
-        compositeDisposable.add(Observable.fromCallable { usageStatsRepository.getUsageFromToday() }
+        compositeDisposable.add(Observable.fromCallable {
+            usageStatsRepository.getUsageFromToday()
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
