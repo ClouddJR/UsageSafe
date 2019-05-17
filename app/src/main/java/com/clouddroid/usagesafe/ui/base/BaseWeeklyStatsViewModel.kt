@@ -16,7 +16,7 @@ import com.clouddroid.usagesafe.util.PreferencesUtils.get
 import com.clouddroid.usagesafe.util.WeekBegin
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,7 +26,7 @@ abstract class BaseWeeklyStatsViewModel(
     private val sharedPreferences: SharedPreferences
 ) : ViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private val compositeDisposable = CompositeDisposable()
+    private lateinit var disposable: Disposable
 
     val loadingState = MutableLiveData<LoadingState>()
     val shouldLeftArrowBeHidden = MutableLiveData<Boolean>()
@@ -74,6 +74,11 @@ abstract class BaseWeeklyStatsViewModel(
     }
 
     fun updateCurrentWeek() {
+        //dispose previous calculation if exist
+        if (::disposable.isInitialized && !disposable.isDisposed) {
+            disposable.dispose()
+        }
+
         loadingState.value = LoadingState.LOADING
         currentWeek.value = Pair(weekViewLogic.currentWeek.first, weekViewLogic.currentWeek.second)
         updateArrowsState()
@@ -92,19 +97,18 @@ abstract class BaseWeeklyStatsViewModel(
     private fun getLogsFromDB(start: Long, end: Long) {
         val weeklyDataHolder = WeeklyDataMapHolder(start, end, hourDayBegin)
 
-        compositeDisposable.add(
-            Single.fromCallable {
-                databaseRepository.initialSetupLatch.await()
-                databaseRepository.getLogEventsFromRange(start, end)
+        disposable = Single.fromCallable {
+            databaseRepository.initialSetupLatch.await()
+            databaseRepository.getLogEventsFromRange(start, end)
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { logs ->
+                loadingState.value = LoadingState.FINISHED
+                weeklyDataHolder.addDayLogs(logs)
+                this.weeklyData.value =
+                    weeklyDataHolder.logsMap.toSortedMap(Comparator<Long> { day1, day2 -> day1.compareTo(day2) })
             }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { logs ->
-                    loadingState.value = LoadingState.FINISHED
-                    weeklyDataHolder.addDayLogs(logs)
-                    this.weeklyData.value =
-                        weeklyDataHolder.logsMap.toSortedMap(Comparator<Long> { day1, day2 -> day1.compareTo(day2) })
-                })
     }
 
 
@@ -125,7 +129,9 @@ abstract class BaseWeeklyStatsViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        compositeDisposable.dispose()
+        if (::disposable.isInitialized && !disposable.isDisposed) {
+            disposable.dispose()
+        }
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
