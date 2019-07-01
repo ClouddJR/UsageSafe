@@ -10,8 +10,11 @@ class DayViewLogic(
     private val dayOfFirstSavedLog: Calendar
 ) {
 
+    // stores the current day
     var currentDay: Calendar
 
+    // booleans indicating whether current day is the earliest (db doesn't have earlier logs)
+    // or latest (is today)
     var isCurrentDayTheEarliest = false
     var isCurrentDayTheLatest = false
 
@@ -28,19 +31,12 @@ class DayViewLogic(
     }
 
     fun setNextDayAsCurrent() {
-        val nextDay = currentDay.clone() as Calendar
-        nextDay.add(Calendar.DAY_OF_MONTH, 1)
-        if (nextDay.after(todayCalendar)) nextDay.add(Calendar.DAY_OF_MONTH, -1)
-        this.currentDay = nextDay
+        currentDay = (currentDay.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, 1) }
         checkConstraints()
     }
 
     fun setPreviousDayAsCurrent() {
-        val previousDay = currentDay.clone() as Calendar
-        previousDay.add(Calendar.DAY_OF_MONTH, -1)
-        if (!previousDay.isBefore(dayOfFirstSavedLog)) {
-            currentDay = previousDay
-        }
+        currentDay = (currentDay.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, -1) }
         checkConstraints()
     }
 

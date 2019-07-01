@@ -20,8 +20,7 @@ class WeekViewLogic(
     var isCurrentWeekTheLatest = false
 
     init {
-        setCurrentWeek(getEndOfWeekForTodayCalendar(todayCalendar))
-        checkConstraints(todayCalendar)
+        refreshWeek()
     }
 
     // called when week begin was changed in settings to refresh data
