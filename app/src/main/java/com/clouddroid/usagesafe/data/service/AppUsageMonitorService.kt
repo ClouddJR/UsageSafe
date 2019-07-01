@@ -10,11 +10,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.UsageSafeApp
-import com.clouddroid.usagesafe.data.repository.DatabaseRepository
-import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.data.model.LogEvent
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.ui.appblocking.BlockingActivity
 import com.clouddroid.usagesafe.ui.main.MainActivity
 import com.clouddroid.usagesafe.util.NotificationUtils
@@ -89,7 +89,7 @@ class AppUsageMonitorService : Service() {
             .flatMap {
                 Observable.fromCallable {
                     val beginCalendar = Calendar.getInstance().apply {
-                        add(Calendar.SECOND, -2)
+                        add(Calendar.SECOND, -3)
                     }
                     val endCalendar = Calendar.getInstance()
 
@@ -154,6 +154,7 @@ class AppUsageMonitorService : Service() {
 
     private fun displayBlockingActivity() {
         Intent(this, BlockingActivity::class.java).also { intent ->
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             applicationContext?.startActivity(intent)
         }
