@@ -7,9 +7,10 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import com.clouddroid.usagesafe.data.local.AppLimitDao
-import com.clouddroid.usagesafe.data.repository.DatabaseRepository
+import com.clouddroid.usagesafe.data.local.GroupLimitDao
 import com.clouddroid.usagesafe.data.local.LocalDatabase
 import com.clouddroid.usagesafe.data.local.LogEventDao
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.util.PreferencesUtils.defaultPrefs
 import dagger.Module
 import dagger.Provides
@@ -45,10 +46,15 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
+    fun provideGroupLimitsDao(): GroupLimitDao = LocalDatabase.getInstance(application).groupLimitDao()
+
+    @Provides
+    @Singleton
     fun provideDatabaseRepository(
         appLimitsDataSource: AppLimitDao,
-        logEventsDataSource: LogEventDao
+        logEventsDataSource: LogEventDao,
+        groupLimitDataSource: GroupLimitDao
     ): DatabaseRepository =
-        DatabaseRepository(appLimitsDataSource, logEventsDataSource)
+        DatabaseRepository(appLimitsDataSource, logEventsDataSource, groupLimitDataSource)
 
 }

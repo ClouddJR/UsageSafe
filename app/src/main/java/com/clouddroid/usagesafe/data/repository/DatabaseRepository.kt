@@ -1,6 +1,7 @@
 package com.clouddroid.usagesafe.data.repository
 
 import com.clouddroid.usagesafe.data.local.AppLimitDao
+import com.clouddroid.usagesafe.data.local.GroupLimitDao
 import com.clouddroid.usagesafe.data.local.LogEventDao
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.model.LogEvent
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 class DatabaseRepository @Inject constructor(
     private val appLimitsDataSource: AppLimitDao,
-    private val logEventsDataSource: LogEventDao
+    private val logEventsDataSource: LogEventDao,
+    private val groupLimitsDataSource: GroupLimitDao
 ) {
 
     //this latch is used at every app launch to ensure that the data is first saved
