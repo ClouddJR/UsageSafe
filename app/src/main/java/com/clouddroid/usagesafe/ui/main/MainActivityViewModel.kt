@@ -49,7 +49,7 @@ class MainActivityViewModel @Inject constructor(
             set(Calendar.MINUTE, 59)
         }
 
-        databaseRepository.removeLogsBetweenRange(beginCalendar.timeInMillis, endCalendar.timeInMillis)
+        databaseRepository.deleteLogsBetweenRange(beginCalendar.timeInMillis, endCalendar.timeInMillis)
     }
 
     override fun onCleared() {
