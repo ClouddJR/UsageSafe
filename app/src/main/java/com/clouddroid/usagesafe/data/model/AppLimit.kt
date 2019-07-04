@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "applimits")
+@Entity(tableName = "app_limits")
 data class AppLimit(
 
     @PrimaryKey
@@ -12,5 +12,8 @@ data class AppLimit(
     var packageName: String = "",
 
     @ColumnInfo(name = "limit")
-    var limit: Long = 0
+    var limit: Long = 0,
+
+    @ColumnInfo(name = "group_id")
+    var groupId: Int = 0
 )
