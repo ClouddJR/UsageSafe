@@ -5,15 +5,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.clouddroid.usagesafe.data.model.AppLimit
+import com.clouddroid.usagesafe.data.model.FocusModeApp
 import com.clouddroid.usagesafe.data.model.GroupLimit
 import com.clouddroid.usagesafe.data.model.LogEvent
 
-@Database(entities = [LogEvent::class, AppLimit::class, GroupLimit::class], version = 1)
+@Database(entities = [LogEvent::class, AppLimit::class, GroupLimit::class, FocusModeApp::class], version = 1)
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun logEventDao(): LogEventDao
     abstract fun appLimitDao(): AppLimitDao
     abstract fun groupLimitDao(): GroupLimitDao
+    abstract fun focusModeAppDao(): FocusModeAppDao
 
     companion object {
 

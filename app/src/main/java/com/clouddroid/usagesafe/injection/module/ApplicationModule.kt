@@ -6,10 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import com.clouddroid.usagesafe.data.local.AppLimitDao
-import com.clouddroid.usagesafe.data.local.GroupLimitDao
-import com.clouddroid.usagesafe.data.local.LocalDatabase
-import com.clouddroid.usagesafe.data.local.LogEventDao
+import com.clouddroid.usagesafe.data.local.*
 import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.util.PreferencesUtils.defaultPrefs
 import dagger.Module
@@ -50,11 +47,16 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
+    fun provideFocusModeAppsDao(): FocusModeAppDao = LocalDatabase.getInstance(application).focusModeAppDao()
+
+    @Provides
+    @Singleton
     fun provideDatabaseRepository(
         appLimitsDataSource: AppLimitDao,
         logEventsDataSource: LogEventDao,
-        groupLimitDataSource: GroupLimitDao
+        groupLimitsDataSource: GroupLimitDao,
+        focusModeAppsDataSource: FocusModeAppDao
     ): DatabaseRepository =
-        DatabaseRepository(appLimitsDataSource, logEventsDataSource, groupLimitDataSource)
+        DatabaseRepository(appLimitsDataSource, logEventsDataSource, groupLimitsDataSource, focusModeAppsDataSource)
 
 }
