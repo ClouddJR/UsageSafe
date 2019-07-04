@@ -51,6 +51,7 @@ class AppUsageMonitorService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotification()
+        Log.d(AppUsageMonitorService::class.java.name, "Service onStartCommand")
         return START_STICKY
     }
 
@@ -85,11 +86,11 @@ class AppUsageMonitorService : Service() {
 
     //checking every 2 seconds if app that has a limit set was launched
     private fun watchForLaunchingAppWithLimitExceeded() {
-        compositeDisposable.add(Observable.interval(0, 2, TimeUnit.SECONDS)
+        compositeDisposable.add(Observable.interval(0, 1, TimeUnit.SECONDS)
             .flatMap {
                 Observable.fromCallable {
                     val beginCalendar = Calendar.getInstance().apply {
-                        add(Calendar.SECOND, -3)
+                        add(Calendar.SECOND, -2)
                     }
                     val endCalendar = Calendar.getInstance()
 
@@ -97,8 +98,12 @@ class AppUsageMonitorService : Service() {
                 }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { logs ->
-                //updating information about current app in foreground
+
+            //filtering logs to get only those related to app launches
+            .map { logs -> logs.filter { logEvent -> logEvent.type == UsageEvents.Event.MOVE_TO_FOREGROUND } }
+
+            //updating information about current app in foreground
+            .flatMap { logs ->
                 foregroundAppPackageName =
                     if (logs.isNotEmpty()) logs.last().packageName else foregroundAppPackageName
 
@@ -106,18 +111,17 @@ class AppUsageMonitorService : Service() {
                     AppUsageMonitorService::class.java.name,
                     "Current app in foreground: $foregroundAppPackageName"
                 )
+
+                Observable.just(foregroundAppPackageName)
             }
-            .map { logs ->
-                //filtering logs to get only those related to app launches that have a limit set by user
-                //and those that have their limit exceeded
-                logs.filter { logEvent ->
-                    logEvent.type == UsageEvents.Event.MOVE_TO_FOREGROUND && appLimitsList.any { appLimit ->
-                        appLimit.packageName == logEvent.packageName
-                                && appLimit.limit <= appUsageMap[logEvent.packageName]?.totalTimeInForeground ?: 0
-                    }
-                }
+
+            //checking if the app in the foreground should be blocked
+            .flatMap { packageName ->
+                Observable.just(appLimitsList.any { appLimit ->
+                    appLimit.packageName == packageName
+                            && appLimit.limit <= appUsageMap[packageName]?.totalTimeInForeground ?: 0
+                })
             }
-            .flatMap { list -> Observable.just(list.isNotEmpty()) }
             .subscribe { appShouldBeBlocked ->
                 if (appShouldBeBlocked) {
                     displayBlockingActivity()
@@ -128,7 +132,10 @@ class AppUsageMonitorService : Service() {
 
     private fun checkIfAppInForegroundShouldBeBlocked(logsList: List<LogEvent>) {
         val appLimit = appLimitsList.find { it.packageName == foregroundAppPackageName }
-        Log.d(AppUsageMonitorService::class.java.name, "Package name to block possibly: ${appLimit?.packageName}")
+        Log.d(
+            AppUsageMonitorService::class.java.name,
+            "Package name to block possibly: ${appLimit?.packageName}"
+        )
         appLimit?.let {
             val timeOfForegroundAppArriving = logsList.last().timestamp
             val amountOfTimeSinceArriving = Calendar.getInstance().timeInMillis - timeOfForegroundAppArriving
@@ -146,7 +153,8 @@ class AppUsageMonitorService : Service() {
                 //add time spent in foreground to app usage map
                 //otherwise we would have to wait couple of minutes for that map to be updated
                 appUsageMap[foregroundAppPackageName]?.totalTimeInForeground =
-                    appUsageMap[foregroundAppPackageName]?.totalTimeInForeground?.plus(amountOfTimeSinceArriving) ?: 0
+                    appUsageMap[foregroundAppPackageName]?.totalTimeInForeground?.plus(amountOfTimeSinceArriving)
+                        ?: 0
                 displayBlockingActivity()
             }
         }
@@ -166,12 +174,13 @@ class AppUsageMonitorService : Service() {
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
             }
 
-        val notification: Notification = NotificationCompat.Builder(applicationContext, NotificationUtils.CHANNEL_ID)
-            .setContentTitle("Usage monitor")
-            .setContentText("Monitoring app usage")
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .setContentIntent(pendingIntent)
-            .build()
+        val notification: Notification =
+            NotificationCompat.Builder(applicationContext, NotificationUtils.CHANNEL_ID)
+                .setContentTitle("Usage monitor")
+                .setContentText("Monitoring app usage")
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentIntent(pendingIntent)
+                .build()
 
         startForeground(NotificationUtils.APP_USAGE_MONITOR_SERVICE_NOTIFICATION_ID, notification)
     }

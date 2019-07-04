@@ -39,7 +39,7 @@ class UsageStatsRepository @Inject constructor(
     }
 
     fun getLogsFromToday(): List<LogEvent> {
-        val dayBegin = Integer.parseInt(sharedPreferences[PREF_DAY_BEGIN]!!)
+        val dayBegin = Integer.parseInt(sharedPreferences[PREF_DAY_BEGIN, DayBegin._12AM]!!)
 
         val beginCalendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, dayBegin)
