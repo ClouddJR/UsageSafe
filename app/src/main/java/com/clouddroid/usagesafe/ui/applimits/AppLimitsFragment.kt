@@ -12,7 +12,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.service.AppUsageMonitorService
-import com.clouddroid.usagesafe.ui.applimits.dialog.AppLimitsDialog
+import com.clouddroid.usagesafe.ui.applimits.adddialog.AppLimitsDialog
+import com.clouddroid.usagesafe.ui.applimits.focus.FocusAppsListDialog
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_app_limits.*
@@ -59,9 +60,7 @@ class AppLimitsFragment : BaseFragment() {
 
             //toggle the RV visibility and schedule items animation if visible
             if (isEnabled) {
-                if (viewPropertyAnimator != null) {
-                    viewPropertyAnimator!!.cancel()
-                }
+                viewPropertyAnimator?.cancel()
                 appsListRV.alpha = 1f
                 appsListRV.visibility = View.VISIBLE
                 val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
@@ -98,17 +97,19 @@ class AppLimitsFragment : BaseFragment() {
 
     private fun setOnClickListeners() {
         addLimitFAB.setOnClickListener {
-            displayDialog()
+            fragmentManager?.let {
+                AppLimitsDialog.display(it)
+            }
         }
 
         settingsIcon.setOnClickListener {
             startActivity(Intent(context, SettingsActivity::class.java))
         }
-    }
 
-    private fun displayDialog() {
-        fragmentManager?.let {
-            AppLimitsDialog.display(it)
+        openFocusAppsListBT.setOnClickListener {
+            fragmentManager?.let {
+                FocusAppsListDialog.display(it)
+            }
         }
     }
 

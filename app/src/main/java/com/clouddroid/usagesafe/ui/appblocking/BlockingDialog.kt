@@ -7,7 +7,7 @@ import android.view.KeyEvent
 import com.clouddroid.usagesafe.R
 import kotlinx.android.synthetic.main.dialog_app_block.*
 
-class BlockingDialog(private val passedContext: Context, private val onButtonClick: () -> Unit) :
+class BlockingDialog(passedContext: Context, private val onButtonClick: () -> Unit) :
     Dialog(passedContext) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

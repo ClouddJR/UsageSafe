@@ -1,4 +1,4 @@
-package com.clouddroid.usagesafe.ui.applimits.dialog
+package com.clouddroid.usagesafe.ui.applimits.adddialog
 
 import android.content.Context
 import android.os.Bundle

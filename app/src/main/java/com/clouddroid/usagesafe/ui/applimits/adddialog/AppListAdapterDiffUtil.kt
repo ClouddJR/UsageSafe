@@ -1,4 +1,4 @@
-package com.clouddroid.usagesafe.ui.applimits.dialog
+package com.clouddroid.usagesafe.ui.applimits.adddialog
 
 import androidx.recyclerview.widget.DiffUtil
 import com.clouddroid.usagesafe.data.model.AppDetails

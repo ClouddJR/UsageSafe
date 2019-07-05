@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
+import com.clouddroid.usagesafe.BuildConfig
 import java.util.*
 
 
@@ -59,6 +60,7 @@ object PackageInfoUtils {
         }
 
         val launchables = packageManager.queryIntentActivities(main, 0)
+        launchables.removeAll { it.activityInfo.packageName == BuildConfig.APPLICATION_ID }
 
         Collections.sort(
             launchables,

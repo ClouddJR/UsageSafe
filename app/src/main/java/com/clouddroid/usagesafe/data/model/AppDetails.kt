@@ -6,5 +6,6 @@ data class AppDetails(
     var name: String = "",
     var packageName: String = "",
     var icon: Drawable?,
-    var isSystemApp: Boolean
+    var isSystemApp: Boolean,
+    var isInFocusMode: Boolean = false
 )

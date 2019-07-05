@@ -1,4 +1,4 @@
-package com.clouddroid.usagesafe.ui.applimits.dialog
+package com.clouddroid.usagesafe.ui.applimits.adddialog
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.item_app_limit_dialog.view.*
+import kotlinx.android.synthetic.main.item_app_info.view.*
 
 class AppListAdapter(private val context: Context, val onItemClicked: (String) -> Unit) :
     RecyclerView.Adapter<AppListAdapter.ViewHolder>() {
@@ -41,7 +41,7 @@ class AppListAdapter(private val context: Context, val onItemClicked: (String) -
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_app_limit_dialog, parent, false))
+        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_app_info, parent, false))
 
     override fun getItemCount() = appsList.size
 
