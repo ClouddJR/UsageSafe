@@ -9,16 +9,29 @@ import com.bumptech.glide.Glide
 import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.UsageSafeApp
 import com.clouddroid.usagesafe.data.model.AppLimit
+import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.util.PackageInfoUtils
 import com.clouddroid.usagesafe.util.TextUtils
 import kotlinx.android.synthetic.main.item_app_limit.view.*
 
 
 class AppLimitsAdapter(
-    private val appsList: List<AppLimit>,
     val context: Context
 ) :
     RecyclerView.Adapter<AppLimitsAdapter.ItemViewHolder>() {
+
+    private var appsList = listOf<AppLimit>()
+    private var usageMap = mapOf<String, AppUsageInfo>()
+
+    fun replaceItems(list: List<AppLimit>) {
+        appsList = list
+        notifyDataSetChanged()
+    }
+
+    fun updateUsageProgressBars(map: Map<String, AppUsageInfo>) {
+        usageMap = map
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val itemView =
@@ -47,6 +60,10 @@ class AppLimitsAdapter(
             itemView.setOnClickListener {
                 displayEditOrDeleteDialog(itemView.context, appLimit)
             }
+
+            val currentLimitPercentage =
+                (usageMap[appLimit.packageName]?.totalTimeInForeground ?: 0).toDouble() / appLimit.limit
+            itemView.progressBar.progress = (currentLimitPercentage * 100).toInt()
         }
 
         private fun displayEditOrDeleteDialog(context: Context, appLimit: AppLimit) {

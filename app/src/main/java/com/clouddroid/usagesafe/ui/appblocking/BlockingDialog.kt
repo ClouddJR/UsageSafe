@@ -7,7 +7,11 @@ import android.view.KeyEvent
 import com.clouddroid.usagesafe.R
 import kotlinx.android.synthetic.main.dialog_app_block.*
 
-class BlockingDialog(passedContext: Context, private val onButtonClick: () -> Unit) :
+class BlockingDialog(
+    private val mode: BlockingMode,
+    private val passedContext: Context,
+    private val onButtonClick: () -> Unit
+) :
     Dialog(passedContext) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,6 +19,7 @@ class BlockingDialog(passedContext: Context, private val onButtonClick: () -> Un
         setContentView(R.layout.dialog_app_block)
         setCanceledOnTouchOutside(false)
         setOnClickListener()
+        setBlockingText()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -25,6 +30,13 @@ class BlockingDialog(passedContext: Context, private val onButtonClick: () -> Un
         exitButton.setOnClickListener {
             onButtonClick.invoke()
             dismiss()
+        }
+    }
+
+    private fun setBlockingText() {
+        blockingText.text = when (mode) {
+            BlockingMode.APP_LIMIT -> "You have reached the limit on this application"
+            BlockingMode.FOCUS_MODE -> "You can't open this app during the focus mode"
         }
     }
 }

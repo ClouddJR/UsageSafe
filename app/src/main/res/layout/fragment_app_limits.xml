@@ -121,19 +121,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/focusModeSection">
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/enableSwitch"
+            <TextView
+                android:id="@+id/appLimitsSectionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Enable app limits"
+                android:text="List of app limits"
                 android:textColor="@android:color/white"
                 android:textSize="17sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:switchPadding="16dp" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/appsListRV"
@@ -149,7 +148,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/enableSwitch"
+                app:layout_constraintTop_toBottomOf="@id/appLimitsSectionTitle"
                 tools:listitem="@layout/item_app_limit" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

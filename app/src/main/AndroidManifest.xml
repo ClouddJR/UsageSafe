@@ -20,6 +20,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,11 +32,13 @@
         <activity
             android:name=".ui.appdetails.AppDetailsActivity"
             android:parentActivityName=".ui.main.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.daydetails.DayDetailsActivity"
             android:parentActivityName=".ui.main.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
@@ -47,7 +50,8 @@
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="Settings"
-            android:parentActivityName=".ui.main.MainActivity" />
+            android:parentActivityName=".ui.main.MainActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".data.service.AppUsageMonitorService"

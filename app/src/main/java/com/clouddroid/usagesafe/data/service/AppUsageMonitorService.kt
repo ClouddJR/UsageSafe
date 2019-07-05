@@ -12,10 +12,12 @@ import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.UsageSafeApp
 import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
+import com.clouddroid.usagesafe.data.model.FocusModeApp
 import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.ui.appblocking.BlockingActivity
+import com.clouddroid.usagesafe.ui.appblocking.BlockingMode
 import com.clouddroid.usagesafe.ui.main.MainActivity
 import com.clouddroid.usagesafe.util.NotificationUtils
 import io.reactivex.Observable
@@ -39,11 +41,18 @@ class AppUsageMonitorService : Service() {
     private var foregroundAppPackageName = ""
     private var appUsageMap = mutableMapOf<String, AppUsageInfo>()
     private var appLimitsList = listOf<AppLimit>()
+    private var focusModeAppsList = listOf<FocusModeApp>()
+    private var isFocusModeEnabled = false
+
+    companion object {
+        const val FOCUS_MODE_KEY = "focus_mode"
+    }
 
     override fun onCreate() {
         super.onCreate()
         injectDependencies()
         observeAppLimitsList()
+        observeFocusModeAppList()
         updateAppUsageMapPeriodically()
         watchForLaunchingAppWithLimitExceeded()
         Log.d(AppUsageMonitorService::class.java.name, "Service creation")
@@ -51,6 +60,7 @@ class AppUsageMonitorService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createNotification()
+        receiveInformationAboutFocusMode(intent)
         Log.d(AppUsageMonitorService::class.java.name, "Service onStartCommand")
         return START_STICKY
     }
@@ -65,6 +75,24 @@ class AppUsageMonitorService : Service() {
 
     private fun injectDependencies() {
         (application as UsageSafeApp).component.inject(this)
+    }
+
+    private fun observeAppLimitsList() {
+        compositeDisposable.add(databaseRepository.getListOfLimits()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                appLimitsList = it
+            })
+    }
+
+    private fun observeFocusModeAppList() {
+        compositeDisposable.add(databaseRepository.getListOfFocusModeApps()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                focusModeAppsList = it
+            })
     }
 
     //updating app usage map every 2 minutes
@@ -115,17 +143,21 @@ class AppUsageMonitorService : Service() {
                 Observable.just(foregroundAppPackageName)
             }
 
-            //checking if the app in the foreground should be blocked
+            //checking if the app in the foreground should be blocked because of exceeded limit or focus mode
             .flatMap { packageName ->
-                Observable.just(appLimitsList.any { appLimit ->
-                    appLimit.packageName == packageName
-                            && appLimit.limit <= appUsageMap[packageName]?.totalTimeInForeground ?: 0
-                })
+                Observable.just(
+                    when {
+                        appLimitsList.any { appLimit ->
+                            appLimit.packageName == packageName
+                                    && appLimit.limit <= appUsageMap[packageName]?.totalTimeInForeground ?: 0
+                        } -> BlockingMode.APP_LIMIT
+                        focusModeAppsList.any { it.packageName == packageName } && isFocusModeEnabled -> BlockingMode.FOCUS_MODE
+                        else -> -1
+                    }
+                )
             }
-            .subscribe { appShouldBeBlocked ->
-                if (appShouldBeBlocked) {
-                    displayBlockingActivity()
-                }
+            .subscribe { mode ->
+                if (mode != -1) displayBlockingActivityWith(mode as BlockingMode)
                 applicationContext
             })
     }
@@ -155,15 +187,16 @@ class AppUsageMonitorService : Service() {
                 appUsageMap[foregroundAppPackageName]?.totalTimeInForeground =
                     appUsageMap[foregroundAppPackageName]?.totalTimeInForeground?.plus(amountOfTimeSinceArriving)
                         ?: 0
-                displayBlockingActivity()
+                displayBlockingActivityWith(BlockingMode.APP_LIMIT)
             }
         }
     }
 
-    private fun displayBlockingActivity() {
+    private fun displayBlockingActivityWith(mode: BlockingMode) {
         Intent(this, BlockingActivity::class.java).also { intent ->
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra(BlockingActivity.BLOCKING_MODE_KEY, mode)
             applicationContext?.startActivity(intent)
         }
     }
@@ -185,13 +218,11 @@ class AppUsageMonitorService : Service() {
         startForeground(NotificationUtils.APP_USAGE_MONITOR_SERVICE_NOTIFICATION_ID, notification)
     }
 
-    private fun observeAppLimitsList() {
-        compositeDisposable.add(databaseRepository.getListOfLimits()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                appLimitsList = it
-            })
-    }
 
+    private fun receiveInformationAboutFocusMode(intent: Intent?) {
+        val receivedData = intent?.extras?.get(FOCUS_MODE_KEY)
+        receivedData?.let {
+            isFocusModeEnabled = it as Boolean
+        }
+    }
 }

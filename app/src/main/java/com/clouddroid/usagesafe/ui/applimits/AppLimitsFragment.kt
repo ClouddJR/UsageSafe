@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.ViewPropertyAnimator
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -23,20 +22,20 @@ class AppLimitsFragment : BaseFragment() {
     private lateinit var viewModel: AppLimitsViewModel
     private lateinit var adapter: AppLimitsAdapter
 
-    private var viewPropertyAnimator: ViewPropertyAnimator? = null
-
     override fun getLayoutId() = R.layout.fragment_app_limits
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         initViewModel()
+        adapter = AppLimitsAdapter(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRV()
         observeData()
         setOnClickListeners()
-        manageFeatureToggle()
+        manageFocusModeToggle()
     }
 
     fun scrollToTop() {
@@ -49,50 +48,57 @@ class AppLimitsFragment : BaseFragment() {
         viewModel.init()
     }
 
+    private fun initRV() {
+        val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+        appsListRV.adapter = adapter
+        appsListRV.layoutAnimation = animation
+        appsListRV.scheduleLayoutAnimation()
+        appsListRV.invalidate()
+    }
+
     private fun observeData() {
-        viewModel.appsList.observe(this, Observer {
-            initRV(it)
+        viewModel.usageMap.observe(this, Observer {
+            adapter.updateUsageProgressBars(it)
         })
 
-        viewModel.areAppLimitsEnabled.observe(this, Observer { isEnabled ->
-            toggleUsageMonitorService(isEnabled)
-            enableSwitch.isChecked = isEnabled
-
-            //toggle the RV visibility and schedule items animation if visible
-            if (isEnabled) {
-                viewPropertyAnimator?.cancel()
-                appsListRV.alpha = 1f
-                appsListRV.visibility = View.VISIBLE
-                val animation = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
-                appsListRV.layoutAnimation = animation
-                appsListRV.scheduleLayoutAnimation()
-                appsListRV.invalidate()
-
+        viewModel.appsList.observe(this, Observer {
+            updateItems(it)
+            if (isListEmptyAndFocusModeDisabled(it)) {
+                stopUsageMonitorService()
             } else {
-                viewPropertyAnimator = appsListRV.animate()
-                    .alpha(0f)
-                    .setDuration(300)
-                    .withEndAction { appsListRV.visibility = View.INVISIBLE }
-                viewPropertyAnimator?.start()
+                startUsageMonitorService(null)
+            }
+        })
+
+        viewModel.isFocusModeEnabled.observe(this, Observer { isEnabled ->
+            focusModeSwitch.isChecked = isEnabled
+            if (isAdapterDataEmptyAndFocusModeDisabled(isEnabled)) {
+                stopUsageMonitorService()
+            } else {
+                startUsageMonitorService(isEnabled)
             }
         })
     }
 
-    private fun toggleUsageMonitorService(isEnabled: Boolean) {
-        val intent = Intent(context, AppUsageMonitorService::class.java)
-
-        //stopping or launching service that monitors usage
-        when (isEnabled) {
-            true -> ContextCompat.startForegroundService(context!!, intent)
-            false -> context?.stopService(intent)
-        }
-
+    private fun updateItems(appsList: List<AppLimit>) {
+        adapter.replaceItems(appsList)
     }
 
-    private fun initRV(appsList: List<AppLimit>) {
-        adapter = AppLimitsAdapter(appsList, context!!)
+    private fun isListEmptyAndFocusModeDisabled(list: List<AppLimit>): Boolean =
+        list.isEmpty() && !focusModeSwitch.isChecked
 
-        appsListRV.adapter = adapter
+    private fun isAdapterDataEmptyAndFocusModeDisabled(isEnabled: Boolean): Boolean =
+        adapter.itemCount == 0 && !isEnabled
+
+    private fun stopUsageMonitorService() {
+        val intent = Intent(context, AppUsageMonitorService::class.java)
+        context?.stopService(intent)
+    }
+
+    private fun startUsageMonitorService(data: Boolean?) {
+        val intent = Intent(context, AppUsageMonitorService::class.java)
+        intent.putExtra(AppUsageMonitorService.FOCUS_MODE_KEY, data)
+        ContextCompat.startForegroundService(context!!, intent)
     }
 
     private fun setOnClickListeners() {
@@ -113,8 +119,8 @@ class AppLimitsFragment : BaseFragment() {
         }
     }
 
-    private fun manageFeatureToggle() {
-        enableSwitch.setOnCheckedChangeListener { _, isChecked ->
+    private fun manageFocusModeToggle() {
+        focusModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateFeatureState(isChecked)
         }
     }
