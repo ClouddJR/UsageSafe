@@ -31,6 +31,10 @@
             app:useSimpleSummaryProvider="true" />
 
         <Preference
+            app:key="export"
+            app:title="@string/export" />
+
+        <Preference
             app:key="premium"
             app:title="@string/premium" />
 

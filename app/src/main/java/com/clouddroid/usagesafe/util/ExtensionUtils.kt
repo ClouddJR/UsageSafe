@@ -1,5 +1,6 @@
 package com.clouddroid.usagesafe.util
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -41,5 +42,13 @@ object ExtensionUtils {
 
     fun Calendar.isWithin(start: Calendar, end: Calendar): Boolean {
         return this.after(start) && this.before(end)
+    }
+
+    fun View.show() {
+        this.visibility = View.VISIBLE
+    }
+
+    fun View.hide() {
+        this.visibility = View.INVISIBLE
     }
 }

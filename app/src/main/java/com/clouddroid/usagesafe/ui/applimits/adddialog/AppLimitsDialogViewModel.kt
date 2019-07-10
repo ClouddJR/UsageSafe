@@ -32,7 +32,6 @@ class AppLimitsDialogViewModel @Inject constructor(
     fun getListOfAllApps(context: Context) {
         disposable = Observable.fromCallable { PackageInfoUtils.getLaunchableAppList(packageManager) }
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .flatMapIterable { it }
             .map { item ->
                 AppDetails(
@@ -42,6 +41,7 @@ class AppLimitsDialogViewModel @Inject constructor(
                     icon = PackageInfoUtils.getRawAppIcon(item.activityInfo.packageName, context)
                 )
             }
+            .observeOn(AndroidSchedulers.mainThread())
             .toList()
             .toObservable()
             .subscribe {

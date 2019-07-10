@@ -48,6 +48,12 @@
             android:theme="@style/AppTheme.NoActionBar.Translucent" />
 
         <activity
+            android:name=".ui.exporting.ExportActivity"
+            android:label="Export data"
+            android:parentActivityName=".ui.settings.SettingsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="Settings"
             android:parentActivityName=".ui.main.MainActivity"

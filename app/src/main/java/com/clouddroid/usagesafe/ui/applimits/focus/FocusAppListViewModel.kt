@@ -52,7 +52,6 @@ class FocusAppListViewModel @Inject constructor(
     private fun getLaunchableApps(context: Context): Observable<List<AppDetails>> {
         return Observable.fromCallable { PackageInfoUtils.getLaunchableAppList(packageManager) }
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .flatMapIterable { it }
             .map { item ->
                 AppDetails(
@@ -62,6 +61,7 @@ class FocusAppListViewModel @Inject constructor(
                     icon = PackageInfoUtils.getRawAppIcon(item.activityInfo.packageName, context)
                 )
             }
+            .observeOn(AndroidSchedulers.mainThread())
             .toList()
             .toObservable()
     }

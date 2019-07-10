@@ -102,8 +102,8 @@ class AppUsageMonitorService : Service() {
                 usageStatsRepository.getLogsFromToday()
             }
         }
-            .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { logs -> appUsageMap = usageStatsRepository.getAppsUsageMapFromLogs(logs) }
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { logs ->
                 Log.d(AppUsageMonitorService::class.java.name, "Updating map usage")
                 checkIfAppInForegroundShouldBeBlocked(logs)

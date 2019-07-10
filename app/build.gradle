@@ -26,6 +26,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
     implementation 'androidx.core:core-ktx:1.2.0-alpha01'
@@ -38,9 +41,14 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
 
     //Room
-    implementation "androidx.room:room-runtime:2.1.0-beta01"
-    implementation "androidx.room:room-rxjava2:2.1.0-beta01"
-    kapt "androidx.room:room-compiler:2.1.0-beta01"
+    implementation "androidx.room:room-runtime:2.1.0"
+    implementation "androidx.room:room-rxjava2:2.1.0"
+    kapt "androidx.room:room-compiler:2.1.0"
+
+    //anko
+    implementation "org.jetbrains.anko:anko:0.10.8"
+    implementation "org.jetbrains.anko:anko-design:0.10.8"
+    implementation "org.jetbrains.anko:anko-commons:0.10.8"
 
     //Palette API
     implementation 'androidx.palette:palette:1.0.0'

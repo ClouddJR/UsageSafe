@@ -12,6 +12,9 @@ interface LogEventDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLogEvents(logEvents: List<LogEvent>)
 
+    @Query("SELECT * FROM logevents ORDER BY timestamp")
+    fun getAllLogEvents(): List<LogEvent>
+
     @Query("SELECT * FROM logevents WHERE timestamp BETWEEN :begin AND :end")
     fun getLogEventsBetweenRange(begin: Long, end: Long): List<LogEvent>
 

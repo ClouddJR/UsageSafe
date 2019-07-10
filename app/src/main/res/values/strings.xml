@@ -75,6 +75,7 @@
         <item>monday</item>
     </string-array>
 
+    <string name="export">Data export</string>
     <string name="premium">Premium functionality</string>
     <string name="rate">Rate the app</string>
 

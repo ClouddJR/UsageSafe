@@ -9,6 +9,7 @@ import com.clouddroid.usagesafe.ui.applimits.focus.FocusAppListViewModel
 import com.clouddroid.usagesafe.ui.base.ViewModelFactory
 import com.clouddroid.usagesafe.ui.base.ViewModelKey
 import com.clouddroid.usagesafe.ui.daydetails.DayDetailsViewModel
+import com.clouddroid.usagesafe.ui.exporting.ExportActivityViewModel
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsViewModel
 import com.clouddroid.usagesafe.ui.historystats.applaunches.AppLaunchesViewModel
 import com.clouddroid.usagesafe.ui.historystats.screen.ScreenTimeViewModel
@@ -79,5 +80,10 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(FocusAppListViewModel::class)
     fun provideFocusAppListViewModel(viewModel: FocusAppListViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ExportActivityViewModel::class)
+    fun provideExportActivityViewModel(viewModel: ExportActivityViewModel): ViewModel = viewModel
 
 }

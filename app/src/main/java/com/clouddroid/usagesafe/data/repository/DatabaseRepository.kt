@@ -52,6 +52,10 @@ class DatabaseRepository @Inject constructor(
         return appLimitsDataSource.getAllLimits()
     }
 
+    fun getAllLogEvents(): List<LogEvent> {
+        return logEventsDataSource.getAllLogEvents()
+    }
+
     fun getLogEventsFromRange(beginMillis: Long, endMillis: Long): List<LogEvent> {
         return logEventsDataSource.getLogEventsBetweenRange(beginMillis, endMillis)
     }

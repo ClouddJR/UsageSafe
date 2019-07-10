@@ -43,6 +43,16 @@ object PackageInfoUtils {
         }
     }
 
+    fun getAppName(packageName: String, packageManager: PackageManager): CharSequence? {
+        return try {
+            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+            if (applicationInfo != null) packageManager.getApplicationLabel(applicationInfo)
+            else packageName
+        } catch (e: PackageManager.NameNotFoundException) {
+            packageName
+        }
+    }
+
     fun getDefaultLauncherPackageName(packageManager: PackageManager): String {
         val intent = Intent("android.intent.action.MAIN").apply {
             addCategory("android.intent.category.HOME")
