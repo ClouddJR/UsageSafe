@@ -37,7 +37,12 @@ class DatabaseRepositoryTest {
             .allowMainThreadQueries()
             .build()
         databaseRepository =
-            DatabaseRepository(database.appLimitDao(), database.logEventDao())
+            DatabaseRepository(
+                database.appLimitDao(),
+                database.logEventDao(),
+                database.groupLimitDao(),
+                database.focusModeAppDao()
+            )
     }
 
     @After
