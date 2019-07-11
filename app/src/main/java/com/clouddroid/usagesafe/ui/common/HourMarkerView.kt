@@ -17,7 +17,7 @@ class HourMarkerView(context: Context, layoutId: Int, private val mode: Int, pri
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
 
-        val marketText = if (mode == DayDetailsViewModel.MODE.SCREEN_TIME) {
+        val marketText = if (mode == DayDetailsViewModel.Mode.SCREEN_TIME) {
             "${hoursNames[e?.x?.toInt() ?: 0]} : ${TextUtils.getTotalScreenTimeText(
                 e?.y?.toLong() ?: 0L, context
             )}"

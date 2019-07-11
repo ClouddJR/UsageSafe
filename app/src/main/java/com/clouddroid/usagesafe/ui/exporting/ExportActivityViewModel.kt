@@ -37,26 +37,6 @@ class ExportActivityViewModel @Inject constructor(
     private val compositeDisposable = CompositeDisposable()
     private val exporter = Exporter()
 
-    private fun saveDataToAFile(data: String, path: File?) {
-        if (path == null) {
-            pathNotAvailable.value = true
-            return
-        }
-
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-        val second = calendar.get(Calendar.SECOND)
-
-        val file = File(path, "data_${year}_${month}_${day}_${hour}_${minute}_${second}.csv")
-        file.writeText(data)
-
-        dataSuccessfullySaved.value = path.absolutePath
-    }
-
     fun exportData(layout: Exporter.Layout, context: Context) {
         compositeDisposable.add(
             getAllLogsMap()
@@ -103,5 +83,25 @@ class ExportActivityViewModel @Inject constructor(
         }
 
         return newMap.toSortedMap(Comparator { day1, day2 -> day1.compareTo(day2) })
+    }
+
+    private fun saveDataToAFile(data: String, path: File?) {
+        if (path == null) {
+            pathNotAvailable.value = true
+            return
+        }
+
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+
+        val file = File(path, "data_${year}_${month}_${day}_${hour}_${minute}_$second.csv")
+        file.writeText(data)
+
+        dataSuccessfullySaved.value = path.absolutePath
     }
 }

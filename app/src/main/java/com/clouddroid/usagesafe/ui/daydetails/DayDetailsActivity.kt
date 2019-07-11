@@ -86,12 +86,12 @@ class DayDetailsActivity : BaseActivity() {
             statsTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        DayDetailsViewModel.MODE.SCREEN_TIME ->
-                            viewModel.switchMode(DayDetailsViewModel.MODE.SCREEN_TIME)
-                        DayDetailsViewModel.MODE.APP_LAUNCHES ->
-                            viewModel.switchMode(DayDetailsViewModel.MODE.APP_LAUNCHES)
-                        DayDetailsViewModel.MODE.UNLOCKS ->
-                            viewModel.switchMode(DayDetailsViewModel.MODE.UNLOCKS)
+                        DayDetailsViewModel.Mode.SCREEN_TIME ->
+                            viewModel.switchMode(DayDetailsViewModel.Mode.SCREEN_TIME)
+                        DayDetailsViewModel.Mode.APP_LAUNCHES ->
+                            viewModel.switchMode(DayDetailsViewModel.Mode.APP_LAUNCHES)
+                        DayDetailsViewModel.Mode.UNLOCKS ->
+                            viewModel.switchMode(DayDetailsViewModel.Mode.UNLOCKS)
                     }
                 }
 
@@ -193,7 +193,7 @@ class DayDetailsActivity : BaseActivity() {
         barChart.axisLeft.textColor = Color.WHITE
         barChart.axisLeft.setDrawAxisLine(true)
         barChart.axisLeft.setDrawLabels(true)
-        if (viewModel.currentMode == DayDetailsViewModel.MODE.SCREEN_TIME) {
+        if (viewModel.currentMode == DayDetailsViewModel.Mode.SCREEN_TIME) {
             barChart.axisLeft.setValueFormatter { value, _ ->
                 TextUtils.getTotalScreenTimeText(value.toLong(), this)
             }

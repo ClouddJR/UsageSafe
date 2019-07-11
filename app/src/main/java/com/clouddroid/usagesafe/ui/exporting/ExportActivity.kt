@@ -41,17 +41,17 @@ class ExportActivity : BaseActivity() {
 
     private fun observeChanges() {
         viewModel.dataSuccessfullySaved.observe(this, Observer { path ->
-            dismissDialogIfShown()
+            dismissProgressDialogIfShown()
             longToast("File saved in $path")
         })
 
         viewModel.pathNotAvailable.observe(this, Observer {
-            dismissDialogIfShown()
+            dismissProgressDialogIfShown()
             longToast("External storage not available (Is your phone connected to a PC?)")
         })
     }
 
-    private fun dismissDialogIfShown() {
+    private fun dismissProgressDialogIfShown() {
         firstLayoutProgressBar.hide()
         secondLayoutProgressBar.hide()
         firstLayoutExportButton.show()

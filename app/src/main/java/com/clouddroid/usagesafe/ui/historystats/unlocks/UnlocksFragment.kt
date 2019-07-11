@@ -97,7 +97,7 @@ class UnlocksFragment : BaseFragment() {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 val intent = Intent(context, DayDetailsActivity::class.java)
                 intent.putExtra(DayDetailsActivity.DATE_MILLIS_KEY, (e as BarEntry).data as Long)
-                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.MODE.UNLOCKS)
+                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.Mode.UNLOCKS)
                 startActivity(intent)
             }
         })

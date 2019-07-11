@@ -26,6 +26,8 @@ class AppDetailsActivity : BaseActivity() {
     private lateinit var viewModel: AppDetailsViewModel
     private lateinit var appPackageName: String
 
+    private var passedMode: Int = 0
+
     companion object {
         const val PACKAGE_NAME_KEY = "package_name"
         const val MODE_KEY = "details_mode"
@@ -35,6 +37,7 @@ class AppDetailsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_details)
         receivePackageName()
+        receiveMode()
         initViewModel()
         setUpToolbar()
         setNoDataTextInChart()
@@ -58,12 +61,14 @@ class AppDetailsActivity : BaseActivity() {
         Glide.with(this).load(PackageInfoUtils.getRawAppIcon(appPackageName, this)).into(appIconIV)
     }
 
+    private fun receiveMode() {
+        passedMode = intent.getIntExtra(MODE_KEY, 0)
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[AppDetailsViewModel::class.java]
 
-        val passedMode = intent.getIntExtra(MODE_KEY, 0)
         viewModel.currentMode = passedMode
-
         viewModel.init(appPackageName)
         viewModel.updateCurrentWeek()
     }
@@ -87,14 +92,22 @@ class AppDetailsActivity : BaseActivity() {
 
         statsTypeSpinner.adapter = adapter
 
+        statsTypeSpinner.setSelection(
+            when (passedMode) {
+                AppDetailsViewModel.Mode.SCREEN_TIME -> 0
+                AppDetailsViewModel.Mode.APP_LAUNCHES -> 1
+                else -> 0
+            }
+        )
+
         statsTypeSpinner.post {
             statsTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        AppDetailsViewModel.MODE.SCREEN_TIME ->
-                            viewModel.switchMode(AppDetailsViewModel.MODE.SCREEN_TIME)
-                        AppDetailsViewModel.MODE.APP_LAUNCHES ->
-                            viewModel.switchMode(AppDetailsViewModel.MODE.APP_LAUNCHES)
+                        AppDetailsViewModel.Mode.SCREEN_TIME ->
+                            viewModel.switchMode(AppDetailsViewModel.Mode.SCREEN_TIME)
+                        AppDetailsViewModel.Mode.APP_LAUNCHES ->
+                            viewModel.switchMode(AppDetailsViewModel.Mode.APP_LAUNCHES)
                     }
                 }
 
@@ -172,7 +185,7 @@ class AppDetailsActivity : BaseActivity() {
 
         barChart.data = BarData(barDataSet)
         barChart.data.setValueTextSize(9f)
-        if (viewModel.currentMode == AppDetailsViewModel.MODE.SCREEN_TIME) {
+        if (viewModel.currentMode == AppDetailsViewModel.Mode.SCREEN_TIME) {
             barChart.data.setValueFormatter { value, _, _, _ ->
                 TextUtils.getTotalScreenTimeText(value.toLong(), this)
             }

@@ -104,7 +104,7 @@ class ScreenTimeFragment : BaseFragment() {
     private val onMostUsedAppClick = View.OnClickListener {
         val intent = Intent(context, AppDetailsActivity::class.java)
         intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, screenTimeViewModel.mostUsedApp.value?.packageName)
-        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.SCREEN_TIME)
+        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.Mode.SCREEN_TIME)
         startActivity(intent)
     }
 
@@ -122,7 +122,7 @@ class ScreenTimeFragment : BaseFragment() {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 val intent = Intent(context, DayDetailsActivity::class.java)
                 intent.putExtra(DayDetailsActivity.DATE_MILLIS_KEY, (e as BarEntry).data as Long)
-                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.MODE.SCREEN_TIME)
+                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.Mode.SCREEN_TIME)
                 startActivity(intent)
             }
         })

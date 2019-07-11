@@ -5,10 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.repository.DatabaseRepository
-import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.data.model.LogEvent
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.util.DayBegin
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_DAY_BEGIN
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_TIME_FORMAT
@@ -30,7 +30,7 @@ class DayDetailsViewModel @Inject constructor(
     sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    object MODE {
+    object Mode {
         const val SCREEN_TIME = 0
         const val APP_LAUNCHES = 1
         const val UNLOCKS = 2
@@ -42,7 +42,7 @@ class DayDetailsViewModel @Inject constructor(
     val shouldRightArrowBeHidden = MutableLiveData<Boolean>()
 
     //stores the current mode that a fragment is in
-    var currentMode = MODE.SCREEN_TIME
+    var currentMode = Mode.SCREEN_TIME
 
     //formatted text to be displayed on the bottom view
     val currentDayText = MutableLiveData<String>()
@@ -172,15 +172,15 @@ class DayDetailsViewModel @Inject constructor(
         appLaunchesBarDataSet = BarDataSet(launchCountYVals, "App launches")
 
         when (currentMode) {
-            MODE.SCREEN_TIME -> {
+            Mode.SCREEN_TIME -> {
                 switchToScreenTimeMode()
             }
 
-            MODE.APP_LAUNCHES -> {
+            Mode.APP_LAUNCHES -> {
                 switchToAppLaunchesMode()
             }
 
-            MODE.UNLOCKS -> {
+            Mode.UNLOCKS -> {
                 switchToUnlockMode()
             }
         }
@@ -189,16 +189,16 @@ class DayDetailsViewModel @Inject constructor(
 
     fun switchMode(mode: Int) {
         when (mode) {
-            MODE.SCREEN_TIME -> if (currentMode != MODE.SCREEN_TIME) {
-                currentMode = MODE.SCREEN_TIME
+            Mode.SCREEN_TIME -> if (currentMode != Mode.SCREEN_TIME) {
+                currentMode = Mode.SCREEN_TIME
                 switchToScreenTimeMode()
             }
-            MODE.APP_LAUNCHES -> if (currentMode != MODE.APP_LAUNCHES) {
-                currentMode = MODE.APP_LAUNCHES
+            Mode.APP_LAUNCHES -> if (currentMode != Mode.APP_LAUNCHES) {
+                currentMode = Mode.APP_LAUNCHES
                 switchToAppLaunchesMode()
             }
-            MODE.UNLOCKS -> if (currentMode != MODE.UNLOCKS) {
-                currentMode = MODE.UNLOCKS
+            Mode.UNLOCKS -> if (currentMode != Mode.UNLOCKS) {
+                currentMode = Mode.UNLOCKS
                 switchToUnlockMode()
             }
         }

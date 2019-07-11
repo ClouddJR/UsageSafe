@@ -103,7 +103,7 @@ class AppLaunchesFragment : BaseFragment() {
     private val onMostOpenedAppClick = View.OnClickListener {
         val intent = Intent(context, AppDetailsActivity::class.java)
         intent.putExtra(AppDetailsActivity.PACKAGE_NAME_KEY, appLaunchesViewModel.mostOpenedApp.value?.packageName)
-        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.MODE.APP_LAUNCHES)
+        intent.putExtra(AppDetailsActivity.MODE_KEY, AppDetailsViewModel.Mode.APP_LAUNCHES)
         startActivity(intent)
     }
 
@@ -121,7 +121,7 @@ class AppLaunchesFragment : BaseFragment() {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 val intent = Intent(context, DayDetailsActivity::class.java)
                 intent.putExtra(DayDetailsActivity.DATE_MILLIS_KEY, (e as BarEntry).data as Long)
-                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.MODE.APP_LAUNCHES)
+                intent.putExtra(DayDetailsActivity.MODE_KEY, DayDetailsViewModel.Mode.APP_LAUNCHES)
                 startActivity(intent)
             }
         })
