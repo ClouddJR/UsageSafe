@@ -20,6 +20,7 @@ import com.clouddroid.usagesafe.ui.appblocking.BlockingActivity
 import com.clouddroid.usagesafe.ui.appblocking.BlockingMode
 import com.clouddroid.usagesafe.ui.main.MainActivity
 import com.clouddroid.usagesafe.util.NotificationUtils
+import com.clouddroid.usagesafe.util.TextUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -102,7 +103,7 @@ class AppUsageMonitorService : Service() {
                 usageStatsRepository.getLogsFromToday()
             }
         }
-            .doOnNext { logs -> appUsageMap = usageStatsRepository.getAppsUsageMapFromLogs(logs) }
+            .doOnNext { logs -> appUsageMap = usageStatsRepository.getAppsUsageMapFromLogs(logs); createNotification() }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { logs ->
                 Log.d(AppUsageMonitorService::class.java.name, "Updating map usage")
@@ -209,13 +210,20 @@ class AppUsageMonitorService : Service() {
 
         val notification: Notification =
             NotificationCompat.Builder(applicationContext, NotificationUtils.CHANNEL_ID)
-                .setContentTitle("Usage monitor")
-                .setContentText("Monitoring app usage")
+                .setContentTitle("Monitoring app usage")
+                .setContentText("Screen time: ${calculateScreenTime()}")
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(pendingIntent)
                 .build()
 
         startForeground(NotificationUtils.APP_USAGE_MONITOR_SERVICE_NOTIFICATION_ID, notification)
+    }
+
+    private fun calculateScreenTime(): String {
+        return TextUtils.getTotalScreenTimeText(
+            appUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }.toLong(),
+            this
+        )
     }
 
 
