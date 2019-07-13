@@ -2,11 +2,9 @@ package com.clouddroid.usagesafe.ui.main
 
 import android.app.AppOpsManager
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
-import android.provider.Settings
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
 import com.clouddroid.usagesafe.R
@@ -15,10 +13,12 @@ import com.clouddroid.usagesafe.ui.base.BaseActivity
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.historystats.HistoryStatsFragment
 import com.clouddroid.usagesafe.ui.todaystats.TodaysStatsFragment
+import com.clouddroid.usagesafe.ui.welcome.PermissionActivity
 import com.clouddroid.usagesafe.util.ExtensionUtils.addAndCommit
 import com.clouddroid.usagesafe.util.ExtensionUtils.doesNotContain
 import com.clouddroid.usagesafe.util.ExtensionUtils.showAndHideOthers
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.startActivity
 
 class MainActivity : BaseActivity() {
 
@@ -31,10 +31,10 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        redirectIfPermissionNotGranted()
         initViewModel()
         initFragmentsBackStack()
         initBottomNav()
-        checkForUsagePermissions()
     }
 
     override fun onBackPressed() {
@@ -172,7 +172,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun checkForUsagePermissions() {
+    private fun redirectIfPermissionNotGranted() {
         val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(
             AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName
@@ -185,7 +185,8 @@ class MainActivity : BaseActivity() {
         }
 
         if (!granted) {
-            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+            startActivity<PermissionActivity>()
+            finish()
         }
     }
 

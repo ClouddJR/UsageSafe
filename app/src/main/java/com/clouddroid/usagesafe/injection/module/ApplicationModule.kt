@@ -1,5 +1,6 @@
 package com.clouddroid.usagesafe.injection.module
 
+import android.app.AppOpsManager
 import android.app.Application
 import android.app.usage.UsageStatsManager
 import android.content.Context
@@ -11,6 +12,7 @@ import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.util.PreferencesUtils.defaultPrefs
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -19,6 +21,14 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun provideContext(): Context = application
+
+    @Provides
+    @Named("packageName")
+    fun getPackageName(): String = application.packageName
+
+    @Provides
+    @Singleton
+    fun getAppOpsManager(): AppOpsManager = application.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
 
     @Provides
     @Singleton

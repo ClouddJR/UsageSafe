@@ -16,6 +16,7 @@ import com.clouddroid.usagesafe.ui.historystats.screen.ScreenTimeViewModel
 import com.clouddroid.usagesafe.ui.historystats.unlocks.UnlocksViewModel
 import com.clouddroid.usagesafe.ui.main.MainActivityViewModel
 import com.clouddroid.usagesafe.ui.todaystats.TodaysStatsViewModel
+import com.clouddroid.usagesafe.ui.welcome.PermissionActivityViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -85,5 +86,10 @@ class ViewModelsModule {
     @IntoMap
     @ViewModelKey(ExportActivityViewModel::class)
     fun provideExportActivityViewModel(viewModel: ExportActivityViewModel): ViewModel = viewModel
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(PermissionActivityViewModel::class)
+    fun providePermissionActivityViewModel(viewModel: PermissionActivityViewModel): ViewModel = viewModel
 
 }

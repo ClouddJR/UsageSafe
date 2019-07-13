@@ -54,6 +54,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.welcome.PermissionActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="Settings"
             android:parentActivityName=".ui.main.MainActivity"

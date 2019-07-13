@@ -16,15 +16,12 @@ import javax.inject.Singleton
 interface ApplicationComponent {
 
     //injection targets
-
     fun inject(target: UsageSafeApp)
     fun inject(target: BaseActivity)
     fun inject(target: BaseFragment)
     fun inject(target: BaseDialogFragment)
     fun inject(target: AppUsageMonitorService)
 
-
     //objects
-
     fun getDatabaseRepository(): DatabaseRepository
 }
