@@ -83,9 +83,11 @@ class TodaysStatsFragment : BaseFragment() {
                         val index = pieChart.getIndexForAngle(angle)
                         val entry = pieChart.data.dataSet.getEntryForIndex(index)
 
-                        val intent = Intent(context, AppDetailsActivity::class.java)
-                        intent.putExtra("package_name", (entry as PieEntry).data as String)
-                        startActivity(intent)
+                        if ((entry as PieEntry).data != "") {
+                            val intent = Intent(context, AppDetailsActivity::class.java)
+                            intent.putExtra("package_name", entry.data as String)
+                            startActivity(intent)
+                        }
                     }
 
                 }
