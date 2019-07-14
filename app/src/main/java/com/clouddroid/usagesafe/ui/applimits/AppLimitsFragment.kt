@@ -13,6 +13,7 @@ import com.clouddroid.usagesafe.data.model.AppLimit
 import com.clouddroid.usagesafe.data.service.AppUsageMonitorService
 import com.clouddroid.usagesafe.ui.applimits.adddialog.AppLimitsDialog
 import com.clouddroid.usagesafe.ui.applimits.focus.FocusAppsListDialog
+import com.clouddroid.usagesafe.ui.applimits.help.HelpDialog
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.settings.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_app_limits.*
@@ -116,6 +117,16 @@ class AppLimitsFragment : BaseFragment() {
             fragmentManager?.let {
                 FocusAppsListDialog.display(it)
             }
+        }
+
+        focusHelpBT.setOnClickListener {
+            val dialog = HelpDialog(context!!, HelpDialog.HelpForm.FOCUS)
+            dialog.show()
+        }
+
+        appLimitsHelpBT.setOnClickListener {
+            val dialog = HelpDialog(context!!, HelpDialog.HelpForm.APP_LIMITS)
+            dialog.show()
         }
     }
 

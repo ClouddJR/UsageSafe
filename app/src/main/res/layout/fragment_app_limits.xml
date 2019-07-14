@@ -93,6 +93,7 @@
                 android:text="Enable focus mode"
                 android:textColor="@android:color/white"
                 android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:switchPadding="16dp" />
@@ -107,6 +108,22 @@
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageButton
+                android:id="@+id/focusHelpBT"
+                style="?borderlessButtonStyle"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_action_help"
+                android:theme="@style/ColorAccentRippleEffect"
+                android:tint="#AAAAAA"
+                app:layout_constraintBottom_toBottomOf="@id/openFocusAppsListBT"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/openFocusAppsListBT" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,7 +140,7 @@
 
             <TextView
                 android:id="@+id/appLimitsSectionTitle"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
@@ -131,7 +148,24 @@
                 android:text="List of app limits"
                 android:textColor="@android:color/white"
                 android:textSize="17sp"
+                app:layout_constraintEnd_toStartOf="@id/appLimitsHelpBT"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/appLimitsHelpBT"
+                style="?borderlessButtonStyle"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:backgroundTint="@color/colorAccent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_action_help"
+                android:theme="@style/ColorAccentRippleEffect"
+                android:tint="#AAAAAA"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
