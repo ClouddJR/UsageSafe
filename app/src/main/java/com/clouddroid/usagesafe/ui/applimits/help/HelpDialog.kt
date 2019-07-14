@@ -16,7 +16,7 @@ class HelpDialog(context: Context, private val helpForm: HelpForm) : Dialog(cont
     }
 
     private val focusHelpText =
-        "When focus mode is enabled, all selected applications will be blocked regardless of whether there is a limit specified for them or not. It is applicable for study sessions or anytime you want to disconnect for a specific period od time.\nThis mode can be quickly enabled or disabled via a widget or a tile in notification bar"
+        "When focus mode is enabled, all selected applications will be blocked regardless of whether there is a limit specified for them or not. It is applicable for study sessions or anytime you want to disconnect for a specific period od time.\nThis mode can be also quickly enabled or disabled via a quick settings tile."
     private val appLimitsHelpText =
         "Here you can specify daily limits for each application independently. Limit is reset at an hour specified in settings (beginning of the day). When you exceed a limit for a specific app in a given day, you won't be able to open this app for the rest of that day.\nIn order to edit or delete a limit you have to wait 15 seconds. This is supposed to discourage you from quickly editing or deleting a limit after exceeding it."
 
@@ -38,7 +38,7 @@ class HelpDialog(context: Context, private val helpForm: HelpForm) : Dialog(cont
             HelpForm.APP_LIMITS -> appLimitsHelpText
         }
 
-        titleText.text = when(helpForm) {
+        titleText.text = when (helpForm) {
             HelpForm.FOCUS -> "Focus Mode"
             HelpForm.APP_LIMITS -> "App limits"
         }

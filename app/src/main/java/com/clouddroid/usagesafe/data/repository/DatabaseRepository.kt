@@ -52,6 +52,10 @@ class DatabaseRepository @Inject constructor(
         return appLimitsDataSource.getAllLimits()
     }
 
+    fun getNumberOfAppLimits(): Flowable<Int> {
+        return appLimitsDataSource.getNumberOfAppLimits()
+    }
+
     fun getAllLogEvents(): List<LogEvent> {
         return logEventsDataSource.getAllLogEvents()
     }

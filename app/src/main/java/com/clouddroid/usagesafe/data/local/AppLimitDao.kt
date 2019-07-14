@@ -13,6 +13,9 @@ interface AppLimitDao {
     @Query("SELECT * FROM app_limits")
     fun getAllLimits(): Flowable<List<AppLimit>>
 
+    @Query("SELECT COUNT(*) FROM app_limits")
+    fun getNumberOfAppLimits(): Flowable<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAppLimit(appLimit: AppLimit)
 
