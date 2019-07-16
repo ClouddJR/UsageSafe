@@ -17,6 +17,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4098342918729972~2501772235" />
+
         <activity
             android:name=".ui.main.MainActivity"
             android:launchMode="singleTask"
