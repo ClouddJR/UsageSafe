@@ -84,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textSize="21sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/unlockTV"
             app:layout_constraintStart_toStartOf="@id/unlockTV"
             app:layout_constraintTop_toBottomOf="@id/pieChart" />
@@ -96,7 +96,7 @@
             android:layout_marginStart="48dp"
             android:layout_marginTop="4dp"
             android:text="@string/fragment_today_unlocks"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/unlockCountTV" />
 
@@ -105,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textSize="21sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@id/launchTV"
             app:layout_constraintStart_toStartOf="@id/launchTV"
             app:layout_constraintTop_toBottomOf="@id/pieChart" />
@@ -117,7 +117,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="48dp"
             android:text="@string/fragment_today_app_launches"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launchCountTV" />
 
@@ -160,6 +160,7 @@
             android:text="@string/fragment_today_show_more_apps"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:theme="@style/ColorAccentRippleEffect"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mostUsedRV" />
 
