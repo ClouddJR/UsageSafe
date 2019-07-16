@@ -44,7 +44,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="21dp"
                         android:gravity="center"
-                        android:text="Today, 28 march"
                         android:textColor="@android:color/white"
                         android:textSize="23sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -96,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="48dp"
             android:layout_marginTop="4dp"
-            android:text="Unlocks"
+            android:text="@string/fragment_today_unlocks"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/unlockCountTV" />
@@ -117,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="48dp"
-            android:text="App launches"
+            android:text="@string/fragment_today_app_launches"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launchCountTV" />
@@ -129,7 +128,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:fontFamily="@font/opensans_semibold"
-            android:text="Most used apps"
+            android:text="@string/fragment_today_most_used_apps"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/unlockTV" />
@@ -158,7 +157,7 @@
             android:clickable="true"
             android:drawableStart="@drawable/ic_keyboard_arrow_down"
             android:focusable="true"
-            android:text="Show more apps"
+            android:text="@string/fragment_today_show_more_apps"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

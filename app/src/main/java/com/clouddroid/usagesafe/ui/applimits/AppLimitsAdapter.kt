@@ -54,8 +54,12 @@ class AppLimitsAdapter(
             Glide.with(context).load(appIcon).into(itemView.appIconIV)
             itemView.appTitleTV.text = appName
 
-            itemView.currentLimitTV.text =
-                "Current limit: ${TextUtils.getAppLimitText(appLimit.limit)}"
+            val currentLimitText =
+                "${itemView.context.getString(R.string.item_app_limit_current_limit)} ${TextUtils.getAppLimitText(
+                    appLimit.limit
+                )}"
+
+            itemView.currentLimitTV.text = currentLimitText
 
             itemView.setOnClickListener {
                 displayEditOrDeleteDialog(itemView.context, appLimit)

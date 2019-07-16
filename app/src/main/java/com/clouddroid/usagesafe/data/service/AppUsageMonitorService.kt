@@ -210,8 +210,8 @@ class AppUsageMonitorService : Service() {
 
         val notification: Notification =
             NotificationCompat.Builder(applicationContext, NotificationUtils.CHANNEL_ID)
-                .setContentTitle("Monitoring app usage")
-                .setContentText("Screen time: ${calculateScreenTime()}")
+                .setContentTitle(getString(R.string.service_app_usage_notification_title))
+                .setContentText("${getString(R.string.service_app_usage_notification_description)} ${calculateScreenTime()}")
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(pendingIntent)
                 .build()

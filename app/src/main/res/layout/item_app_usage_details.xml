@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:text="Screen time: "
+        android:text="@string/item_app_usage_details_screen_time"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/appIconIV"
         app:layout_constraintTop_toTopOf="@id/appIconIV" />
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
-        android:text="Opened: "
+        android:text="@string/item_app_usage_details_opened"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/appIconIV"
         app:layout_constraintTop_toBottomOf="@id/screenTimeTV" />

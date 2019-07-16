@@ -41,6 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
-        android:text="Exit the app" />
+        android:text="@string/dialog_app_block_button_title" />
 
 </LinearLayout>

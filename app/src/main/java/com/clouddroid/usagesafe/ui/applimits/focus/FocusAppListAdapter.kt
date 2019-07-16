@@ -111,9 +111,9 @@ class FocusAppListAdapter(
 
         fun bind(position: Int) {
             itemView.sectionTitleTV.text = if (position == 0) {
-                "Apps to be blocked during focus mode"
+                itemView.context.getString(R.string.item_app_list_focus_header_affected)
             } else {
-                "Apps not affected by focus mode"
+                itemView.context.getString(R.string.item_app_list_focus_header_not_affected)
             }
         }
 
