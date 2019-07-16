@@ -75,6 +75,9 @@
         <item>monday</item>
     </string-array>
 
+    <string name="launcher_title">Include launcher app</string>
+    <string name="launcher_summary">Select if you want launcher to be included in calculations</string>
+
     <string name="export">Data export</string>
     <string name="premium">Premium functionality</string>
     <string name="rate">Rate the app</string>

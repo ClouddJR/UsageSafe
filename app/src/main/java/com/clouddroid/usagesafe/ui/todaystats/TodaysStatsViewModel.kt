@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
-import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
+import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.util.PackageInfoUtils.getResizedAppIcon
 import com.clouddroid.usagesafe.util.PreferencesKeys
 import com.clouddroid.usagesafe.util.TextUtils.getTotalScreenTimeText
@@ -19,7 +19,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ class TodaysStatsViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : ViewModel(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private val compositeDisposable = CompositeDisposable()
+    private lateinit var disposable: Disposable
 
     private val appUsageMap = MutableLiveData<Map<String, AppUsageInfo>>()
     val unlockCount = MutableLiveData<Int>()
@@ -42,7 +42,7 @@ class TodaysStatsViewModel @Inject constructor(
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == PreferencesKeys.PREF_DAY_BEGIN) {
+        if (key == PreferencesKeys.PREF_DAY_BEGIN || key == PreferencesKeys.PREF_IS_LAUNCHER_INCLUDED) {
             getUsageFromToday()
         }
     }
@@ -52,7 +52,7 @@ class TodaysStatsViewModel @Inject constructor(
     }
 
     private fun getUsageFromToday() {
-        compositeDisposable.add(Observable.fromCallable {
+        disposable = Observable.fromCallable {
             usageStatsRepository.getUsageFromToday()
         }
             .subscribeOn(Schedulers.io())
@@ -69,7 +69,7 @@ class TodaysStatsViewModel @Inject constructor(
 
             }, {
                 it.printStackTrace()
-            }))
+            })
     }
 
     fun getAppUsageMap(): LiveData<Map<String, AppUsageInfo>> = Transformations.map(appUsageMap) {
@@ -185,6 +185,8 @@ class TodaysStatsViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        compositeDisposable.dispose()
+        if (::disposable.isInitialized && !disposable.isDisposed) {
+            disposable.dispose()
+        }
     }
 }

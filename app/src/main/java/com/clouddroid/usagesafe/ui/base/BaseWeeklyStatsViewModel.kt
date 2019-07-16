@@ -3,14 +3,14 @@ package com.clouddroid.usagesafe.ui.base
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.model.LoadingState
 import com.clouddroid.usagesafe.data.model.LogEvent
+import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.ui.common.WeekViewLogic
 import com.clouddroid.usagesafe.ui.common.WeeklyDataMapHolder
 import com.clouddroid.usagesafe.util.DayBegin
-import com.clouddroid.usagesafe.util.PreferencesKeys
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_DAY_BEGIN
+import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_IS_LAUNCHER_INCLUDED
 import com.clouddroid.usagesafe.util.PreferencesKeys.PREF_WEEK_BEGIN
 import com.clouddroid.usagesafe.util.PreferencesUtils.get
 import com.clouddroid.usagesafe.util.WeekBegin
@@ -50,7 +50,7 @@ abstract class BaseWeeklyStatsViewModel(
     override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String) {
 
         //reacting when user changed beginning of the week
-        if (key == PreferencesKeys.PREF_WEEK_BEGIN) {
+        if (key == PREF_WEEK_BEGIN) {
             weekBegin = prefs[PREF_WEEK_BEGIN, WeekBegin.SIX_DAYS_AGO]!!
             weekViewLogic.weekBegin = weekBegin
             weekViewLogic.refreshWeek()
@@ -58,8 +58,13 @@ abstract class BaseWeeklyStatsViewModel(
         }
 
         //reacting when user changed beginning of the day
-        if (key == PreferencesKeys.PREF_DAY_BEGIN) {
+        if (key == PREF_DAY_BEGIN) {
             hourDayBegin = prefs[PREF_DAY_BEGIN, DayBegin._12AM]!!.toInt()
+            updateCurrentWeek()
+        }
+
+        //reacting when user changed launcher preference
+        if (key == PREF_IS_LAUNCHER_INCLUDED) {
             updateCurrentWeek()
         }
     }
@@ -107,7 +112,7 @@ abstract class BaseWeeklyStatsViewModel(
                 loadingState.value = LoadingState.FINISHED
                 weeklyDataHolder.addDayLogs(logs)
                 this.weeklyData.value =
-                    weeklyDataHolder.logsMap.toSortedMap(Comparator<Long> { day1, day2 -> day1.compareTo(day2) })
+                    weeklyDataHolder.logsMap.toSortedMap(Comparator { day1, day2 -> day1.compareTo(day2) })
             }
     }
 

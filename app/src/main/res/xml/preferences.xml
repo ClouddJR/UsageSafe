@@ -30,6 +30,11 @@
             app:title="@string/week_begin"
             app:useSimpleSummaryProvider="true" />
 
+        <SwitchPreference
+            android:key="is_launcher_included"
+            android:summary="@string/launcher_summary"
+            android:title="@string/launcher_title" />
+
         <Preference
             app:key="export"
             app:title="@string/export" />

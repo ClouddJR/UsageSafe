@@ -20,5 +20,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             context?.startActivity(Intent(context, ExportActivity::class.java))
             true
         }
+
+
     }
 }
