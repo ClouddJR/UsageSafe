@@ -115,4 +115,15 @@
     <string name="activity_settings_label">Ustawienia</string>
     <string name="activity_export_label">Eksport</string>
     <string name="service_quick_settings_label">Tryb skupienia</string>
+    <string name="activity_export_file_saved">"Plik zapisany w "</string>
+    <string name="activity_export_storage_not_available">Pamięć zewnętrzna niedostępna (Może Twój telefon jest podłączony do PC?)</string>
+    <string name="activity_permission_find_app">Znajdź na liście UsageSafe i przyznaj uprawnienia</string>
+    <string name="fragment_app_limits_add_limit">Dodaj limit</string>
+    <string name="dialog_app_limit_delete_button">Usuń</string>
+    <string name="dialog_app_limit_edit_title">Usuń lub zaktualizuj limit dla tej aplikacji</string>
+    <string name="dialog_app_limit_update_button">Zaktualizuj</string>
+    <string name="notification_channel_usage_service">Monitorowanie limitów aplikacji</string>
+    <string name="bottom_nav_app_limits">Limity aplikacji</string>
+    <string name="bottom_nav_history">Historia</string>
+    <string name="bottom_nav_today">Dzisiaj</string>
 </resources>

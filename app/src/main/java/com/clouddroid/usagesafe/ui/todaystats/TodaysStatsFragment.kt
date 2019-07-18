@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -22,6 +23,8 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.utils.MPPointF
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.fragment_todays_stats.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,6 +34,8 @@ class TodaysStatsFragment : BaseFragment() {
 
     private lateinit var viewModel: TodaysStatsViewModel
     private lateinit var appUsageInfoAdapter: MostUsedAdapter
+
+    private lateinit var adLoader: AdLoader
 
     override fun getLayoutId() = R.layout.fragment_todays_stats
 
@@ -47,6 +52,7 @@ class TodaysStatsFragment : BaseFragment() {
         setOnArcClickListener()
         setCurrentDayInToolbar()
         setOnClickListeners()
+        loadAd()
     }
 
     fun scrollToTop() {
@@ -196,7 +202,7 @@ class TodaysStatsFragment : BaseFragment() {
     }
 
     private fun setUpMostUsedRV(list: MutableList<AppUsageInfo>) {
-        appUsageInfoAdapter = MostUsedAdapter(list)
+        appUsageInfoAdapter = MostUsedAdapter(list.toMutableList())
         mostUsedRV.adapter = appUsageInfoAdapter
         mostUsedRV.isNestedScrollingEnabled = false
     }
@@ -207,5 +213,21 @@ class TodaysStatsFragment : BaseFragment() {
 
     private fun setLaunchText(launchCount: Int) {
         launchCountTV.text = launchCount.toString()
+    }
+
+    private fun loadAd() {
+        Handler().postDelayed({
+            val builder =
+                AdLoader.Builder(context, getString(R.string.admob_app_limits_fragment_ad_id))
+            adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
+                //ad loaded successfully
+                if (!adLoader.isLoading) {
+                    appUsageInfoAdapter.addAd(unifiedNativeAd)
+                }
+            }.build()
+
+            adLoader.loadAds(AdRequest.Builder().build(), 1)
+        }, 500)
+
     }
 }

@@ -7,7 +7,7 @@
     android:layout_marginBottom="8dp">
 
     <TextView
-        android:id="@+id/appTitleTV"
+        android:id="@+id/adHeadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -16,13 +16,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/appIconIV"
+        android:id="@+id/adIcon"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_margin="8dp"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appTitleTV" />
+        app:layout_constraintTop_toBottomOf="@id/adHeadline" />
 
     <TextView
         android:id="@+id/screenTimeTV"
@@ -31,8 +31,8 @@
         android:layout_marginStart="24dp"
         android:text="@string/item_app_usage_details_screen_time"
         android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@id/appIconIV"
-        app:layout_constraintTop_toTopOf="@id/appIconIV" />
+        app:layout_constraintStart_toEndOf="@id/adIcon"
+        app:layout_constraintTop_toTopOf="@id/adIcon" />
 
     <TextView
         android:id="@+id/launchCountTV"
@@ -42,7 +42,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/item_app_usage_details_opened"
         android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@id/appIconIV"
+        app:layout_constraintStart_toEndOf="@id/adIcon"
         app:layout_constraintTop_toBottomOf="@id/screenTimeTV" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

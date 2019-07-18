@@ -79,7 +79,7 @@ class FocusAppListAdapter(
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(appDetails: AppDetails) {
-            Glide.with(itemView.context).load(appDetails.icon).into(itemView.appIconIV)
+            Glide.with(itemView.context).load(appDetails.icon).into(itemView.adIcon)
             itemView.appTitle.text = appDetails.name
 
             itemView.focusModeCB.setOnCheckedChangeListener(null)

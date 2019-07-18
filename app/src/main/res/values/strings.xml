@@ -1,9 +1,18 @@
 <resources>
     <string name="app_name">UsageSafe</string>
 
+    <string name="admob_app_id" translatable="false">ca-app-pub-4098342918729972~2501772235</string>
+    <string name="admob_app_limits_fragment_ad_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+
+    <string name="notification_channel_usage_service">Monitoring app limits</string>
+
     <string name="total_screen_time_text">%d hr, %d min</string>
     <string name="most_used_screen_time">Screen time: %1$s</string>
     <string name="most_used_opened_times">Opened: %d times </string>
+
+    <string name="bottom_nav_today">Today</string>
+    <string name="bottom_nav_history">History</string>
+    <string name="bottom_nav_app_limits">App limits</string>
 
     <string name="activity_app_details_average_per_day">Average per day</string>
     <string name="activity_app_details_average_per_hour">Average per hour</string>
@@ -52,6 +61,7 @@
     <string name="fragment_app_limits_enable_focus_mode">Enable focus mode</string>
     <string name="fragment_app_limits_select_apps_for_focus_mode">Select apps for focus mode</string>
     <string name="fragment_app_limits_list_of_app_limits">List of app limits</string>
+    <string name="fragment_app_limits_add_limit">Add limit</string>
 
     <string name="fragment_history_toolbar_title">History statistics</string>
     <string name="fragment_history_screen_time">Screen time</string>
@@ -101,6 +111,10 @@
     <string name="dialog_app_limits_choose_app">Choose app</string>
     <string name="dialog_app_limits_set_a_limit">Set a limit</string>
     <string name="dialog_app_limits_save">Save</string>
+
+    <string name="dialog_app_limit_edit_title">Delete or update a limit for this app</string>
+    <string name="dialog_app_limit_update_button">Update</string>
+    <string name="dialog_app_limit_delete_button">Delete</string>
 
     <string name="service_quick_settings_label">Focus mode</string>
 

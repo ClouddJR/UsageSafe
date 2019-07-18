@@ -10,7 +10,7 @@
     android:padding="4dp">
 
     <TextView
-        android:id="@+id/appTitleTV"
+        android:id="@+id/adHeadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -19,13 +19,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/appIconIV"
+        android:id="@+id/adIcon"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appTitleTV" />
+        app:layout_constraintTop_toBottomOf="@id/adHeadline" />
 
     <TextView
         android:id="@+id/currentLimitTV"
@@ -33,8 +33,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@id/appIconIV"
-        app:layout_constraintTop_toTopOf="@id/appIconIV" />
+        app:layout_constraintStart_toEndOf="@id/adIcon"
+        app:layout_constraintTop_toTopOf="@id/adIcon" />
 
     <ProgressBar
         android:id="@+id/progressBar"

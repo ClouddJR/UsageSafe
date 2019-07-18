@@ -6,7 +6,7 @@
     android:padding="4dp">
 
     <ImageView
-        android:id="@+id/appIconIV"
+        android:id="@+id/adIcon"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="8dp"
@@ -22,7 +22,7 @@
         android:layout_marginStart="16dp"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/appIconIV"
+        app:layout_constraintStart_toEndOf="@id/adIcon"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

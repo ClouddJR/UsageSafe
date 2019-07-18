@@ -51,8 +51,8 @@ class AppLimitsAdapter(
             val appIcon = PackageInfoUtils.getRawAppIcon(appLimit.packageName, context)
             val appName = PackageInfoUtils.getAppName(appLimit.packageName, context)
 
-            Glide.with(context).load(appIcon).into(itemView.appIconIV)
-            itemView.appTitleTV.text = appName
+            Glide.with(context).load(appIcon).into(itemView.adIcon)
+            itemView.adHeadline.text = appName
 
             val currentLimitText =
                 "${itemView.context.getString(R.string.item_app_limit_current_limit)} ${TextUtils.getAppLimitText(

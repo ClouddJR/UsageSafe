@@ -50,7 +50,7 @@ class AppListAdapter(private val context: Context, val onItemClicked: (String) -
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(appDetails: AppDetails) {
-            Glide.with(context).load(appDetails.icon).into(itemView.appIconIV)
+            Glide.with(context).load(appDetails.icon).into(itemView.adIcon)
             itemView.appTitle.text = appDetails.name
 
             itemView.setOnClickListener {

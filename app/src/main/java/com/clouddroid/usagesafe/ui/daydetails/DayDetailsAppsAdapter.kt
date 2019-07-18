@@ -73,14 +73,14 @@ class DayDetailsAppsAdapter(private val appsUsageList: MutableList<AppUsageInfo>
                 appUsageInfo.launchCount
             )
 
-            itemView.appIconIV.setImageDrawable(
+            itemView.adIcon.setImageDrawable(
                 PackageInfoUtils.getRawAppIcon(
                     appUsageInfo.packageName,
                     itemView.context
                 )
             )
 
-            itemView.appTitleTV.text = PackageInfoUtils.getAppName(appUsageInfo.packageName, itemView.context)
+            itemView.adHeadline.text = PackageInfoUtils.getAppName(appUsageInfo.packageName, itemView.context)
         }
 
     }

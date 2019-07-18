@@ -9,6 +9,7 @@ import com.clouddroid.usagesafe.injection.component.ApplicationComponent
 import com.clouddroid.usagesafe.injection.component.DaggerApplicationComponent
 import com.clouddroid.usagesafe.injection.module.ApplicationModule
 import com.clouddroid.usagesafe.util.NotificationUtils.CHANNEL_ID
+import com.google.android.gms.ads.MobileAds
 
 class UsageSafeApp : Application() {
 
@@ -20,6 +21,7 @@ class UsageSafeApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
         injectDependencies()
         createNotificationChannel()
     }
@@ -31,7 +33,7 @@ class UsageSafeApp : Application() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val name = "App limits"
+            val name = getString(R.string.notification_channel_usage_service)
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
             channel.setShowBadge(false)

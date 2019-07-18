@@ -57,8 +57,8 @@ class AppDetailsActivity : BaseActivity() {
 
     private fun receivePackageName() {
         appPackageName = intent.getStringExtra(PACKAGE_NAME_KEY)
-        appTitleTV.text = PackageInfoUtils.getAppName(appPackageName, this)
-        Glide.with(this).load(PackageInfoUtils.getRawAppIcon(appPackageName, this)).into(appIconIV)
+        adHeadline.text = PackageInfoUtils.getAppName(appPackageName, this)
+        Glide.with(this).load(PackageInfoUtils.getRawAppIcon(appPackageName, this)).into(adIcon)
     }
 
     private fun receiveMode() {

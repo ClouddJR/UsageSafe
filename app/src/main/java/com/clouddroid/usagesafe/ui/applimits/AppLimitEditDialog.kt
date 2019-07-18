@@ -22,16 +22,18 @@ class AppLimitEditDialog(
     private val counterHandler = Handler()
     private val counterUpdateRunnable = object : Runnable {
         override fun run() {
-            val buttonDeleteTitle = "Delete"
-            val buttonUpdateTitle = "Update"
+            val buttonDeleteTitle = passedContext.getString(R.string.dialog_app_limit_delete_button)
+            val buttonUpdateTitle = passedContext.getString(R.string.dialog_app_limit_update_button)
             if (counter >= 0) {
-                deleteLimitBT.text = "$buttonDeleteTitle ($counter)"
-                updateLimitBT.text = "$buttonUpdateTitle (${counter--})"
+                val deleteText = "$buttonDeleteTitle ($counter)"
+                val updateText = "$buttonUpdateTitle (${counter--})"
+                deleteLimitBT.text = deleteText
+                updateLimitBT.text = updateText
                 counterHandler.postDelayed(this, 1000)
             } else {
-                deleteLimitBT.text = "$buttonDeleteTitle"
+                deleteLimitBT.text = buttonDeleteTitle
                 deleteLimitBT.isEnabled = true
-                updateLimitBT.text = "$buttonUpdateTitle"
+                updateLimitBT.text = buttonUpdateTitle
                 updateLimitBT.isEnabled = true
             }
         }
@@ -48,7 +50,7 @@ class AppLimitEditDialog(
 
     private fun setLogoAndAppName() {
         Glide.with(passedContext).load(PackageInfoUtils.getRawAppIcon(appLimit.packageName, passedContext))
-            .into(appIconIV)
+            .into(adIcon)
         appNameTV.text = PackageInfoUtils.getAppName(appLimit.packageName, passedContext)
     }
 

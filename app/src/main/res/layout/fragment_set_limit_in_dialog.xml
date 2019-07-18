@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/appTitleTV"
+        android:id="@+id/adHeadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -18,14 +18,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/appIconIV"
+        android:id="@+id/adIcon"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginStart="16dp"
         android:src="@drawable/ic_contacts"
-        app:layout_constraintBottom_toBottomOf="@id/appTitleTV"
-        app:layout_constraintStart_toEndOf="@id/appTitleTV"
-        app:layout_constraintTop_toTopOf="@id/appTitleTV" />
+        app:layout_constraintBottom_toBottomOf="@id/adHeadline"
+        app:layout_constraintStart_toEndOf="@id/adHeadline"
+        app:layout_constraintTop_toTopOf="@id/adHeadline" />
 
     <NumberPicker
         android:id="@+id/hourNumberPicker"
@@ -37,7 +37,7 @@
         android:focusableInTouchMode="true"
         android:theme="@style/AppTheme.NumberPickerLargeText"
         app:layout_constraintEnd_toStartOf="@id/hoursTV"
-        app:layout_constraintTop_toBottomOf="@id/appTitleTV" />
+        app:layout_constraintTop_toBottomOf="@id/adHeadline" />
 
     <TextView
         android:id="@+id/hoursTV"
@@ -63,7 +63,7 @@
         android:theme="@style/AppTheme.NumberPickerLargeText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/hoursTV"
-        app:layout_constraintTop_toBottomOf="@id/appTitleTV" />
+        app:layout_constraintTop_toBottomOf="@id/adHeadline" />
 
 
     <TextView

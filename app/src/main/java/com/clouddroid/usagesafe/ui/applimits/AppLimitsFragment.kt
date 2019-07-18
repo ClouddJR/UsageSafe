@@ -5,6 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,12 +20,20 @@ import com.clouddroid.usagesafe.ui.applimits.focus.FocusAppsListDialog
 import com.clouddroid.usagesafe.ui.applimits.help.HelpDialog
 import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.settings.SettingsActivity
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.formats.UnifiedNativeAd
+import kotlinx.android.synthetic.main.ad_app_limits_fragment.*
 import kotlinx.android.synthetic.main.fragment_app_limits.*
+
 
 class AppLimitsFragment : BaseFragment() {
 
     private lateinit var viewModel: AppLimitsViewModel
     private lateinit var adapter: AppLimitsAdapter
+
+    private lateinit var adLoader: AdLoader
 
     override fun getLayoutId() = R.layout.fragment_app_limits
 
@@ -37,6 +49,8 @@ class AppLimitsFragment : BaseFragment() {
         observeData()
         setOnClickListeners()
         manageFocusModeToggle()
+        initAdView()
+        loadAd()
     }
 
     fun scrollToTop() {
@@ -134,5 +148,82 @@ class AppLimitsFragment : BaseFragment() {
         focusModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateFeatureState(isChecked)
         }
+    }
+
+    private fun initAdView() {
+        adView.headlineView = adView.findViewById(R.id.ad_headline)
+        adView.bodyView = adView.findViewById(R.id.ad_body)
+        adView.callToActionView = adView.findViewById(R.id.adCallToAction)
+        adView.iconView = adView.findViewById(R.id.ad_icon)
+        adView.priceView = adView.findViewById(R.id.adPrice)
+        adView.starRatingView = adView.findViewById(R.id.adStars)
+        adView.storeView = adView.findViewById(R.id.adStore)
+        adView.advertiserView = adView.findViewById(R.id.adAdvertiser)
+    }
+
+    private fun loadAd() {
+        val builder = AdLoader.Builder(context, getString(R.string.admob_app_limits_fragment_ad_id))
+        adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
+            //ad loaded successfully
+            if (!adLoader.isLoading) {
+                adSection.visibility = View.VISIBLE
+                populateNativeAdView(unifiedNativeAd)
+            }
+        }.withAdListener(
+            object : AdListener() {
+                override fun onAdFailedToLoad(errorCode: Int) {
+                    //ad failed to load, so hide ad section
+                    adSection.visibility = View.GONE
+                }
+            }).build()
+
+        adLoader.loadAds(AdRequest.Builder().build(), 1)
+    }
+
+    private fun populateNativeAdView(nativeAd: UnifiedNativeAd) {
+        // These assets are guaranteed to be in every UnifiedNativeAd
+        (adView.headlineView as TextView).text = nativeAd.headline
+        (adView.bodyView as TextView).text = nativeAd.body
+        (adView.callToActionView as Button).text = nativeAd.callToAction
+
+        // These assets aren't guaranteed to be in every UnifiedNativeAd
+        val icon = nativeAd.icon
+
+        if (icon == null) {
+            adView.iconView.visibility = View.GONE
+        } else {
+            (adView.iconView as ImageView).setImageDrawable(icon.drawable)
+            adView.iconView.visibility = View.VISIBLE
+        }
+
+        if (nativeAd.price == null) {
+            adView.priceView.visibility = View.INVISIBLE
+        } else {
+            adView.priceView.visibility = View.VISIBLE
+            (adView.priceView as TextView).text = nativeAd.price
+        }
+
+        if (nativeAd.store == null) {
+            adView.storeView.visibility = View.INVISIBLE
+        } else {
+            adView.storeView.visibility = View.VISIBLE
+            (adView.storeView as TextView).text = nativeAd.store
+        }
+
+        if (nativeAd.starRating == null) {
+            adView.starRatingView.visibility = View.INVISIBLE
+        } else {
+            (adView.starRatingView as RatingBar).rating = nativeAd.starRating!!.toFloat()
+            adView.starRatingView.visibility = View.VISIBLE
+        }
+
+        if (nativeAd.advertiser == null) {
+            adView.advertiserView.visibility = View.INVISIBLE
+        } else {
+            (adView.advertiserView as TextView).text = nativeAd.advertiser
+            adView.advertiserView.visibility = View.VISIBLE
+        }
+
+        adView.setNativeAd(nativeAd)
     }
 }

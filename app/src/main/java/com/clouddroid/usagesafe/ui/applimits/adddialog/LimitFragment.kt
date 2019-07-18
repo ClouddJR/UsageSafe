@@ -52,8 +52,8 @@ class LimitFragment : BaseFragment() {
 
     private fun observeSelectedApp() {
         viewModel.selectedApp.observe(this, Observer { packageName ->
-            appTitleTV.text = PackageInfoUtils.getAppName(packageName, context)
-            Glide.with(this).load(PackageInfoUtils.getRawAppIcon(packageName, context)).into(appIconIV)
+            adHeadline.text = PackageInfoUtils.getAppName(packageName, context)
+            Glide.with(this).load(PackageInfoUtils.getRawAppIcon(packageName, context)).into(adIcon)
         })
     }
 }
