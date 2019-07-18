@@ -116,6 +116,19 @@
     <string name="dialog_app_limit_update_button">Update</string>
     <string name="dialog_app_limit_delete_button">Delete</string>
 
+    <string name="activity_premium_label">Premium</string>
+    <string name="activity_premium_premium_headline">Premium version</string>
+    <string name="activity_premium_premium_big_headline">Additional support</string>
+    <string name="activity_premium_feature_one">Absolutely no ads</string>
+    <string name="activity_premium_feature_two">Ability to download your usage data into readable CSV file</string>
+    <string name="activity_premium_feature_three">Access to every premium feature that will be released in the future</string>
+    <string name="activity_premium_question_one">Is this one time payment?</string>
+    <string name="activity_premium_question_one_answer">Yes, you only pay once and you will also have access to every premium feature that will be added in the future.</string>
+    <string name="activity_premium_question_two">Will it still work if I change the device?</string>
+    <string name="activity_premium_question_two_answer">Yes, this payment is tied to your Google account, so every device that is logged in to the same account will have access to all premium features.</string>
+    <string name="activity_premium_features_pro_big">Includes all features listed for the pro version plus additional support for app developer</string>
+    <string name="activity_premium_buy_button">Buy now</string>
+
     <string name="service_quick_settings_label">Focus mode</string>
 
     <!--settings-->

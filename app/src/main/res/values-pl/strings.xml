@@ -126,4 +126,16 @@
     <string name="bottom_nav_app_limits">Limity aplikacji</string>
     <string name="bottom_nav_history">Historia</string>
     <string name="bottom_nav_today">Dzisiaj</string>
+    <string name="activity_premium_buy_button">Kup teraz</string>
+    <string name="activity_premium_feature_one">Brak reklam</string>
+    <string name="activity_premium_feature_three">Dostęp do wszystkich funkcji premium, które zostaną dodane w przyszłości</string>
+    <string name="activity_premium_feature_two">Możliwość pobrania danych dotyczących użycia w formie czytelnego pliku CSV</string>
+    <string name="activity_premium_features_pro_big">Zawiera wszystkie funkcje, które obejmuje standardowa wersja premium oraz dodatkowe wsparcie dla developera aplikacji</string>
+    <string name="activity_premium_label">Premium</string>
+    <string name="activity_premium_premium_big_headline">Dodatkowe wsparcie</string>
+    <string name="activity_premium_premium_headline">Wersja premium</string>
+    <string name="activity_premium_question_one">Czy jest to płatność jednorazowa?</string>
+    <string name="activity_premium_question_one_answer">Tak, płatność jest jednorazowa i gwarantuje również dostęp do każdej nowej funkcji premium, która będzie dodana w przyszłości.</string>
+    <string name="activity_premium_question_two">Czy funkcje premium będą działały kiedy zmienię telefon?</string>
+    <string name="activity_premium_question_two_answer">Tak, płatność jest przypisana do konta Google, stąd każde urządzenie które będzie zalogowane przy użyciu tego samego konta Google, będzie miało dostęp do funkcji premium.</string>
 </resources>

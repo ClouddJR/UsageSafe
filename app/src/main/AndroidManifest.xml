@@ -10,7 +10,7 @@
 
     <application
         android:name=".UsageSafeApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -69,6 +69,13 @@
             android:label="@string/activity_settings_label"
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.premium.PremiumActivity"
+            android:label="@string/activity_premium_label"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTranslucent" />
 
         <service
             android:name=".data.service.AppUsageMonitorService"
