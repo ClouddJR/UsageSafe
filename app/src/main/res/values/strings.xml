@@ -7,30 +7,46 @@
 
     <string name="activity_app_details_average_per_day">Average per day</string>
     <string name="activity_app_details_average_per_hour">Average per hour</string>
+    <string name="activity_app_details_screen_time">Screen time</string>
+    <string name="activity_app_details_app_launches">App launches</string>
+    <string name="activity_app_details_of_usage_this_week">of usage this week</string>
+    <string name="activity_app_details_app_launches_this_week">app launches this week</string>
 
     <string name="activity_day_details_day_details">Day details</string>
     <string name="activity_day_details_average_per_hour">Average per hour</string>
     <string name="activity_day_details_app_usage">App usage</string>
+    <string name="activity_day_details_screen_time">Screen time</string>
+    <string name="activity_day_details_app_launches">App launches</string>
+    <string name="activity_day_details_unlocks">Unlocks</string>
+    <string name="activity_day_details_of_usage_today">of usage today</string>
+    <string name="activity_day_details_app_launches_today">app launches today</string>
+    <string name="activity_day_details_unlocks_today">unlocks today</string>
 
+    <string name="activity_export_label">Export data</string>
     <string name="activity_export_main_title">Export your usage data into CSV file so that you can do further data manipulation on them. Choose from different data representations:</string>
     <string name="activity_export_one_table_title">One main table with screen time in milliseconds</string>
     <string name="activity_export_multiple_tables_title">Table for each app separately with screen time and number of launches</string>
     <string name="activity_export_button_title">Export</string>
+    <string name="activity_export_file_saved">File saved in</string>
+    <string name="activity_export_storage_not_available">External storage not available (Is your phone connected to a PC?)</string>
 
     <string name="activity_permission_title">Please grant usage access permission</string>
     <string name="activity_permission_description">In order to work, this app needs your permission to access usage access information on your phone. But don\'t worry, we do not store, use nor publish this data anywhere outside of your phone.</string>
     <string name="activity_permission_button_title">Grant permission</string>
+    <string name="activity_permission_find_app">Find UsageSafe here and grant the permission</string>
 
     <string name="dialog_app_block_button_title">Exit the app</string>
 
     <string name="dialog_help_focus_mode_title">Focus mode</string>
     <string name="dialog_help_focus_mode_description">When focus mode is enabled, all selected applications will be blocked regardless of whether there is a limit specified for them or not. It is applicable for study sessions or anytime you want to disconnect for a specific period od time.\nThis mode can be also quickly enabled or disabled via a quick settings tile.</string>
     <string name="dialog_help_app_limits_mode_title">App limits</string>
-    <string name="dialog_help_app_limits_mode_description">Here you can specify daily limits for each application independently. Limit is reset at an hour specified in settings (beginning of the day). When you exceed a limit for a specific app in a given day, you won\'t be able to open this app for the rest of that day.\nIn order to edit or delete a limit you have to wait 15 seconds. This is supposed to discourage you from quickly editing or deleting a limit after exceeding it.</string>
+    <string name="dialog_help_app_limits_mode_description">Here you can specify daily limits for each application independently. Limit is reset at an hour specified in settings (beginning of the day). When you exceed a limit for a specific app in a given day, you won\'t be able to open this app for the rest of that day. In order to edit or delete a limit you have to wait 15 seconds. This is supposed to discourage you from quickly editing or deleting a limit after exceeding it.</string>
 
     <string name="fragment_app_launches_average_per_day">Average per day</string>
     <string name="fragment_app_launches_average_per_hour">Average per hour</string>
     <string name="fragment_app_launches_most_opened_this_week">Most opened app this week</string>
+    <string name="fragment_app_launches_times">times</string>
+    <string name="fragment_app_launches_app_launches_this_week">app launches this week</string>
 
     <string name="fragment_app_limits_toolbar_title">App Limits</string>
     <string name="fragment_app_limits_enable_focus_mode">Enable focus mode</string>
@@ -38,21 +54,28 @@
     <string name="fragment_app_limits_list_of_app_limits">List of app limits</string>
 
     <string name="fragment_history_toolbar_title">History statistics</string>
+    <string name="fragment_history_screen_time">Screen time</string>
+    <string name="fragment_history_unlocks">Unlocks</string>
+    <string name="fragment_history_app_launches">App launches</string>
 
     <string name="fragment_screen_time_average_per_day">Average per day</string>
     <string name="fragment_screen_time_average_per_hour">Average per hour</string>
     <string name="fragment_screen_time_most_used_app_this_week">Most used app this week</string>
+    <string name="fragment_screen_time_of_usage_this_week">of usage this week</string>
 
     <string name="fragment_set_limit_hours">hours</string>
     <string name="fragment_set_limit_minutes">minutes</string>
 
+    <string name="fragment_today_total_screen_time">Total screen time</string>
     <string name="fragment_today_unlocks">Unlocks</string>
     <string name="fragment_today_app_launches">App launches</string>
     <string name="fragment_today_most_used_apps">Most used apps</string>
     <string name="fragment_today_show_more_apps">Show more apps</string>
+    <string name="fragment_today_other">Other</string>
 
     <string name="fragment_unlocks_average_per_day">Average per day</string>
     <string name="fragment_unlocks_average_per_hour">Average per hour</string>
+    <string name="fragment_unlocks_screen_unlocks_this_week">screen unlocks this week</string>
 
     <string name="item_app_limit_current_limit">Current limit:</string>
 
@@ -65,7 +88,25 @@
     <string name="service_app_usage_notification_title">Monitoring app usage</string>
     <string name="service_app_usage_notification_description">Screen time:</string>
 
+    <string name="dialog_premium_title">Premium</string>
+    <string name="dialog_premium_content">This feature is only for premium users. Click to learn more</string>
+    <string name="dialog_premium_more_info">More info</string>
+    <string name="dialog_premium_cancel">Cancel</string>
+
+    <string name="dialog_blocking_limit_reached">You have reached the limit on this application</string>
+    <string name="dialog_blocking_focus_mode">You can\'t open this app during the focus mode</string>
+
+    <string name="dialog_focus_mode_apps_list_select_apps">Select apps for focus mode</string>
+
+    <string name="dialog_app_limits_choose_app">Choose app</string>
+    <string name="dialog_app_limits_set_a_limit">Set a limit</string>
+    <string name="dialog_app_limits_save">Save</string>
+
+    <string name="service_quick_settings_label">Focus mode</string>
+
     <!--settings-->
+    <string name="activity_settings_label">Settings</string>
+
     <string name="settings_main_section_title">Main</string>
 
     <string name="settings_time_format">Time format</string>
@@ -78,17 +119,17 @@
     </string-array>
 
     <string name="settings_day_begin">Beginning of the day</string>
-    <string name="settings_day_begin_12am">12 a.m</string>
-    <string name="settings_day_begin_1am">1 a.m</string>
-    <string name="settings_day_begin_2am">2 a.m</string>
-    <string name="settings_day_begin_3am">3 a.m</string>
-    <string name="settings_day_begin_4am">4 a.m</string>
-    <string name="settings_day_begin_5am">5 a.m</string>
-    <string name="settings_day_begin_6am">6 a.m</string>
-    <string name="settings_day_begin_7am">7 a.m</string>
-    <string name="settings_day_begin_8am">8 a.m</string>
-    <string name="settings_day_begin_9am">9 a.m</string>
-    <string name="settings_day_begin_10am">10 a.m</string>
+    <string name="settings_day_begin_12am" translatable="false">12 a.m</string>
+    <string name="settings_day_begin_1am" translatable="false">1 a.m</string>
+    <string name="settings_day_begin_2am" translatable="false">2 a.m</string>
+    <string name="settings_day_begin_3am" translatable="false">3 a.m</string>
+    <string name="settings_day_begin_4am" translatable="false">4 a.m</string>
+    <string name="settings_day_begin_5am" translatable="false">5 a.m</string>
+    <string name="settings_day_begin_6am" translatable="false">6 a.m</string>
+    <string name="settings_day_begin_7am" translatable="false">7 a.m</string>
+    <string name="settings_day_begin_8am" translatable="false">8 a.m</string>
+    <string name="settings_day_begin_9am" translatable="false">9 a.m</string>
+    <string name="settings_day_begin_10am" translatable="false">10 a.m</string>
 
     <string-array name="settings_day_begin_hours_titles">
         <item>@string/settings_day_begin_12am</item>

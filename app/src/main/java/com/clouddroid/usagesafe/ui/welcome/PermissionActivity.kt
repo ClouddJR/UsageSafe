@@ -48,7 +48,7 @@ class PermissionActivity : BaseActivity() {
             viewModel.startWatchingForPermissionChanges()
             val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
             startActivity(intent)
-            longToast("Find UsageSafe here and grant the permission")
+            longToast(getString(R.string.activity_permission_find_app))
         }
 
         safeIV.setOnClickListener {

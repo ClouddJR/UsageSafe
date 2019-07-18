@@ -51,7 +51,7 @@ class FocusAppsListDialog : BaseDialogFragment() {
     }
 
     private fun setUpToolbar() {
-        toolbar.title = "Select apps for focus mode"
+        toolbar.title = getString(R.string.dialog_focus_mode_apps_list_select_apps)
         toolbar.setNavigationOnClickListener { dismiss() }
     }
 

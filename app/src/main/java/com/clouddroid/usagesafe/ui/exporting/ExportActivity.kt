@@ -42,12 +42,12 @@ class ExportActivity : BaseActivity() {
     private fun observeChanges() {
         viewModel.dataSuccessfullySaved.observe(this, Observer { path ->
             dismissProgressDialogIfShown()
-            longToast("File saved in $path")
+            longToast("${getString(R.string.activity_export_file_saved)} $path")
         })
 
         viewModel.pathNotAvailable.observe(this, Observer {
             dismissProgressDialogIfShown()
-            longToast("External storage not available (Is your phone connected to a PC?)")
+            longToast(getString(R.string.activity_export_storage_not_available))
         })
     }
 

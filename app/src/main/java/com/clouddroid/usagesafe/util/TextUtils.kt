@@ -11,7 +11,7 @@ object TextUtils {
         minutes %= 60
 
         return when {
-            hours > 0 -> "$hours hr, $minutes min"
+            hours > 0 -> "$hours h, $minutes min"
             minutes > 0 -> "$minutes min"
             else -> "${TimeUnit.MILLISECONDS.toSeconds(totalScreenTimeMillis)} sec"
         }

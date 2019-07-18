@@ -192,7 +192,7 @@ class TodaysStatsFragment : BaseFragment() {
     }
 
     private fun setChartCenterText(totalScreenTimeText: String) {
-        pieChart.centerText = "Total screen time: \n$totalScreenTimeText"
+        pieChart.centerText = "${context?.getString(R.string.fragment_today_total_screen_time)} \n$totalScreenTimeText"
     }
 
     private fun setUpMostUsedRV(list: MutableList<AppUsageInfo>) {

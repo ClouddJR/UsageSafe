@@ -79,7 +79,8 @@ class UnlocksFragment : BaseFragment() {
             avgPerDayNumber.text = avgPerDay.toString()
             avgPerHourNumber.text = avgPerHour.toString()
 
-            numberOfUnlocksTV.text = "$it screen unlocks this week"
+            val unlocksText = "$it ${getString(R.string.fragment_unlocks_screen_unlocks_this_week)}"
+            numberOfUnlocksTV.text = unlocksText
         })
     }
 

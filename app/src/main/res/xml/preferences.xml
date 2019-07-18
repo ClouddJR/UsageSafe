@@ -7,7 +7,7 @@
         app:title="@string/settings_main_section_title">
 
         <ListPreference
-            app:defaultValue="12-hour clock"
+            app:defaultValue="@string/settings_time_format_12h"
             app:entries="@array/settings_time_formats"
             app:entryValues="@array/settings_time_formats"
             app:key="time_format"

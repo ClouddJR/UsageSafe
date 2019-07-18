@@ -84,13 +84,16 @@ class AppLaunchesFragment : BaseFragment() {
             avgPerDayNumber.text = avgPerDay.toString()
             avgPerHourNumber.text = avgPerHour.toString()
 
-            numberOfLaunchesTV.text = "$it app launches this week"
+            val launchesText = "$it ${getString(R.string.fragment_app_launches_app_launches_this_week)}"
+            numberOfLaunchesTV.text = launchesText
         })
 
         appLaunchesViewModel.mostOpenedApp.observe(this, Observer {
             Glide.with(context!!).load(PackageInfoUtils.getRawAppIcon(it.packageName, context)).into(mostOpenedAppIcon)
             mostOpenedTV.text = PackageInfoUtils.getAppName(it.packageName, context)
-            mostOpenedNumberTV.text = "${it.launchCount} times"
+
+            val mostOpenedText = "${it.launchCount} ${getString(R.string.fragment_app_launches_times)}"
+            mostOpenedNumberTV.text = mostOpenedText
         })
     }
 

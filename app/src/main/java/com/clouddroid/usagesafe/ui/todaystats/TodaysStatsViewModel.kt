@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
+import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.data.model.AppUsageInfo
 import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import com.clouddroid.usagesafe.util.PackageInfoUtils.getResizedAppIcon
@@ -149,7 +150,7 @@ class TodaysStatsViewModel @Inject constructor(
             entries.add(
                 PieEntry(
                     totalOtherTime.toFloat(),
-                    "Other",
+                    context?.getString(R.string.fragment_today_other),
                     ""
                 )
             )

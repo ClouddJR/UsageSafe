@@ -91,7 +91,11 @@ class ScreenTimeFragment : BaseFragment() {
             avgPerDayNumber.text = TextUtils.getTotalScreenTimeText(avgPerDay, context)
             avgPerHourNumber.text = TextUtils.getTotalScreenTimeText(avgPerHour, context)
 
-            weeklyUsageSummaryTV.text = "${TextUtils.getTotalScreenTimeText(it, context)} of usage this week"
+            val usageText = "${TextUtils.getTotalScreenTimeText(
+                it,
+                context
+            )} ${getString(R.string.fragment_screen_time_of_usage_this_week)}"
+            weeklyUsageSummaryTV.text = usageText
         })
     }
 

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UsageSafe</string>
+    <string name="activity_app_details_average_per_day">Średnia na dzień</string>
+    <string name="activity_app_details_average_per_hour">Średnia na godzinę</string>
+
+    <string name="activity_day_details_app_usage">Użycie aplikacji</string>
+    <string name="activity_day_details_average_per_hour">Średnia na godzinę</string>
+    <string name="activity_day_details_day_details">Szczegóły dnia</string>
+
+    <string name="activity_export_button_title">Eksport</string>
+    <string name="activity_export_main_title">"Wyeksportuj dane dotyczące użycia aplikacji do pliku CSV. Wybierz spośród różnych reprezentacji danych: "</string>
+    <string name="activity_export_multiple_tables_title">Osobna tabela dla każdej aplikacji zawierająca czas uruchomienia oraz liczbę uruchomień</string>
+    <string name="activity_export_one_table_title">Jedna główna tabela z czasem użycia w milisekundach</string>
+
+    <string name="activity_permission_button_title">Przyznaj uprawnienie</string>
+    <string name="activity_permission_description">Aby aplikacja mogła funkcjonować, potrzebuje Twojej zgody na dostęp do danych użycia w Twoim telefonie. Ale nie martw się, nie przechowujemy, używamy ani nie udostępniamy nikomu Twoich danych</string>
+    <string name="activity_permission_title">Przyznaj uprawnienia na dostęp do danych</string>
+
+    <string name="dialog_app_block_button_title">Wyjdź z aplikacji</string>
+
+    <string name="dialog_help_app_limits_mode_description">Tutaj możesz ustawić dzienny limit dla każdej aplikacji z osobna. Licznik jest resetowany domyślnie o północy każdego dnia (chyba że w ustawieniach wybrano inaczej). W momencie przekroczenia limitu, nie będzie możliwości otwarcia aplikacji do końca danego dnia. Aby usunąć bądź edytować dany limit, należy odczekać 15 sekund. Ma to na celu zniechęcenie do szybkiego edytowania lub usunięcia limitu w momencie jego przekroczenia</string>
+    <string name="dialog_help_app_limits_mode_title">Limity aplikacji</string>
+    <string name="dialog_help_focus_mode_title">Tryb skupienia</string>
+    <string name="dialog_help_focus_mode_description">Kiedy tryb skupienia jest włączony, wszystkie zaznaczone aplikacje będą blokowane niezależnie od tego, czy jest dla nich ustawiony limit, czy nie. Jest on szczególnie przydatny podczas nauki czy kiedykolwiek wtedy, kiedy chcesz się \"odłączyć\" na jakiś czas. Tryb ten może być też łatwo uruchamiany poprzez ikonę powyżej panelu z powiadomieniami</string>
+
+    <string name="dialog_premium_title">Premium</string>
+    <string name="dialog_premium_content">Ta funkcja jest tylko dla użytkowników premium</string>
+    <string name="dialog_premium_more_info">Więcej informacji</string>
+    <string name="dialog_premium_cancel">Anuluj</string>
+
+    <string name="fragment_app_launches_average_per_day">Średnia na dzień</string>
+    <string name="fragment_app_launches_average_per_hour">Srednia na godzinę</string>
+    <string name="fragment_app_launches_most_opened_this_week">Najczęściej otwierana aplikacja w tym tygodniu</string>
+
+    <string name="fragment_app_limits_enable_focus_mode">Włącz tryb skupienia</string>
+    <string name="fragment_app_limits_list_of_app_limits">Lista limitów</string>
+    <string name="fragment_app_limits_select_apps_for_focus_mode">Wybierz aplikacje do trybu skupienia</string>
+    <string name="fragment_app_limits_toolbar_title">Limity aplikacji</string>
+
+    <string name="fragment_history_toolbar_title">Dane historyczne</string>
+
+    <string name="fragment_screen_time_average_per_day">Średnia na dzień</string>
+    <string name="fragment_screen_time_average_per_hour">Średnia na godzinę</string>
+    <string name="fragment_screen_time_most_used_app_this_week">Najczęściej używana aplikacja w tym tygodniu</string>
+
+    <string name="fragment_set_limit_hours">godziny</string>
+    <string name="fragment_set_limit_minutes">minuty</string>
+
+    <string name="fragment_today_app_launches">Uruchomienia aplikacji</string>
+    <string name="fragment_today_most_used_apps">Najczęściej używane</string>
+    <string name="fragment_today_show_more_apps">Pokaż więcej</string>
+    <string name="fragment_today_unlocks">Odblokowania</string>
+
+    <string name="fragment_unlocks_average_per_day">Średnia na dzień</string>
+    <string name="fragment_unlocks_average_per_hour">Średnia na godzinę</string>
+
+    <string name="item_app_limit_current_limit">Aktualny limit:</string>
+
+    <string name="item_app_list_focus_header_affected">Aplikacje, które będa zablokowane</string>
+    <string name="item_app_list_focus_header_not_affected">Aplikacje, których tryb nie będzie dotyczył</string>
+
+    <string name="item_app_usage_details_opened">"Otwarto: "</string>
+    <string name="item_app_usage_details_screen_time">"Czas użycia: "</string>
+
+    <string name="most_used_opened_times">Otwarto: %d razy</string>
+    <string name="most_used_screen_time">Czas użycia: %1$s</string>
+
+    <string name="service_app_usage_notification_description">"Czas użycia:"</string>
+    <string name="service_app_usage_notification_title">Monitorowanie użycia aplikacji</string>
+
+    <string name="settings_about_section_title">Ogólne</string>
+    <string name="settings_contact">Kontakt</string>
+    <string name="settings_day_begin">Początek dnia</string>
+    <string name="settings_export">Eksport danych</string>
+    <string name="settings_launcher_summary">Zaznacz, jeśli chcesz aby uwzględniać aplikację launchera do statystyk</string>
+    <string name="settings_launcher_title">Uwzględnij launcher</string>
+    <string name="settings_main_section_title">Główne</string>
+    <string name="settings_premium">Premium</string>
+    <string name="settings_privacy_policy">Polityka prywatności</string>
+    <string name="settings_rate">Oceń aplikację</string>
+    <string name="settings_time_format">Format czasu</string>
+    <string name="settings_time_format_12h">12-godzinny</string>
+    <string name="settings_time_format_24h">24-godzinny</string>
+    <string name="settings_week_begin">Początek tygodnia</string>
+    <string name="settings_week_begin_monday">poniedziałek</string>
+    <string name="settings_week_begin_six_days_ago">6 dni temu</string>
+    <string name="settings_week_begin_sunday">niedziela</string>
+    <string name="total_screen_time_text">%d godz, %d min</string>
+    <string name="activity_app_details_app_launches">Uruchomienia aplikacji</string>
+    <string name="activity_app_details_app_launches_this_week">uruchomień w tym tygodniu</string>
+    <string name="activity_app_details_of_usage_this_week">użycia w tym tygodniu</string>
+    <string name="activity_app_details_screen_time">Czas użycia</string>
+    <string name="fragment_app_launches_app_launches_this_week">uruchomień w tym tygodniu</string>
+    <string name="fragment_app_launches_times">razy</string>
+    <string name="fragment_history_app_launches">Uruchomienia aplikacji</string>
+    <string name="fragment_history_screen_time">Czas użycia</string>
+    <string name="fragment_history_unlocks">Odblokowania</string>
+    <string name="fragment_screen_time_of_usage_this_week">użycia w tym tygodniu</string>
+    <string name="fragment_today_total_screen_time">Czas użycia</string>
+    <string name="fragment_unlocks_screen_unlocks_this_week">odblokowań w tym tygodniu</string>
+    <string name="activity_day_details_app_launches">Uruchomienia aplikacji</string>
+    <string name="activity_day_details_app_launches_today">uruchomień dzisiaj</string>
+    <string name="activity_day_details_of_usage_today">użycia dzisiaj</string>
+    <string name="activity_day_details_screen_time">Czas użycia</string>
+    <string name="activity_day_details_unlocks">Odblokowania</string>
+    <string name="activity_day_details_unlocks_today">odblokowań dzisiaj</string>
+    <string name="fragment_today_other">Inne</string>
+    <string name="dialog_app_limits_choose_app">Wybierz aplikację</string>
+    <string name="dialog_app_limits_set_a_limit">Ustaw limit</string>
+    <string name="dialog_blocking_focus_mode">Nie możesz otworzyć tej aplikacji kiedy tryb skupienia jest włączony</string>
+    <string name="dialog_blocking_limit_reached">Przekroczyłeś limit związany z tą aplikacją</string>
+    <string name="dialog_focus_mode_apps_list_select_apps">Wybierz aplikacje</string>
+    <string name="dialog_app_limits_save">Zapisz</string>
+    <string name="activity_settings_label">Ustawienia</string>
+    <string name="activity_export_label">Eksport</string>
+    <string name="service_quick_settings_label">Tryb skupienia</string>
+</resources>

@@ -35,8 +35,8 @@ class BlockingDialog(
 
     private fun setBlockingText() {
         blockingText.text = when (mode) {
-            BlockingMode.APP_LIMIT -> "You have reached the limit on this application"
-            BlockingMode.FOCUS_MODE -> "You can't open this app during the focus mode"
+            BlockingMode.APP_LIMIT -> passedContext.getString(R.string.dialog_blocking_limit_reached)
+            BlockingMode.FOCUS_MODE -> passedContext.getString(R.string.dialog_blocking_focus_mode)
         }
     }
 }

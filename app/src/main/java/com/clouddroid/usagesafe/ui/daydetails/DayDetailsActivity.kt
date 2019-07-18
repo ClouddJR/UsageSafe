@@ -76,7 +76,11 @@ class DayDetailsActivity : BaseActivity() {
     private fun setUpSpinner() {
         val adapter = SpinnerAdapter(
             this, R.layout.spinner_list_item,
-            arrayOf("Screen time", "App launches", "Unlocks")
+            arrayOf(
+                getString(R.string.activity_day_details_screen_time),
+                getString(R.string.activity_day_details_app_launches),
+                getString(R.string.activity_day_details_unlocks)
+            )
         )
 
         statsTypeSpinner.adapter = adapter
@@ -115,21 +119,27 @@ class DayDetailsActivity : BaseActivity() {
             val avgPerHour = it / 24
             avgPerHourNumber.text = TextUtils.getTotalScreenTimeText(avgPerHour, this)
 
-            dailyUsageSummaryTV.text = "${TextUtils.getTotalScreenTimeText(it, this)} of usage today"
+            val dailyUsageText = "${TextUtils.getTotalScreenTimeText(
+                it,
+                this
+            )} ${getString(R.string.activity_day_details_of_usage_today)}"
+            dailyUsageSummaryTV.text = dailyUsageText
         })
 
         viewModel.totalLaunchCountLiveData.observe(this, Observer {
             val avgPerHour = (it / 24.0).toBigDecimal().setScale(2, RoundingMode.UP)
             avgPerHourNumber.text = "$avgPerHour"
 
-            dailyUsageSummaryTV.text = "$it app launches today"
+            val dailyUsageText = "$it ${getString(R.string.activity_day_details_app_launches_today)}"
+            dailyUsageSummaryTV.text = dailyUsageText
         })
 
         viewModel.totalUnlocksLiveData.observe(this, Observer {
             val avgPerHour = (it / 24.0).toBigDecimal().setScale(2, RoundingMode.UP)
             avgPerHourNumber.text = "$avgPerHour"
 
-            dailyUsageSummaryTV.text = "$it unlocks today"
+            val dailyUsageText = "$it ${getString(R.string.activity_day_details_unlocks_today)}"
+            dailyUsageSummaryTV.text = dailyUsageText
         })
 
         viewModel.getAppsUsageList().observe(this, Observer {

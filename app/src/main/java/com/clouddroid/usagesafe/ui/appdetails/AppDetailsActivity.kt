@@ -87,7 +87,10 @@ class AppDetailsActivity : BaseActivity() {
     private fun setUpSpinner() {
         val adapter = SpinnerAdapter(
             this, R.layout.spinner_list_item,
-            arrayOf("Screen time", "App launches")
+            arrayOf(
+                getString(R.string.activity_app_details_screen_time),
+                getString(R.string.activity_app_details_app_launches)
+            )
         )
 
         statsTypeSpinner.adapter = adapter
@@ -147,7 +150,11 @@ class AppDetailsActivity : BaseActivity() {
             avgPerDayNumber.text = TextUtils.getTotalScreenTimeText(avgPerDay, this)
             avgPerHourNumber.text = TextUtils.getTotalScreenTimeText(avgPerHour, this)
 
-            weeklyUsageSummaryTV.text = "${TextUtils.getTotalScreenTimeText(it, this)} of usage this week"
+            val usageText = "${TextUtils.getTotalScreenTimeText(
+                it,
+                this
+            )} ${getString(R.string.activity_app_details_of_usage_this_week)}"
+            weeklyUsageSummaryTV.text = usageText
         })
 
         viewModel.totalLaunchCountLiveData.observe(this, Observer {
@@ -156,7 +163,7 @@ class AppDetailsActivity : BaseActivity() {
             avgPerDayNumber.text = "$avgPerDay"
             avgPerHourNumber.text = "$avgPerHour"
 
-            weeklyUsageSummaryTV.text = "$it app launches this week"
+            weeklyUsageSummaryTV.text = "$it ${getString(R.string.activity_app_details_app_launches_this_week)}"
         })
 
         viewModel.currentWeekText.observe(this, Observer {

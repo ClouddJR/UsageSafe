@@ -88,7 +88,7 @@ class AppLimitsDialog : BaseDialogFragment() {
     }
 
     private fun setUpToolbar() {
-        toolbar.title = "Choose app"
+        toolbar.title = getString(R.string.dialog_app_limits_choose_app)
         toolbar.setNavigationOnClickListener { dismiss() }
         toolbar.setOnMenuItemClickListener {
             viewModel.saveAppLimit()
@@ -134,13 +134,13 @@ class AppLimitsDialog : BaseDialogFragment() {
         when (destination) {
             FragmentDestination.APP_LIST -> {
                 toolbar.menu.clear()
-                toolbar.title = "Choose app"
+                toolbar.title = getString(R.string.dialog_app_limits_choose_app)
             }
 
             FragmentDestination.LIMIT -> {
                 toolbar.menu.clear()
                 toolbar.inflateMenu(R.menu.dialog_app_limit_menu)
-                toolbar.title = "Set a limit"
+                toolbar.title = getString(R.string.dialog_app_limits_set_a_limit)
             }
         }
     }

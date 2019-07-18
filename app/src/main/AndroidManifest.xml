@@ -53,7 +53,7 @@
 
         <activity
             android:name=".ui.exporting.ExportActivity"
-            android:label="Export data"
+            android:label="@string/activity_export_label"
             android:parentActivityName=".ui.settings.SettingsActivity"
             android:screenOrientation="portrait" />
 
@@ -65,7 +65,7 @@
 
         <activity
             android:name=".ui.settings.SettingsActivity"
-            android:label="Settings"
+            android:label="@string/activity_settings_label"
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="portrait" />
 
@@ -76,7 +76,7 @@
         <service
             android:name=".data.service.QuickSettingsService"
             android:icon="@drawable/ic_history"
-            android:label="Focus mode"
+            android:label="@string/service_quick_settings_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
