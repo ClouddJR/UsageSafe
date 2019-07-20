@@ -83,6 +83,7 @@ class UsageStatsRepository @Inject constructor(
         val appUsageMap = mutableMapOf<String, AppUsageInfo>()
 
         val beginCalendar = Calendar.getInstance().apply {
+            if (get(Calendar.HOUR_OF_DAY) < dayBegin) add(Calendar.DAY_OF_MONTH, -1)
             set(Calendar.HOUR_OF_DAY, dayBegin)
             set(Calendar.MINUTE, 0)
         }
