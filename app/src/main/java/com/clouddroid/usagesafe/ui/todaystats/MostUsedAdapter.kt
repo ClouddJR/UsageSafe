@@ -35,7 +35,11 @@ class MostUsedAdapter(private val items: MutableList<Any>) :
     }
 
     fun addAd(nativeAd: UnifiedNativeAd) {
-        items.add(1, nativeAd)
+        if (items.isEmpty()) {
+            items.add(0, nativeAd)
+        } else {
+            items.add(1, nativeAd)
+        }
         notifyItemInserted(1)
     }
 
