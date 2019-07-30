@@ -4,6 +4,7 @@
     package="com.clouddroid.usagesafe">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -83,7 +84,7 @@
 
         <service
             android:name=".data.service.QuickSettingsService"
-            android:icon="@drawable/ic_history"
+            android:icon="@drawable/ic_service_notificaiton"
             android:label="@string/service_quick_settings_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
