@@ -212,7 +212,7 @@ class AppUsageMonitorService : Service() {
             NotificationCompat.Builder(applicationContext, NotificationUtils.CHANNEL_ID)
                 .setContentTitle(getString(R.string.service_app_usage_notification_title))
                 .setContentText("${getString(R.string.service_app_usage_notification_description)} ${calculateScreenTime()}")
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.ic_service_notificaiton)
                 .setContentIntent(pendingIntent)
                 .build()
 

@@ -17,6 +17,7 @@ import com.clouddroid.usagesafe.ui.base.BaseFragment
 import com.clouddroid.usagesafe.ui.daydetails.DayDetailsActivity
 import com.clouddroid.usagesafe.ui.main.MainActivity
 import com.clouddroid.usagesafe.ui.settings.SettingsActivity
+import com.clouddroid.usagesafe.util.purchase.PurchasesUtils.isPremiumUser
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -216,18 +217,19 @@ class TodaysStatsFragment : BaseFragment() {
     }
 
     private fun loadAd() {
-        Handler().postDelayed({
-            val builder =
-                AdLoader.Builder(context, getString(R.string.admob_app_limits_fragment_ad_id))
-            adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
-                //ad loaded successfully
-                if (!adLoader.isLoading) {
-                    appUsageInfoAdapter.addAd(unifiedNativeAd)
-                }
-            }.build()
+        if (!isPremiumUser(context)) {
+            Handler().postDelayed({
+                val builder =
+                    AdLoader.Builder(context, getString(R.string.admob_today_stats_fragment_ad_id))
+                adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
+                    //ad loaded successfully
+                    if (!adLoader.isLoading) {
+                        appUsageInfoAdapter.addAd(unifiedNativeAd)
+                    }
+                }.build()
 
-            adLoader.loadAds(AdRequest.Builder().build(), 1)
-        }, 500)
-
+                adLoader.loadAds(AdRequest.Builder().build(), 1)
+            }, 500)
+        }
     }
 }

@@ -7,6 +7,8 @@ import com.clouddroid.usagesafe.R
 import com.clouddroid.usagesafe.ui.base.BaseActivity
 import com.clouddroid.usagesafe.util.ExtensionUtils.hide
 import com.clouddroid.usagesafe.util.ExtensionUtils.show
+import com.clouddroid.usagesafe.util.purchase.PurchasesUtils.displayPremiumInfoDialog
+import com.clouddroid.usagesafe.util.purchase.PurchasesUtils.isPremiumUser
 import kotlinx.android.synthetic.main.activity_export.*
 import org.jetbrains.anko.longToast
 
@@ -28,14 +30,22 @@ class ExportActivity : BaseActivity() {
 
     private fun setOnButtonClickListeners() {
         firstLayoutExportButton.setOnClickListener {
-            firstLayoutProgressBar.show()
-            it.hide()
-            viewModel.exportData(Exporter.Layout.ONE_TABLE, this)
+            if (isPremiumUser(this)) {
+                firstLayoutProgressBar.show()
+                it.hide()
+                viewModel.exportData(Exporter.Layout.ONE_TABLE, this)
+            } else {
+                displayPremiumInfoDialog(this)
+            }
         }
         secondLayoutExportButton.setOnClickListener {
-            secondLayoutProgressBar.show()
-            it.hide()
-            viewModel.exportData(Exporter.Layout.MULTIPLE_TABLES, this)
+            if (isPremiumUser(this)) {
+                secondLayoutProgressBar.show()
+                it.hide()
+                viewModel.exportData(Exporter.Layout.MULTIPLE_TABLES, this)
+            } else {
+                displayPremiumInfoDialog(this)
+            }
         }
     }
 

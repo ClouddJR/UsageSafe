@@ -13,8 +13,8 @@
     <string name="activity_export_multiple_tables_title">Osobna tabela dla każdej aplikacji zawierająca czas uruchomienia oraz liczbę uruchomień</string>
     <string name="activity_export_one_table_title">Jedna główna tabela z czasem użycia w milisekundach</string>
 
-    <string name="activity_permission_button_title">Przyznaj uprawnienie</string>
-    <string name="activity_permission_description">Aby aplikacja mogła funkcjonować, potrzebuje Twojej zgody na dostęp do danych użycia w Twoim telefonie. Ale nie martw się, nie przechowujemy, używamy ani nie udostępniamy nikomu Twoich danych</string>
+    <string name="activity_permission_button_title">Przyznaj uprawnienia</string>
+    <string name="activity_permission_description">Aby aplikacja mogła funkcjonować, potrzebuje Twojej zgody na dostęp do danych użycia w Twoim telefonie. Ale nie martw się, nie przechowujemy, używamy ani nie udostępniamy nikomu Twoich danych.</string>
     <string name="activity_permission_title">Przyznaj uprawnienia na dostęp do danych</string>
 
     <string name="dialog_app_block_button_title">Wyjdź z aplikacji</string>
@@ -138,4 +138,6 @@
     <string name="activity_premium_question_one_answer">Tak, płatność jest jednorazowa i gwarantuje również dostęp do każdej nowej funkcji premium, która będzie dodana w przyszłości.</string>
     <string name="activity_premium_question_two">Czy funkcje premium będą działały kiedy zmienię telefon?</string>
     <string name="activity_premium_question_two_answer">Tak, płatność jest przypisana do konta Google, stąd każde urządzenie które będzie zalogowane przy użyciu tego samego konta Google, będzie miało dostęp do funkcji premium.</string>
+    <string name="activity_premium_dialog_premium_own_message">Już to kupiłeś. Dziekuję</string>
+    <string name="activity_premium_dialog_premium_own_title">Informacja</string>
 </resources>

@@ -17,6 +17,9 @@ import com.clouddroid.usagesafe.ui.welcome.PermissionActivity
 import com.clouddroid.usagesafe.util.ExtensionUtils.addAndCommit
 import com.clouddroid.usagesafe.util.ExtensionUtils.doesNotContain
 import com.clouddroid.usagesafe.util.ExtensionUtils.showAndHideOthers
+import com.clouddroid.usagesafe.util.PreferencesUtils.defaultPrefs
+import com.clouddroid.usagesafe.util.purchase.IabHelper
+import com.clouddroid.usagesafe.util.purchase.PurchasesUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 
@@ -28,6 +31,8 @@ class MainActivity : BaseActivity() {
     private val appLimitsFragment = AppLimitsFragment()
     private val historyStatsFragment = HistoryStatsFragment()
 
+    private lateinit var helper: IabHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,6 +40,7 @@ class MainActivity : BaseActivity() {
         initViewModel()
         initFragmentsBackStack()
         initBottomNav()
+        checkForPurchases()
     }
 
     override fun onBackPressed() {
@@ -187,6 +193,22 @@ class MainActivity : BaseActivity() {
         if (!granted) {
             startActivity<PermissionActivity>()
             finish()
+        }
+    }
+
+    private fun checkForPurchases() {
+        helper = IabHelper(this, PurchasesUtils.base64EncodedPublicKey)
+        PurchasesUtils.sharedPreferences = defaultPrefs(this)
+        helper.startSetup { result ->
+            if (!result.isSuccess) {
+                // Problem
+            } else {
+                try {
+                    helper.queryInventoryAsync(PurchasesUtils.GotInventoryListener)
+                } catch (e: IabHelper.IabAsyncInProgressException) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 

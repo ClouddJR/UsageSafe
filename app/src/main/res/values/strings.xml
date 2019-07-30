@@ -2,7 +2,8 @@
     <string name="app_name">UsageSafe</string>
 
     <string name="admob_app_id" translatable="false">ca-app-pub-4098342918729972~2501772235</string>
-    <string name="admob_app_limits_fragment_ad_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="admob_app_limits_fragment_ad_id" translatable="false">ca-app-pub-4098342918729972/2400348810</string>
+    <string name="admob_today_stats_fragment_ad_id" translatable="false">ca-app-pub-4098342918729972/4761028082</string>
 
     <string name="notification_channel_usage_service">Monitoring app limits</string>
 
@@ -128,6 +129,8 @@
     <string name="activity_premium_question_two_answer">Yes, this payment is tied to your Google account, so every device that is logged in to the same account will have access to all premium features.</string>
     <string name="activity_premium_features_pro_big">Includes all features listed for the pro version plus additional support for app developer</string>
     <string name="activity_premium_buy_button">Buy now</string>
+    <string name="activity_premium_dialog_premium_own_title">Information</string>
+    <string name="activity_premium_dialog_premium_own_message">You had already bought this. Thank you</string>
 
     <string name="service_quick_settings_label">Focus mode</string>
 
