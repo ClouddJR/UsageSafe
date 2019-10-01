@@ -2,6 +2,7 @@ package com.clouddroid.usagesafe.ui.main
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
+import com.clouddroid.usagesafe.data.model.LogEvent
 import com.clouddroid.usagesafe.data.repository.DatabaseRepository
 import com.clouddroid.usagesafe.data.repository.UsageStatsRepository
 import io.reactivex.Completable
@@ -24,10 +25,16 @@ class MainActivityViewModel @Inject constructor(
     fun init() {
         databaseRepository.initialSetupLatch = CountDownLatch(1)
         disposable = Single.fromCallable {
-            removeOldWeeklyLogs()
             usageStatsRepository.getLogsFromLastWeek()
         }
-            .flatMapCompletable { Completable.fromAction { databaseRepository.addLogEvents(it) } }
+            .flatMapCompletable {
+                Completable.fromAction {
+                    if (it.isNotEmpty()) {
+                        removeOldLogsFromDatabaseStartingWith(it.sortedBy { it.timestamp }.first())
+                        databaseRepository.addLogEvents(it)
+                    }
+                }
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -37,19 +44,13 @@ class MainActivityViewModel @Inject constructor(
             })
     }
 
-    private fun removeOldWeeklyLogs() {
-        val beginCalendar = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_MONTH, -6)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 1)
-        }
-
+    private fun removeOldLogsFromDatabaseStartingWith(firstLogEvent: LogEvent) {
         val endCalendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 23)
             set(Calendar.MINUTE, 59)
         }
 
-        databaseRepository.deleteLogsBetweenRange(beginCalendar.timeInMillis, endCalendar.timeInMillis)
+        databaseRepository.deleteLogsBetweenRange(firstLogEvent.timestamp, endCalendar.timeInMillis)
     }
 
     override fun onCleared() {
