@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "logevents")
 data class LogEvent (
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0,
+
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = 0,
 
