@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 28
@@ -9,8 +10,8 @@ android {
         applicationId "com.clouddroid.usagesafe"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 3
-        versionName "1.0"
+        versionCode 6
+        versionName "1.03"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -24,3 +24,8 @@
 
 -keep class com.wang.avi.** { *; }
 -keep class com.wang.avi.indicators.** { *; }
+
+#Crashlytics
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
