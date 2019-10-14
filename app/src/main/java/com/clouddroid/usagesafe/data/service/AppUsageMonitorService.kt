@@ -170,7 +170,8 @@ class AppUsageMonitorService : Service() {
             "Package name to block possibly: ${appLimit?.packageName}"
         )
         appLimit?.let {
-            val timeOfForegroundAppArriving = logsList.last().timestamp
+            val timeOfForegroundAppArriving = logsList.last { log -> log.packageName == foregroundAppPackageName
+                    && log.type == UsageEvents.Event.MOVE_TO_FOREGROUND }.timestamp
             val amountOfTimeSinceArriving = Calendar.getInstance().timeInMillis - timeOfForegroundAppArriving
 
             val foregroundAppUsageTime = appUsageMap[foregroundAppPackageName]?.totalTimeInForeground ?: 0
@@ -180,8 +181,7 @@ class AppUsageMonitorService : Service() {
             )
 
             //if today's usage plus current time spent in foreground is more than a limit, we should block this
-            if (logsList.last().packageName == foregroundAppPackageName
-                && foregroundAppUsageTime + amountOfTimeSinceArriving >= it.limit
+            if (foregroundAppUsageTime + amountOfTimeSinceArriving >= it.limit
             ) {
                 //add time spent in foreground to app usage map
                 //otherwise we would have to wait couple of minutes for that map to be updated
