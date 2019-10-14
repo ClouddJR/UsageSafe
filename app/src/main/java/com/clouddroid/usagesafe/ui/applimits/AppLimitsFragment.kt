@@ -164,22 +164,26 @@ class AppLimitsFragment : BaseFragment() {
 
     private fun loadAd() {
         if (!isPremiumUser(context)) {
-            val builder = AdLoader.Builder(context, getString(R.string.admob_app_limits_fragment_ad_id))
-            adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
-                //ad loaded successfully
-                if (!adLoader.isLoading) {
-                    adSection.visibility = View.VISIBLE
-                    populateNativeAdView(unifiedNativeAd)
-                }
-            }.withAdListener(
-                object : AdListener() {
-                    override fun onAdFailedToLoad(errorCode: Int) {
-                        //ad failed to load, so hide ad section
-                        adSection.visibility = View.GONE
+            try {
+                val builder = AdLoader.Builder(context, getString(R.string.admob_app_limits_fragment_ad_id))
+                adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
+                    //ad loaded successfully
+                    if (!adLoader.isLoading) {
+                        adSection.visibility = View.VISIBLE
+                        populateNativeAdView(unifiedNativeAd)
                     }
-                }).build()
+                }.withAdListener(
+                    object : AdListener() {
+                        override fun onAdFailedToLoad(errorCode: Int) {
+                            //ad failed to load, so hide ad section
+                            adSection.visibility = View.GONE
+                        }
+                    }).build()
 
-            adLoader.loadAds(AdRequest.Builder().build(), 1)
+                adLoader.loadAds(AdRequest.Builder().build(), 1)
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
+            }
         }
     }
 
