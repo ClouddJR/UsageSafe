@@ -10,8 +10,8 @@ android {
         applicationId "com.clouddroid.usagesafe"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 6
-        versionName "1.03"
+        versionCode 7
+        versionName "1.04"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
