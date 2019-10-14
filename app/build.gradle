@@ -80,6 +80,9 @@ dependencies {
 
     //ads
     implementation 'com.google.firebase:firebase-ads:18.1.0'
+
+    //crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
