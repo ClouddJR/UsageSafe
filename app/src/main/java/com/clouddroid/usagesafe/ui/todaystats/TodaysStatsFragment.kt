@@ -38,6 +38,8 @@ class TodaysStatsFragment : BaseFragment() {
 
     private lateinit var adLoader: AdLoader
 
+    private var resumeCounter = 0
+
     override fun getLayoutId() = R.layout.fragment_todays_stats
 
     override fun onAttach(context: Context) {
@@ -47,6 +49,7 @@ class TodaysStatsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        resumeCounter = 0
         observeDataChanges()
         setNoDataTextInChart()
         setOnArcClickListener()
@@ -57,6 +60,8 @@ class TodaysStatsFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        resumeCounter++
+        showMoreBT.visibility = View.VISIBLE
         viewModel.init()
     }
 
@@ -65,7 +70,8 @@ class TodaysStatsFragment : BaseFragment() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[TodaysStatsViewModel::class.java]
+        viewModel =
+            ViewModelProviders.of(activity!!, viewModelFactory)[TodaysStatsViewModel::class.java]
     }
 
     private fun setNoDataTextInChart() {
@@ -75,9 +81,26 @@ class TodaysStatsFragment : BaseFragment() {
 
     private fun setOnArcClickListener() {
         pieChart.onChartGestureListener = object : OnChartGestureListener {
-            override fun onChartGestureEnd(me: MotionEvent?, lpg: ChartTouchListener.ChartGesture?) {}
-            override fun onChartFling(me1: MotionEvent?, me2: MotionEvent?, velocityX: Float, velocityY: Float) {}
-            override fun onChartGestureStart(me: MotionEvent?, lpg: ChartTouchListener.ChartGesture?) {}
+            override fun onChartGestureEnd(
+                me: MotionEvent?,
+                lpg: ChartTouchListener.ChartGesture?
+            ) {
+            }
+
+            override fun onChartFling(
+                me1: MotionEvent?,
+                me2: MotionEvent?,
+                velocityX: Float,
+                velocityY: Float
+            ) {
+            }
+
+            override fun onChartGestureStart(
+                me: MotionEvent?,
+                lpg: ChartTouchListener.ChartGesture?
+            ) {
+            }
+
             override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
             override fun onChartLongPressed(me: MotionEvent?) {}
             override fun onChartDoubleTapped(me: MotionEvent?) {}
@@ -182,7 +205,11 @@ class TodaysStatsFragment : BaseFragment() {
         pieChart.setEntryLabelColor(Color.WHITE)
         pieChart.setNoDataText("")
         pieChart.setHoleColor(Color.TRANSPARENT)
-        pieChart.animateXY(500, 500)
+        if (resumeCounter == 1) {
+            pieChart.animateXY(500, 500)
+        } else {
+            pieChart.invalidate()
+        }
     }
 
     private fun prepareDataSet(entries: List<PieEntry>): PieDataSet {
@@ -203,7 +230,8 @@ class TodaysStatsFragment : BaseFragment() {
     }
 
     private fun setChartCenterText(totalScreenTimeText: String) {
-        pieChart.centerText = "${context?.getString(R.string.fragment_today_total_screen_time)} \n$totalScreenTimeText"
+        pieChart.centerText =
+            "${context?.getString(R.string.fragment_today_total_screen_time)} \n$totalScreenTimeText"
     }
 
     private fun setUpMostUsedRV(list: MutableList<AppUsageInfo>) {

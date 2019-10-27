@@ -35,7 +35,7 @@ class TodaysStatsViewModel @Inject constructor(
     val unlockCount = MutableLiveData<Int>()
     val launchCount = MutableLiveData<Int>()
 
-    val otherAppsList = mutableListOf<AppUsageInfo>()
+    var otherAppsList = mutableListOf<AppUsageInfo>()
 
     fun init() {
         getUsageFromToday()
@@ -64,9 +64,9 @@ class TodaysStatsViewModel @Inject constructor(
                 unlockCount.value = usagePair.second
                 launchCount.value = getTotalAppLaunches(it.first)
 
-                otherAppsList.addAll(usagePair.first.toList().sortedByDescending
-                { (_, value) -> value.totalTimeInForeground }
-                    .drop(5).toMap().values.toMutableList())
+                otherAppsList = usagePair.first.toList()
+                    .sortedByDescending { (_, value) -> value.totalTimeInForeground }.drop(5)
+                    .toMap().values.toMutableList()
 
             }, {
                 it.printStackTrace()
@@ -100,7 +100,10 @@ class TodaysStatsViewModel @Inject constructor(
         return appUsageMap.toList().take(5).toMap().values.toMutableList()
     }
 
-    fun prepareEntriesForPieChart(appUsageMap: Map<String, AppUsageInfo>, context: Context?): List<PieEntry> {
+    fun prepareEntriesForPieChart(
+        appUsageMap: Map<String, AppUsageInfo>,
+        context: Context?
+    ): List<PieEntry> {
         val firstAppsUsageMap = getFirstNonZeroAppsUsage(appUsageMap)
         val restAppsUsageMap = getOtherAppsUsage(appUsageMap, firstAppsUsageMap.size)
         return getPieEntriesFromAppsUsage(firstAppsUsageMap, restAppsUsageMap, context)
@@ -120,7 +123,10 @@ class TodaysStatsViewModel @Inject constructor(
         return firstAppsUsageMap
     }
 
-    private fun getOtherAppsUsage(appUsageMap: Map<String, AppUsageInfo>, beginIndex: Int): Map<String, AppUsageInfo> {
+    private fun getOtherAppsUsage(
+        appUsageMap: Map<String, AppUsageInfo>,
+        beginIndex: Int
+    ): Map<String, AppUsageInfo> {
         return appUsageMap.toList().subList(beginIndex, appUsageMap.size).toMap()
     }
 
@@ -144,7 +150,8 @@ class TodaysStatsViewModel @Inject constructor(
             )
         }
 
-        val totalOtherTime = otherAppsUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }
+        val totalOtherTime =
+            otherAppsUsageMap.toList().sumBy { it.second.totalTimeInForeground.toInt() }
 
         if (totalOtherTime > 0 && (totalOtherTime.div(firstAppsTotalTimeSum.toDouble()) * 100) > 10) {
             entries.add(
