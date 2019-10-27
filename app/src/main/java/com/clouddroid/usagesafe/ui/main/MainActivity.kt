@@ -43,6 +43,11 @@ class MainActivity : BaseActivity() {
         checkForPurchases()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.init()
+    }
+
     override fun onBackPressed() {
 
         //delegating back button click event to fragments
@@ -65,7 +70,6 @@ class MainActivity : BaseActivity() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[MainActivityViewModel::class.java]
-        viewModel.init()
     }
 
     private fun initFragmentsBackStack() {

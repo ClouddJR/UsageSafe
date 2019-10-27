@@ -38,6 +38,11 @@ class HistoryStatsFragment : BaseFragment() {
         setOnClickListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.init()
+    }
+
     fun scrollToTop() {
         when (tabLayout.selectedTabPosition) {
             0 -> screenTimeFragment.scrollToTop()
@@ -48,7 +53,6 @@ class HistoryStatsFragment : BaseFragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[HistoryStatsViewModel::class.java]
-        viewModel.init()
     }
 
     private fun setUpViewPager() {

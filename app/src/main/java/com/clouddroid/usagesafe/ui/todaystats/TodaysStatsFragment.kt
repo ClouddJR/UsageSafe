@@ -47,13 +47,17 @@ class TodaysStatsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.init()
         observeDataChanges()
         setNoDataTextInChart()
         setOnArcClickListener()
         setCurrentDayInToolbar()
         setOnClickListeners()
         loadAd()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.init()
     }
 
     fun scrollToTop() {
