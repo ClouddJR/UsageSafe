@@ -169,27 +169,32 @@ class AppUsageMonitorService : Service() {
             AppUsageMonitorService::class.java.name,
             "Package name to block possibly: ${appLimit?.packageName}"
         )
-        appLimit?.let {
-            val timeOfForegroundAppArriving = logsList.last { log -> log.packageName == foregroundAppPackageName
-                    && log.type == UsageEvents.Event.MOVE_TO_FOREGROUND }.timestamp
-            val amountOfTimeSinceArriving = Calendar.getInstance().timeInMillis - timeOfForegroundAppArriving
+        appLimit?.let { limit ->
+            val lastForegroundLog = logsList.lastOrNull { log -> log.packageName == foregroundAppPackageName
+                    && log.type == UsageEvents.Event.MOVE_TO_FOREGROUND }
 
-            val foregroundAppUsageTime = appUsageMap[foregroundAppPackageName]?.totalTimeInForeground ?: 0
-            Log.d(
-                AppUsageMonitorService::class.java.name,
-                "Time usage of app to be blocked possibly: ${foregroundAppUsageTime + amountOfTimeSinceArriving}"
-            )
+            lastForegroundLog?.let {
+                val timeOfForegroundAppArriving = it.timestamp
+                val amountOfTimeSinceArriving = Calendar.getInstance().timeInMillis - timeOfForegroundAppArriving
 
-            //if today's usage plus current time spent in foreground is more than a limit, we should block this
-            if (foregroundAppUsageTime + amountOfTimeSinceArriving >= it.limit
-            ) {
-                //add time spent in foreground to app usage map
-                //otherwise we would have to wait couple of minutes for that map to be updated
-                appUsageMap[foregroundAppPackageName]?.totalTimeInForeground =
-                    appUsageMap[foregroundAppPackageName]?.totalTimeInForeground?.plus(amountOfTimeSinceArriving)
-                        ?: 0
-                displayBlockingActivityWith(BlockingMode.APP_LIMIT)
+                val foregroundAppUsageTime = appUsageMap[foregroundAppPackageName]?.totalTimeInForeground ?: 0
+                Log.d(
+                    AppUsageMonitorService::class.java.name,
+                    "Time usage of app to be blocked possibly: ${foregroundAppUsageTime + amountOfTimeSinceArriving}"
+                )
+
+                //if today's usage plus current time spent in foreground is more than a limit, we should block this
+                if (foregroundAppUsageTime + amountOfTimeSinceArriving >= limit.limit
+                ) {
+                    //add time spent in foreground to app usage map
+                    //otherwise we would have to wait couple of minutes for that map to be updated
+                    appUsageMap[foregroundAppPackageName]?.totalTimeInForeground =
+                        appUsageMap[foregroundAppPackageName]?.totalTimeInForeground?.plus(amountOfTimeSinceArriving)
+                            ?: 0
+                    displayBlockingActivityWith(BlockingMode.APP_LIMIT)
+                }
             }
+
         }
     }
 
