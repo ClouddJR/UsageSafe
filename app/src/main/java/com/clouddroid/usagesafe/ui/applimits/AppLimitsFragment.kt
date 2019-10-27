@@ -169,14 +169,18 @@ class AppLimitsFragment : BaseFragment() {
                 adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
                     //ad loaded successfully
                     if (!adLoader.isLoading) {
-                        adSection.visibility = View.VISIBLE
-                        populateNativeAdView(unifiedNativeAd)
+                        if (adSection != null) {
+                            adSection.visibility = View.VISIBLE
+                            populateNativeAdView(unifiedNativeAd)
+                        }
                     }
                 }.withAdListener(
                     object : AdListener() {
                         override fun onAdFailedToLoad(errorCode: Int) {
                             //ad failed to load, so hide ad section
-                            adSection.visibility = View.GONE
+                            if (adSection != null) {
+                                adSection.visibility = View.GONE
+                            }
                         }
                     }).build()
 
