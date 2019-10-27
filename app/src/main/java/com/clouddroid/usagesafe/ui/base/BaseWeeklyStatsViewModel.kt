@@ -88,7 +88,10 @@ abstract class BaseWeeklyStatsViewModel(
         currentWeek.value = Pair(weekViewLogic.currentWeek.first, weekViewLogic.currentWeek.second)
         updateArrowsState()
         setCurrentWeekText(weekViewLogic.currentWeek.first, weekViewLogic.currentWeek.second)
-        getLogsFromDB(weekViewLogic.currentWeek.first.timeInMillis, weekViewLogic.currentWeek.second.timeInMillis)
+        getLogsFromDB(
+            weekViewLogic.currentWeek.first.timeInMillis,
+            weekViewLogic.currentWeek.second.timeInMillis
+        )
     }
 
     private fun setCurrentWeekText(firstDayOfWeek: Calendar, lastDayOfWeek: Calendar) {
@@ -108,12 +111,20 @@ abstract class BaseWeeklyStatsViewModel(
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { logs ->
-                loadingState.value = LoadingState.FINISHED
-                weeklyDataHolder.addDayLogs(logs)
-                this.weeklyData.value =
-                    weeklyDataHolder.logsMap.toSortedMap(Comparator { day1, day2 -> day1.compareTo(day2) })
-            }
+            .subscribe(
+                { logs ->
+                    loadingState.value = LoadingState.FINISHED
+                    weeklyDataHolder.addDayLogs(logs)
+                    this.weeklyData.value =
+                        weeklyDataHolder.logsMap.toSortedMap(Comparator { day1, day2 ->
+                            day1.compareTo(
+                                day2
+                            )
+                        })
+                }, { e ->
+                    e.printStackTrace()
+                }
+            )
     }
 
 
