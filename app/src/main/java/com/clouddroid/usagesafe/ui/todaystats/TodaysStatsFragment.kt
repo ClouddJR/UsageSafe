@@ -255,7 +255,7 @@ class TodaysStatsFragment : BaseFragment() {
                     AdLoader.Builder(context, getString(R.string.admob_today_stats_fragment_ad_id))
                 adLoader = builder.forUnifiedNativeAd { unifiedNativeAd ->
                     //ad loaded successfully
-                    if (!adLoader.isLoading) {
+                    if (!adLoader.isLoading && ::appUsageInfoAdapter.isInitialized) {
                         appUsageInfoAdapter.addAd(unifiedNativeAd)
                     }
                 }.build()
