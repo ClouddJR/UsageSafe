@@ -21,10 +21,6 @@ class HistoryStatsFragment : BaseFragment() {
         const val TAG = "HistoryStatsFragment"
     }
 
-    private val screenTimeFragment = ScreenTimeFragment()
-    private val unlocksFragment = UnlocksFragment()
-    private val appLaunchesFragment = AppLaunchesFragment()
-
     private lateinit var viewModel: HistoryStatsViewModel
 
     override fun getLayoutId() = R.layout.fragment_history_stats
@@ -48,10 +44,15 @@ class HistoryStatsFragment : BaseFragment() {
     }
 
     fun scrollToTop() {
-        when (tabLayout.selectedTabPosition) {
-            0 -> screenTimeFragment.scrollToTop()
-            1 -> unlocksFragment.scrollToTop()
-            2 -> appLaunchesFragment.scrollToTop()
+        val fragment = childFragmentManager.findFragmentByTag(
+            "android:switcher:"
+                    + viewPager.id + ":"
+                    + tabLayout.selectedTabPosition
+        )
+        when (fragment) {
+            is ScreenTimeFragment -> fragment.scrollToTop()
+            is UnlocksFragment -> fragment.scrollToTop()
+            is AppLaunchesFragment -> fragment.scrollToTop()
         }
     }
 
@@ -61,19 +62,8 @@ class HistoryStatsFragment : BaseFragment() {
     }
 
     private fun setUpViewPager() {
-        val viewPagerAdapter = ViewPagerAdapter(childFragmentManager)
+        val viewPagerAdapter = ViewPagerAdapter(requireContext(), childFragmentManager)
         viewPager.offscreenPageLimit = 2
-
-        viewPagerAdapter.addFragment(
-            screenTimeFragment,
-            getString(R.string.fragment_history_screen_time)
-        )
-        viewPagerAdapter.addFragment(unlocksFragment, getString(R.string.fragment_history_unlocks))
-        viewPagerAdapter.addFragment(
-            appLaunchesFragment,
-            getString(R.string.fragment_history_app_launches)
-        )
-
         viewPager.adapter = viewPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
