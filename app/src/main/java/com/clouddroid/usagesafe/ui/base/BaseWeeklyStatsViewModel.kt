@@ -106,7 +106,11 @@ abstract class BaseWeeklyStatsViewModel(
         val weeklyDataHolder = WeeklyDataMapHolder(start, end, hourDayBegin)
 
         disposable = Single.fromCallable {
-            databaseRepository.initialSetupLatch.await()
+            try {
+                databaseRepository.initialSetupLatch.await()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
             databaseRepository.getLogEventsFromRange(start, end)
         }
             .subscribeOn(Schedulers.io())
