@@ -92,6 +92,11 @@ class DayDetailsViewModel @Inject constructor(
     private fun getLogsFromDB(start: Long, end: Long) {
         compositeDisposable.add(
             Single.fromCallable {
+                try {
+                    databaseRepository.initialSetupLatch.await()
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
                 databaseRepository.getLogEventsFromRange(start, end)
             }
                 .subscribeOn(Schedulers.io())
