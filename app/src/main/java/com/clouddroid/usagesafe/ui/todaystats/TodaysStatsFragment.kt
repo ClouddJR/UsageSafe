@@ -33,6 +33,10 @@ import java.util.*
 
 class TodaysStatsFragment : BaseFragment() {
 
+    companion object {
+        const val TAG = "TodaysStatsFragment"
+    }
+
     private lateinit var viewModel: TodaysStatsViewModel
     private lateinit var appUsageInfoAdapter: MostUsedAdapter
 

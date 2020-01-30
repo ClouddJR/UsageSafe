@@ -27,9 +27,9 @@ class MainActivity : BaseActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
 
-    private val todaysStatsFragment = TodaysStatsFragment()
-    private val appLimitsFragment = AppLimitsFragment()
-    private val historyStatsFragment = HistoryStatsFragment()
+    private lateinit var todaysStatsFragment: TodaysStatsFragment
+    private lateinit var appLimitsFragment: AppLimitsFragment
+    private lateinit var historyStatsFragment: HistoryStatsFragment
 
     private lateinit var helper: IabHelper
 
@@ -38,7 +38,10 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         redirectIfPermissionNotGranted()
         initViewModel()
-        initFragmentsBackStack()
+        restoreFragmentInstances()
+        if (savedInstanceState == null) {
+            initFragmentsBackStack()
+        }
         initBottomNav()
         checkForPurchases()
     }
@@ -72,13 +75,22 @@ class MainActivity : BaseActivity() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)[MainActivityViewModel::class.java]
     }
 
+    private fun restoreFragmentInstances() {
+        todaysStatsFragment = (supportFragmentManager.findFragmentByTag(TodaysStatsFragment.TAG)
+            ?: TodaysStatsFragment()) as TodaysStatsFragment
+        historyStatsFragment = (supportFragmentManager.findFragmentByTag(HistoryStatsFragment.TAG)
+            ?: HistoryStatsFragment()) as HistoryStatsFragment
+        appLimitsFragment = (supportFragmentManager.findFragmentByTag(AppLimitsFragment.TAG)
+            ?: AppLimitsFragment()) as AppLimitsFragment
+    }
+
     private fun initFragmentsBackStack() {
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentPlaceHolder, todaysStatsFragment)
-            .add(R.id.fragmentPlaceHolder, appLimitsFragment)
-            .add(R.id.fragmentPlaceHolder, historyStatsFragment)
-            .hide(appLimitsFragment)
-            .hide(historyStatsFragment)
+            .add(R.id.fragmentPlaceHolder, todaysStatsFragment, TodaysStatsFragment.TAG)
+            //.add(R.id.fragmentPlaceHolder, appLimitsFragment)
+            //.add(R.id.fragmentPlaceHolder, historyStatsFragment)
+            //.hide(appLimitsFragment)
+            //.hide(historyStatsFragment)
             .commit()
         bottomNav.menu.findItem(R.id.todaysStatsFragment).isChecked = true
     }
@@ -113,7 +125,7 @@ class MainActivity : BaseActivity() {
                 R.animator.slide_down
             )
 
-        //addFragmentIfNotInBackStack(destination)
+        addFragmentIfNotInBackStack(destination)
 
         when (destination) {
             FragmentDestination.TODAYS_STATS -> transaction.showAndHideOthers(
@@ -169,12 +181,15 @@ class MainActivity : BaseActivity() {
         when (destination) {
             FragmentDestination.APP_LIMITS -> {
                 if (supportFragmentManager.doesNotContain(appLimitsFragment)) {
-                    supportFragmentManager.addAndCommit(appLimitsFragment)
+                    supportFragmentManager.addAndCommit(appLimitsFragment, AppLimitsFragment.TAG)
                 }
             }
             FragmentDestination.HISTORY -> {
                 if (supportFragmentManager.doesNotContain(historyStatsFragment)) {
-                    supportFragmentManager.addAndCommit(historyStatsFragment)
+                    supportFragmentManager.addAndCommit(
+                        historyStatsFragment,
+                        HistoryStatsFragment.TAG
+                    )
                 }
             }
             else -> {

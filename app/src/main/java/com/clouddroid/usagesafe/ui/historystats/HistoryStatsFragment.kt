@@ -17,6 +17,10 @@ import kotlinx.android.synthetic.main.fragment_history_stats.*
 
 class HistoryStatsFragment : BaseFragment() {
 
+    companion object {
+        const val TAG = "HistoryStatsFragment"
+    }
+
     private val screenTimeFragment = ScreenTimeFragment()
     private val unlocksFragment = UnlocksFragment()
     private val appLaunchesFragment = AppLaunchesFragment()
@@ -52,16 +56,23 @@ class HistoryStatsFragment : BaseFragment() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(activity!!, viewModelFactory)[HistoryStatsViewModel::class.java]
+        viewModel =
+            ViewModelProviders.of(activity!!, viewModelFactory)[HistoryStatsViewModel::class.java]
     }
 
     private fun setUpViewPager() {
         val viewPagerAdapter = ViewPagerAdapter(childFragmentManager)
         viewPager.offscreenPageLimit = 2
 
-        viewPagerAdapter.addFragment(screenTimeFragment, getString(R.string.fragment_history_screen_time))
+        viewPagerAdapter.addFragment(
+            screenTimeFragment,
+            getString(R.string.fragment_history_screen_time)
+        )
         viewPagerAdapter.addFragment(unlocksFragment, getString(R.string.fragment_history_unlocks))
-        viewPagerAdapter.addFragment(appLaunchesFragment, getString(R.string.fragment_history_app_launches))
+        viewPagerAdapter.addFragment(
+            appLaunchesFragment,
+            getString(R.string.fragment_history_app_launches)
+        )
 
         viewPager.adapter = viewPagerAdapter
 

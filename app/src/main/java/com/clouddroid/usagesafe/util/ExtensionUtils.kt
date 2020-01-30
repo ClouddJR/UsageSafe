@@ -14,9 +14,10 @@ object ExtensionUtils {
         return !this.fragments.contains(fragment)
     }
 
-    fun FragmentManager.addAndCommit(fragment: BaseFragment) {
+    fun FragmentManager.addAndCommit(fragment: BaseFragment, tag: String) {
         this.beginTransaction()
-            .add(R.id.fragmentPlaceHolder, fragment)
+            .add(R.id.fragmentPlaceHolder, fragment, tag)
+            .hide(fragment)
             .commit()
     }
 

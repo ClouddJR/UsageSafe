@@ -31,6 +31,10 @@ import kotlinx.android.synthetic.main.fragment_app_limits.*
 
 class AppLimitsFragment : BaseFragment() {
 
+    companion object {
+        const val TAG = "AppLimitsFragment"
+    }
+
     private lateinit var viewModel: AppLimitsViewModel
     private lateinit var adapter: AppLimitsAdapter
 
